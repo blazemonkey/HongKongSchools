@@ -16,6 +16,16 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\PageBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Address.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Category.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\District.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\FinanceType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Gender.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ILanguage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ModelBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Level.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Religion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\School.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\NavigationService\INavigationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\NavigationService\NavigationService.cs" />
   </ItemGroup>
