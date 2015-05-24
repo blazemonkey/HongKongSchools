@@ -26,6 +26,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\Level.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Religion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\School.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\FileReaderService\FileReaderService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\FileReaderService\IFileReaderService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\JSONService\IJSONService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\JSONService\JSONService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\NavigationService\INavigationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\NavigationService\NavigationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\SqlLiteService\ISqlLiteService.cs" />
@@ -35,5 +39,13 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Converters\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Data\districts.json" />
+    <Content Include="$(MSBuildThisFileDirectory)Data\genders.json" />
+    <Content Include="$(MSBuildThisFileDirectory)Data\finance_types.json" />
+    <Content Include="$(MSBuildThisFileDirectory)Data\categories.json" />
+    <Content Include="$(MSBuildThisFileDirectory)Data\levels.json" />
+    <Content Include="$(MSBuildThisFileDirectory)Data\religions.json" />
   </ItemGroup>
 </Project>

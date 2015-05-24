@@ -14,6 +14,8 @@ namespace HongKongSchools.Models
         public int Id { get; set; }
         [DataMember(Name = "levelId")]
         public int LevelId { get; set; }
+        [DataMember(Name = "name")]
+        public string Name { get; set; }
         [DataMember(Name = "languageId")]
         public int LanguageId { get; set; }
     }

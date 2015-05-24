@@ -1,4 +1,6 @@
-﻿using HongKongSchools.Services.NavigationService;
+﻿using HongKongSchools.Services.FileReaderService;
+using HongKongSchools.Services.JSONService;
+using HongKongSchools.Services.NavigationService;
 using HongKongSchools.Services.SqlLiteService;
 using Microsoft.Practices.Prism.Mvvm;
 using SimpleInjector;
@@ -49,6 +51,8 @@ namespace HongKongSchools
         {
             _container.RegisterSingle(NavigationService);
             _container.Register<INavigationService, NavigationService>();
+            _container.Register<IFileReaderService, FileReaderService>();
+            _container.Register<IJSONService, JSONService>();
             _container.Register<ISqlLiteService, SqlLiteService>();
 
             await _container.GetInstance<SqlLiteService>().ClearLocalDb();
