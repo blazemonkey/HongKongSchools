@@ -9,9 +9,32 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="using:Microsoft.Practices.Prism.Mvvm"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{StaticResource AppBackgroundColor}"
+    Foreground="{StaticResource AppForegroundColor}">
 
-    <Grid Margin="10">
-        <TextBlock FontSize="56" Text="MOMO"/>
-    </Grid>
+    <Pivot Background="{StaticResource PivotHeaderBackgroundColor}">
+        <Pivot.HeaderTemplate>
+            <DataTemplate>
+                <TextBlock Text="{Binding}" 
+                           FontSize="36" 
+                           Margin="10,0"
+                           Foreground="{StaticResource PivotHeaderForegroundColor}" />
+            </DataTemplate>
+        </Pivot.HeaderTemplate>
+        <PivotItem x:Uid ="search"               
+                   Background="{StaticResource PivotItemForegroundColor}" 
+                   Margin="-10,0,-10,0">            
+        </PivotItem>
+        <PivotItem x:Uid ="nearby"
+                   Background="{StaticResource PivotItemForegroundColor}" 
+                   Margin="-10,0,-10,0">
+        </PivotItem>
+    </Pivot>
+    <controls:PageBase.BottomAppBar>
+        <CommandBar>
+            <AppBarButton x:Uid="appbar_setting"
+                          Icon="Setting" 
+                          Command="{Binding TapSettingsCommand}" />
+        </CommandBar>
+    </controls:PageBase.BottomAppBar>
 </controls:PageBase>

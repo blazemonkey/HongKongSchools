@@ -38,6 +38,7 @@ namespace HongKongSchools.Services.SqlLiteService
                 _conn.CreateTableAsync<Level>(),
                 _conn.CreateTableAsync<Religion>(),
                 _conn.CreateTableAsync<School>(),
+                _conn.CreateTableAsync<Language>()
             };
 
             Task.WaitAll(createTasks);
@@ -51,6 +52,7 @@ namespace HongKongSchools.Services.SqlLiteService
             await InsertGenders();
             await InsertLevels();
             await InsertDistricts();
+            await InsertLanguages();
         }
 
         private async Task InsertCategories()
@@ -100,6 +102,20 @@ namespace HongKongSchools.Services.SqlLiteService
                 var districtJSON = await _fileReader.ReadFile(Package.Current.InstalledLocation, "districts.json");
                 var districts = _json.Deserialize<List<District>>(districtJSON);
                 await _conn.InsertAllAsync(districts);
+            }
+        }
+
+        private async Task InsertLanguages()
+        {
+            if (await _conn.Table<Language>().CountAsync() == 0)
+            {
+                var english = new Language { LanguageId = 1, Name = "English", Culture = "en" };
+                var cht = new Language { LanguageId = 2, Name = "繁體中文", Culture = "zh-Hant" };
+                var chs = new Language { LanguageId = 3, Name = "简体中文", Culture = "zh-Hans" };
+
+                await _conn.InsertAsync(english);
+                await _conn.InsertAsync(cht);
+                await _conn.InsertAsync(chs);
             }
         }
 
@@ -239,11 +255,36 @@ namespace HongKongSchools.Services.SqlLiteService
             }
         }
 
+        public async Task<IEnumerable<Language>> GetLanguages()
+        {
+            return await _conn.Table<Language>().ToListAsync();
+        }
+
+        public async Task<Language> GetLanguageById(int id)
+        {
+            try
+            {
+                var language = await _conn.Table<Language>().Where(x => x.LanguageId == id).FirstAsync();
+                return language;
+            }
+            catch (InvalidOperationException ioe)
+            {
+                Debug.WriteLine(string.Format("Language Id ({0}) could not be found.", id));
+                throw ioe;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(string.Format("GetLanguageById Error", id));
+                throw e;
+            }
+        }
+
         public async Task ClearLocalDb()
         {
             await _conn.DropTableAsync<Address>();                     
             await _conn.DropTableAsync<Religion>();
             await _conn.DropTableAsync<School>();
+            await _conn.DropTableAsync<Language>();
             await InitDb();
         }
     }

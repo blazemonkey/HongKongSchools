@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace HongKongSchools.Interfaces
 {
-    public interface IMainPageViewModel
+    public interface ISettingsPageViewModel
     {
-        void ExecuteTapSettingsCommand();
     }
 }

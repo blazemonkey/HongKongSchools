@@ -19,5 +19,7 @@ namespace HongKongSchools.Services.SqlLiteService
         Task<Level> GetLevelById(int id);
         Task<IEnumerable<District>> GetDistricts();
         Task<District> GetDistrictById(int id);
+        Task<IEnumerable<Language>> GetLanguages();
+        Task<Language> GetLanguageById(int id);
     }
 }

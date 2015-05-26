@@ -16,12 +16,14 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\PageBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LocalizedStrings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Address.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Category.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\District.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\FinanceType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Gender.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ILanguage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Language.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ModelBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Level.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Religion.cs" />
@@ -47,5 +49,10 @@
     <Content Include="$(MSBuildThisFileDirectory)Data\categories.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\levels.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\religions.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="$(MSBuildThisFileDirectory)Resources\en\Resources.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Resources\zh-hans\Resources.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Resources\zh-hant\Resources.resw" />
   </ItemGroup>
 </Project>
