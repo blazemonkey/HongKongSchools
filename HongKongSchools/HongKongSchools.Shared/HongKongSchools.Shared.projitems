@@ -16,16 +16,19 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\PageBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\ImageFullPathConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LocalizedStrings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Address.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Category.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\District.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\FinanceType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\FullSchoolModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Gender.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ILanguage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Language.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ModelBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Level.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Name.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Religion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\School.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\FileReaderService\FileReaderService.cs" />
@@ -40,15 +43,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\SqlLiteService\SqlLiteService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Converters\" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Data\districts.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\genders.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\finance_types.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\categories.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\levels.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\religions.json" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\Badges\CHAN SUI KI %28LA SALLE%29 PRIMARY SCHOOL.png" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)Resources\en\Resources.resw" />

@@ -32,5 +32,19 @@ namespace HongKongSchools.Models
         public string Fax { get; set; }
         [DataMember(Name = "website")]
         public string Website { get; set; }
+        [DataMember(Name = "imagePath")]
+        public string ImagePath { get; set; }
+        [DataMember(Name = "addressId")]
+        public int AddressId { get; set; }
+        [DataMember(Name = "address")]
+        public Address Address { get; set; }
+        [DataMember(Name = "nameId")]
+        public int NameId { get; set; }
+        [DataMember(Name = "schoolName")]
+        public Name SchoolName { get; set; }
+        [DataMember(Name = "categoryId")]
+        public int CategoryId { get; set; }
+        [DataMember(Name = "category")]
+        public Category Category { get; set; }
     }
 }

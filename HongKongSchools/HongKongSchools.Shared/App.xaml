@@ -12,6 +12,7 @@
         <SolidColorBrush x:Key="PivotHeaderForegroundColor" Color="White"/>
         <SolidColorBrush x:Key="PivotItemForegroundColor" Color="White"/>
         <x:Double x:Key="PivotItemTextSize">18</x:Double>
+        <x:Double x:Key="ListViewTextSize">18</x:Double>
     </prism:MvvmAppBase.Resources>
     
 </prism:MvvmAppBase>

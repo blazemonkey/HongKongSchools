@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using Windows.ApplicationModel;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace HongKongSchools.Services.SqlLiteService
 {
@@ -31,6 +32,7 @@ namespace HongKongSchools.Services.SqlLiteService
             var createTasks = new Task[]
             {
                 _conn.CreateTableAsync<Address>(),
+                _conn.CreateTableAsync<Name>(),
                 _conn.CreateTableAsync<Category>(),
                 _conn.CreateTableAsync<District>(),
                 _conn.CreateTableAsync<FinanceType>(),
@@ -47,12 +49,64 @@ namespace HongKongSchools.Services.SqlLiteService
 
         private async Task InsertDataAsync()
         {
+            await InsertSchools();
+            await InsertNames();
+            await InsertAddresses();
             await InsertCategories();
             await InsertFinanceTypes();
             await InsertGenders();
             await InsertLevels();
             await InsertDistricts();
             await InsertLanguages();
+        }
+
+        private async Task InsertSchools()
+        {
+            if (await _conn.Table<School>().CountAsync() == 0)
+            {
+                var school = new School
+                {
+                    Id = 1,
+                    NameId = 1,
+                    AddressId = 1,
+                    CategoryId = 1,
+                    ImagePath = "CHAN SUI KI (LA SALLE) PRIMARY SCHOOL.png",
+                };
+
+                await _conn.InsertAsync(school);
+            }
+        }
+
+        private async Task InsertAddresses()
+        {
+            if (await _conn.Table<Address>().CountAsync() == 0)
+            {
+                var address = new Address
+                {
+                    Id = 1,
+                    AddressId = 1,
+                    LanguageId = 2,
+                    Name = "九龍九龍城常盛街22號"
+                };
+
+                await _conn.InsertAsync(address);
+            }
+        }
+
+        private async Task InsertNames()
+        {
+            if (await _conn.Table<Name>().CountAsync() == 0)
+            {
+                var name = new Name
+                {
+                    Id = 1,
+                    NameId = 1,
+                    LanguageId = 2,
+                    SchoolName = "陳瑞祺(喇沙)小學"
+                };
+
+                await _conn.InsertAsync(name);
+            }
         }
 
         private async Task InsertCategories()
@@ -135,16 +189,117 @@ namespace HongKongSchools.Services.SqlLiteService
             }
         }
 
+        public async Task<IEnumerable<School>> GetSchools()
+        {
+            var languageId = await GetCurrentLanguageId();
+            var schools =  await _conn.Table<School>().ToListAsync();
+
+            foreach (var school in schools)
+            {
+                await SetSchoolProperties(school);
+            }
+
+            return schools;
+        }
+
+        public async Task<School> GetSchoolById(int id)
+        {
+            try
+            {
+                var languageId = await GetCurrentLanguageId();
+                var school = await _conn.Table<School>().Where(x => x.Id == id).FirstAsync();
+                await SetSchoolProperties(school);
+                return school;
+            }
+            catch (InvalidOperationException ioe)
+            {
+                Debug.WriteLine(string.Format("School Id ({0}) could not be found.", id));
+                throw ioe;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(string.Format("GetSchoolById Error", id));
+                throw e;
+            }
+        }
+
+        private async Task SetSchoolProperties(School school)
+        {
+            school.Category = await GetCategoryById(school.CategoryId);
+            school.Address = await GetAddressById(school.AddressId);
+            school.SchoolName = await GetSchoolNameById(school.NameId);            
+        }
+
+        public async Task<IEnumerable<Address>> GetAddresses()
+        {
+            var languageId = await GetCurrentLanguageId();
+            return await _conn.Table<Address>().Where(x => x.LanguageId == languageId).ToListAsync();
+        }
+
+        public async Task<Address> GetAddressById(int id)
+        {
+            try
+            {
+                var languageId = await GetCurrentLanguageId();
+                var address = await _conn.Table<Address>().Where(x => x.LanguageId == languageId)
+                                                          .Where(x => x.AddressId == id)
+                                                          .FirstAsync();
+                return address;
+            }
+            catch (InvalidOperationException ioe)
+            {
+                Debug.WriteLine(string.Format("Address Id ({0}) could not be found.", id));
+                throw ioe;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(string.Format("GetAddressById Error", id));
+                throw e;
+            }
+        }
+
+        public async Task<IEnumerable<Name>> GetSchoolNames()
+        {
+            var languageId = await GetCurrentLanguageId();
+            return await _conn.Table<Name>().Where(x => x.LanguageId == languageId).ToListAsync();
+        }
+
+        public async Task<Name> GetSchoolNameById(int id)
+        {
+            try
+            {
+                var languageId = await GetCurrentLanguageId();
+                var name = await _conn.Table<Name>().Where(x => x.LanguageId == languageId)
+                                                    .Where(x => x.NameId == id)
+                                                    .FirstAsync();
+                return name;
+            }
+            catch (InvalidOperationException ioe)
+            {
+                Debug.WriteLine(string.Format("Name Id ({0}) could not be found.", id));
+                throw ioe;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(string.Format("GetSchoolNameById Error", id));
+                throw e;
+            }
+        }
+
         public async Task<IEnumerable<Category>> GetCategories()
         {
-            return await _conn.Table<Category>().ToListAsync();
+            var languageId = await GetCurrentLanguageId();
+            return await _conn.Table<Category>().Where(x => x.LanguageId == languageId).ToListAsync();
         }
 
         public async Task<Category> GetCategoryById(int id)
         {
             try
             {
-                var category = await _conn.Table<Category>().Where(x => x.CategoryId == id).FirstAsync();
+                var languageId = await GetCurrentLanguageId();
+                var category = await _conn.Table<Category>().Where(x => x.LanguageId == languageId)
+                                                            .Where(x => x.CategoryId == id)
+                                                            .FirstAsync();
                 return category;
             }
             catch (InvalidOperationException ioe)
@@ -161,14 +316,18 @@ namespace HongKongSchools.Services.SqlLiteService
 
         public async Task<IEnumerable<FinanceType>> GetFinanceTypes()
         {
-            return await _conn.Table<FinanceType>().ToListAsync();
+            var languageId = await GetCurrentLanguageId();
+            return await _conn.Table<FinanceType>().Where(x => x.LanguageId == languageId).ToListAsync();
         }
 
         public async Task<FinanceType> GetFinanceTypeById(int id)
         {
             try
             {
-                var financeType = await _conn.Table<FinanceType>().Where(x => x.FinanceTypeId == id).FirstAsync();
+                var languageId = await GetCurrentLanguageId();
+                var financeType = await _conn.Table<FinanceType>().Where(x => x.LanguageId == languageId)
+                                                                  .Where(x => x.FinanceTypeId == id)
+                                                                  .FirstAsync();
                 return financeType;
             }
             catch (InvalidOperationException ioe)
@@ -185,14 +344,18 @@ namespace HongKongSchools.Services.SqlLiteService
 
         public async Task<IEnumerable<Gender>> GetGenders()
         {
-            return await _conn.Table<Gender>().ToListAsync();
+            var languageId = await GetCurrentLanguageId();
+            return await _conn.Table<Gender>().Where(x => x.LanguageId == languageId).ToListAsync();
         }
 
         public async Task<Gender> GetGenderById(int id)
         {
             try
             {
-                var gender = await _conn.Table<Gender>().Where(x => x.GenderId == id).FirstAsync();
+                var languageId = await GetCurrentLanguageId();
+                var gender = await _conn.Table<Gender>().Where(x => x.LanguageId == languageId)
+                                                        .Where(x => x.GenderId == id)
+                                                        .FirstAsync();
                 return gender;
             }
             catch (InvalidOperationException ioe)
@@ -209,14 +372,18 @@ namespace HongKongSchools.Services.SqlLiteService
 
         public async Task<IEnumerable<Level>> GetLevels()
         {
-            return await _conn.Table<Level>().ToListAsync();
+            var languageId = await GetCurrentLanguageId();
+            return await _conn.Table<Level>().Where(x => x.LanguageId == languageId).ToListAsync();
         }
 
         public async Task<Level> GetLevelById(int id)
         {
             try
             {
-                var level = await _conn.Table<Level>().Where(x => x.LevelId == id).FirstAsync();
+                var languageId = await GetCurrentLanguageId();
+                var level = await _conn.Table<Level>().Where(x => x.LanguageId == languageId)
+                                                      .Where(x => x.LevelId == id)
+                                                      .FirstAsync();
                 return level;
             }
             catch (InvalidOperationException ioe)
@@ -233,14 +400,18 @@ namespace HongKongSchools.Services.SqlLiteService
 
         public async Task<IEnumerable<District>> GetDistricts()
         {
-            return await _conn.Table<District>().ToListAsync();
+            var languageId = await GetCurrentLanguageId();
+            return await _conn.Table<District>().Where(x => x.LanguageId == languageId).ToListAsync();
         }
 
         public async Task<District> GetDistrictById(int id)
         {
             try
             {
-                var district = await _conn.Table<District>().Where(x => x.DistrictId == id).FirstAsync();
+                var languageId = await GetCurrentLanguageId();
+                var district = await _conn.Table<District>().Where(x => x.LanguageId == languageId)
+                                                            .Where(x => x.DistrictId == id)
+                                                            .FirstAsync();
                 return district;
             }
             catch (InvalidOperationException ioe)
@@ -264,7 +435,10 @@ namespace HongKongSchools.Services.SqlLiteService
         {
             try
             {
-                var language = await _conn.Table<Language>().Where(x => x.LanguageId == id).FirstAsync();
+                var languageId = await GetCurrentLanguageId();
+                var language = await _conn.Table<Language>().Where(x => x.LanguageId == languageId)
+                                                            .Where(x => x.LanguageId == id)
+                                                            .FirstAsync();
                 return language;
             }
             catch (InvalidOperationException ioe)
@@ -279,12 +453,27 @@ namespace HongKongSchools.Services.SqlLiteService
             }
         }
 
+        private async Task<int> GetCurrentLanguageId()
+        {
+            var languages = await GetLanguages();
+            var current = CultureInfo.CurrentCulture.Name;
+
+            foreach (var lang in languages)
+            {
+                if (lang.Culture == current)
+                    return lang.LanguageId;
+            }
+
+            // English
+            return 1;
+        }
+
         public async Task ClearLocalDb()
         {
             await _conn.DropTableAsync<Address>();                     
             await _conn.DropTableAsync<Religion>();
             await _conn.DropTableAsync<School>();
-            await _conn.DropTableAsync<Language>();
+            await _conn.DropTableAsync<Name>();            
             await InitDb();
         }
     }

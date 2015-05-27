@@ -132,4 +132,7 @@
   <data name="search.Header" xml:space="preserve">
     <value>搜寻</value>
   </data>
+  <data name="tb_search.PlaceholderText" xml:space="preserve">
+    <value>输入名称</value>
+  </data>
 </root>

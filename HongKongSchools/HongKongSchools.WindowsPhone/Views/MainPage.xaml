@@ -5,6 +5,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:HongKongSchools"
+    xmlns:converters="using:HongKongSchools.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="using:Microsoft.Practices.Prism.Mvvm"
@@ -12,6 +13,10 @@
     Background="{StaticResource AppBackgroundColor}"
     Foreground="{StaticResource AppForegroundColor}">
 
+    <controls:PageBase.Resources>
+        <converters:ImageFullPathConverter x:Key="ImageFullPathConverter"/>
+    </controls:PageBase.Resources>
+    
     <Pivot Background="{StaticResource PivotHeaderBackgroundColor}">
         <Pivot.HeaderTemplate>
             <DataTemplate>
@@ -23,11 +28,71 @@
         </Pivot.HeaderTemplate>
         <PivotItem x:Uid ="search"               
                    Background="{StaticResource PivotItemForegroundColor}" 
-                   Margin="-10,0,-10,0">            
+                   Margin="-10,0,-10,0"
+                   Padding="30">   
+            <!--<ListView ItemsSource="{Binding Categories}"
+                      Padding="30"
+                      FontSize="{StaticResource PivotItemTextSize}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ListBoxItem>
+                            <TextBlock TextWrapping="Wrap" 
+                                           Text="{Binding Name}"       
+                                           FontSize="{StaticResource ListViewTextSize}"/>
+                        </ListBoxItem>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>-->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBox Grid.Row="0" x:Uid="tb_search"></TextBox>
+                <ListView Grid.Row="1" 
+                          ItemsSource="{Binding Schools}"
+                          FontSize="{StaticResource PivotItemTextSize}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ListBoxItem>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Grid.Column="0" 
+                                           Margin="5"
+                                           Width="50"
+                                           Source="{Binding ImagePath, Converter={StaticResource ImageFullPathConverter}, ConverterParameter=Badges}" />
+                                    <Grid Grid.Column="1" 
+                                          Margin="5,0"
+                                          VerticalAlignment="Center">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0"
+                                                   TextWrapping="Wrap" 
+                                                   Text="{Binding SchoolName.SchoolName}"       
+                                                   FontSize="{StaticResource ListViewTextSize}"/>
+                                        <TextBlock Grid.Row="1"
+                                                   TextWrapping="Wrap" 
+                                                   Text="{Binding Address.Name}"       
+                                                   FontSize="{StaticResource ListViewTextSize}"
+                                                   Foreground="Gray"/>
+                                    </Grid>
+
+                                </Grid>                                
+                            </ListBoxItem>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
         </PivotItem>
         <PivotItem x:Uid ="nearby"
                    Background="{StaticResource PivotItemForegroundColor}" 
                    Margin="-10,0,-10,0">
+
         </PivotItem>
     </Pivot>
     <controls:PageBase.BottomAppBar>

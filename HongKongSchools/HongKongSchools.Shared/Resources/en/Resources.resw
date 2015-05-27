@@ -132,4 +132,7 @@
   <data name="search.Header" xml:space="preserve">
     <value>search</value>
   </data>
+  <data name="tb_search.PlaceholderText" xml:space="preserve">
+    <value>enter a school name</value>
+  </data>
 </root>

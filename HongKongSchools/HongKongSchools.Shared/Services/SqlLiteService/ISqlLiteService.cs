@@ -9,7 +9,13 @@ namespace HongKongSchools.Services.SqlLiteService
 {
     public interface ISqlLiteService
     {
+        Task<IEnumerable<School>> GetSchools();
+        Task<School> GetSchoolById(int id);
         Task<IEnumerable<Category>> GetCategories();
+        Task<IEnumerable<Address>> GetAddresses();
+        Task<Address> GetAddressById(int id);
+        Task<IEnumerable<Name>> GetSchoolNames();
+        Task<Name> GetSchoolNameById(int id);
         Task<Category> GetCategoryById(int id);
         Task<IEnumerable<FinanceType>> GetFinanceTypes();
         Task<FinanceType> GetFinanceTypeById(int id);
