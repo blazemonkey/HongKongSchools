@@ -102,6 +102,7 @@ namespace HongKongSchools.DataParser
 
             var schools = new List<School>();
             var addresses = new List<Address>();
+            var errors = new List<School>();
 
             var id = 1;
             var addressId = 1;
@@ -110,7 +111,7 @@ namespace HongKongSchools.DataParser
             {
                 if (addresses.Any(x => x.Name == input.EnglishAddress || x.Name == input.ChineseAddress))
                 {
-                    var lol = addresses.First(x => x.Name == input.ChineseAddress);
+                    //var lol = addresses.First(x => x.Name == input.ChineseAddress);
                     continue;
                 }
 
@@ -144,7 +145,14 @@ namespace HongKongSchools.DataParser
                 school.Telephone = input.EnglishTelephone;
                 school.Fax = input.EnglishFaxNumber;
                 school.Website = input.EnglishWebsite;
-                school.AddressId = addresses.First(x => x.Name == input.EnglishAddress).AddressId;
+                try
+                {
+                    school.AddressId = addresses.First(x => x.Name == input.EnglishAddress).AddressId;
+                }
+                catch (InvalidOperationException e)
+                {
+                    errors.Add(school);
+                }
                 schools.Add(school);
             }
 
