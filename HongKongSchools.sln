@@ -11,11 +11,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HongKongSchools.Windows", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HongKongSchools.WindowsPhone", "HongKongSchools\HongKongSchools.WindowsPhone\HongKongSchools.WindowsPhone.csproj", "{ADF18246-1D7C-45C3-905D-3C4575D48C06}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HongKongSchools.DataParser", "HongKongSchools.DataParser\HongKongSchools.DataParser.csproj", "{AFC979E5-6A73-4E5F-93C1-50BE9EAAD2BA}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		HongKongSchools\HongKongSchools.Shared\HongKongSchools.Shared.projitems*{adf18246-1d7c-45c3-905d-3c4575d48c06}*SharedItemsImports = 4
 		HongKongSchools\HongKongSchools.Shared\HongKongSchools.Shared.projitems*{656d6779-18f3-4dc4-92aa-b63c28a3323b}*SharedItemsImports = 13
-		HongKongSchools\HongKongSchools.Shared\HongKongSchools.Shared.projitems*{8b2a3157-3b63-42fd-ae95-e2ea92eeb7c7}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +72,16 @@ Global
 		{ADF18246-1D7C-45C3-905D-3C4575D48C06}.Release|x86.ActiveCfg = Release|x86
 		{ADF18246-1D7C-45C3-905D-3C4575D48C06}.Release|x86.Build.0 = Release|x86
 		{ADF18246-1D7C-45C3-905D-3C4575D48C06}.Release|x86.Deploy.0 = Release|x86
+		{AFC979E5-6A73-4E5F-93C1-50BE9EAAD2BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFC979E5-6A73-4E5F-93C1-50BE9EAAD2BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFC979E5-6A73-4E5F-93C1-50BE9EAAD2BA}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{AFC979E5-6A73-4E5F-93C1-50BE9EAAD2BA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AFC979E5-6A73-4E5F-93C1-50BE9EAAD2BA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AFC979E5-6A73-4E5F-93C1-50BE9EAAD2BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFC979E5-6A73-4E5F-93C1-50BE9EAAD2BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFC979E5-6A73-4E5F-93C1-50BE9EAAD2BA}.Release|ARM.ActiveCfg = Release|Any CPU
+		{AFC979E5-6A73-4E5F-93C1-50BE9EAAD2BA}.Release|x64.ActiveCfg = Release|Any CPU
+		{AFC979E5-6A73-4E5F-93C1-50BE9EAAD2BA}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

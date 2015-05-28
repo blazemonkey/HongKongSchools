@@ -61,7 +61,13 @@ namespace SQLite
             IgnoreTypes.Add(typeof(Address));
             IgnoreTypes.Add(typeof(Category));
             IgnoreTypes.Add(typeof(School));
-            IgnoreTypes.Add(typeof(Name));            
+            IgnoreTypes.Add(typeof(Name));
+            IgnoreTypes.Add(typeof(District));
+            IgnoreTypes.Add(typeof(FinanceType));
+            IgnoreTypes.Add(typeof(School));
+            IgnoreTypes.Add(typeof(Gender));
+            IgnoreTypes.Add(typeof(Level));
+            IgnoreTypes.Add(typeof(Religion));            
         }
     }
 

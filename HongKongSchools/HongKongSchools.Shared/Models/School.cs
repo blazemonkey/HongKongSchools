@@ -46,5 +46,25 @@ namespace HongKongSchools.Models
         public int CategoryId { get; set; }
         [DataMember(Name = "category")]
         public Category Category { get; set; }
+        [DataMember(Name = "districtId")]
+        public int DistrictId { get; set; }
+        [DataMember(Name = "category")]
+        public District District { get; set; }
+        [DataMember(Name = "financeTypeId")]
+        public int FinanceTypeId { get; set; }
+        [DataMember(Name = "financeType")]
+        public FinanceType FinanceType { get; set; }
+        [DataMember(Name = "genderId")]
+        public int GenderId { get; set; }
+        [DataMember(Name = "gender")]
+        public Gender Gender { get; set; }
+        [DataMember(Name = "levelId")]
+        public int LevelId { get; set; }
+        [DataMember(Name = "gender")]
+        public Level Level { get; set; }
+        [DataMember(Name = "religionId")]
+        public int ReligionId { get; set; }
+        [DataMember(Name = "religion")]
+        public Religion Religion { get; set; }
     }
 }
