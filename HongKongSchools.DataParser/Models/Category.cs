@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HongKongSchools.DataParser.Models
 {
-    public class Address : IBase
+    public class Category : IBase
     {
         public int Id { get; set; }
         public int GroupId { get; set; }

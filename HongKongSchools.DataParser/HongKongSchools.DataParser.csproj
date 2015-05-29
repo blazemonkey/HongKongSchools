@@ -50,7 +50,12 @@
   <ItemGroup>
     <Compile Include="FileEnum.cs" />
     <Compile Include="Models\Address.cs" />
+    <Compile Include="Models\Base.cs" />
+    <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\FinanceType.cs" />
+    <Compile Include="Models\Gender.cs" />
     <Compile Include="Models\LocationAndInformation.cs" />
+    <Compile Include="Models\SchoolName.cs" />
     <Compile Include="Models\School.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

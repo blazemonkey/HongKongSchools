@@ -102,37 +102,17 @@ namespace HongKongSchools.DataParser
 
             var schools = new List<School>();
             var addresses = new List<Address>();
+            var names = new List<SchoolName>();
+            var categories = new List<Category>();
+            var financeTypes = new List<FinanceType>();
+            var genders = new List<Gender>();
+            PopulateLocationAndInformation(addresses, inputs, x => x.EnglishAddress, x=> x.ChineseAddress);
+            PopulateLocationAndInformation(names, inputs, x => x.EnglishName, x=> x.ChineseName);
+            PopulateLocationAndInformation(categories, inputs, x => x.EnglishCategory, x => x.ChineseCategory);
+            PopulateLocationAndInformation(financeTypes, inputs, x => x.EnglishFinanceType, x => x.ChineseFinanceType);
+            PopulateLocationAndInformation(genders, inputs, x => x.EnglishGender, x => x.ChineseGender);
 
             var id = 1;
-            var addressId = 1;
-
-            foreach (var input in inputs)
-            {
-                if (addresses.Any(x => x.Name == input.EnglishAddress || x.Name == input.ChineseAddress))
-                {
-                    //var lol = addresses.First(x => x.Name == input.ChineseAddress);
-                    continue;
-                }
-
-                for (var i = 1; i <= 2; i++)
-                {
-                    var address = new Address();
-                    address.Id = id;
-                    address.AddressId = addressId;
-                    address.LanguageId = i;
-                    if (address.LanguageId == 1)
-                        address.Name = input.EnglishAddress;
-                    else
-                        address.Name = input.ChineseAddress;
-
-                    id++;
-                    addresses.Add(address);
-                }
-
-                addressId++;                
-            }
-
-            id = 1;
             foreach (var input in inputs)
             {
                 var school = new School();
@@ -144,16 +124,54 @@ namespace HongKongSchools.DataParser
                 school.Telephone = input.EnglishTelephone;
                 school.Fax = input.EnglishFaxNumber;
                 school.Website = input.EnglishWebsite;
-                school.AddressId = addresses.First(x => x.Name == input.EnglishAddress).AddressId;
+                school.AddressId = addresses.First(x => x.Name == input.EnglishAddress).GroupId;
+                school.NameId = names.First(x => x.Name == input.EnglishName).GroupId;
+                school.CategoryId = categories.First(x => x.Name == input.EnglishCategory).GroupId;
+                school.FinanceTypeId = financeTypes.First(x => x.Name == input.EnglishFinanceType).GroupId;
+                school.GenderId = genders.First(x => x.Name == input.EnglishGender).GroupId;
                 schools.Add(school);
             }
 
             var addressesJSON = JsonConvert.SerializeObject(addresses);
             File.WriteAllText("addresses.json", addressesJSON, Encoding.Unicode);
 
+            var namesJSON = JsonConvert.SerializeObject(names);
+            File.WriteAllText("names.json", namesJSON, Encoding.Unicode);
+
             var schoolsJSON = JsonConvert.SerializeObject(schools);
             File.WriteAllText("schools.json", schoolsJSON, Encoding.Unicode);
             return true;
+        }
+
+        private static void PopulateLocationAndInformation<T>(List<T> collection, List<LocationAndInformation> inputs, Func<LocationAndInformation, string> engProp, Func<LocationAndInformation, string> chiProp) where T : IBase, new()
+        {
+            var id = 1;
+            var groupId = 1;
+            
+            foreach (var input in inputs)
+            {
+                if (collection.Any(x => x.Name == engProp.Invoke(input) || x.Name == chiProp.Invoke(input)))
+                {
+                    continue;
+                }
+
+                for (var i = 1; i <= 2; i++)
+                {                    
+                    var model = new T();
+                    model.Id = id;
+                    model.GroupId = groupId;
+                    model.LanguageId = i;
+                    if (model.LanguageId == 1)
+                        model.Name = engProp.Invoke(input);
+                    else
+                        model.Name = chiProp.Invoke(input);
+
+                    id++;
+                    collection.Add(model);
+                }
+
+                groupId++;
+            }
         }
 
         private static bool ReadBasicInfo()
