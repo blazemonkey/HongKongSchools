@@ -4,7 +4,7 @@ using System.Text;
 
 namespace HongKongSchools.Services.NavigationService
 {
-    public enum Experiences { Main, Settings }
+    public enum Experiences { Main, Settings, School }
 
     public interface INavigationService
     {

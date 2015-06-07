@@ -6,6 +6,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:HongKongSchools"
     xmlns:converters="using:HongKongSchools.Converters"
+    xmlns:helpers="using:HongKongSchools.Helpers"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="using:Microsoft.Practices.Prism.Mvvm"
@@ -15,6 +16,15 @@
 
     <controls:PageBase.Resources>
         <converters:ImageFullPathConverter x:Key="ImageFullPathConverter"/>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <Storyboard x:Name="LoadingStoryboard">
+            <DoubleAnimation
+            Storyboard.TargetName="Loading"
+            Storyboard.TargetProperty="Opacity"
+            From="0" To="1.0" Duration="0:0:3"
+            RepeatBehavior="Forever"/>
+        </Storyboard>
     </controls:PageBase.Resources>
     
     <Pivot Background="{StaticResource PivotHeaderBackgroundColor}">
@@ -30,60 +40,59 @@
                    Background="{StaticResource PivotItemForegroundColor}" 
                    Margin="-10,0,-10,0"
                    Padding="30">   
-            <!--<ListView ItemsSource="{Binding Categories}"
-                      Padding="30"
-                      FontSize="{StaticResource PivotItemTextSize}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ListBoxItem>
-                            <TextBlock TextWrapping="Wrap" 
-                                           Text="{Binding Name}"       
-                                           FontSize="{StaticResource ListViewTextSize}"/>
-                        </ListBoxItem>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>-->
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBox Grid.Row="0" x:Uid="tb_search"></TextBox>
-                <ListView Grid.Row="1" 
+                <TextBox Grid.Row="0" x:Uid="tb_search"/>
+                <StackPanel Grid.Row="1"                             
+                            Orientation="Vertical" 
+                            VerticalAlignment="Center"
+                            Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ProgressBar IsIndeterminate="True" />
+                    <TextBlock x:Name="Loading"
+                               x:Uid="tb_loading"
+                               Margin="0,5,0,0"
+                               HorizontalAlignment="Center"
+                               FontSize="{StaticResource LoadingTextSize}"/>
+                </StackPanel>                
+                <ListView x:Name="SchoolsListView"
+                          Grid.Row="1" 
                           ItemsSource="{Binding Schools}"
-                          FontSize="{StaticResource PivotItemTextSize}">
+                          FontSize="{StaticResource PivotItemTextSize}"
+                          SelectionMode="None"
+                          IsItemClickEnabled="True"
+                          helpers:ItemClickCommand.Command="{Binding TapSchoolCommand}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <ListBoxItem>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Image Grid.Column="0" 
+                            <Grid Margin="0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" 
                                            Margin="5"
                                            Width="50"
                                            Source="{Binding ImagePath, Converter={StaticResource ImageFullPathConverter}, ConverterParameter=Badges}" />
-                                    <Grid Grid.Column="1" 
+                                <Grid Grid.Column="1" 
                                           Margin="5,0"
                                           VerticalAlignment="Center">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <TextBlock Grid.Row="0"
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0"
                                                    TextWrapping="Wrap" 
                                                    Text="{Binding SchoolName.SchoolName}"       
                                                    FontSize="{StaticResource ListViewTextSize}"/>
-                                        <TextBlock Grid.Row="1"
+                                    <TextBlock Grid.Row="1"
                                                    TextWrapping="Wrap" 
                                                    Text="{Binding Address.Name}"       
                                                    FontSize="{StaticResource ListViewTextSize}"
                                                    Foreground="Gray"/>
-                                    </Grid>
-
-                                </Grid>                                
-                            </ListBoxItem>
+                                </Grid>
+                            </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

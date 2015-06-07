@@ -48,7 +48,7 @@ namespace HongKongSchools.Models
         public Category Category { get; set; }
         [DataMember(Name = "districtId")]
         public int DistrictId { get; set; }
-        [DataMember(Name = "category")]
+        [DataMember(Name = "district")]
         public District District { get; set; }
         [DataMember(Name = "financeTypeId")]
         public int FinanceTypeId { get; set; }
@@ -60,7 +60,7 @@ namespace HongKongSchools.Models
         public Gender Gender { get; set; }
         [DataMember(Name = "levelId")]
         public int LevelId { get; set; }
-        [DataMember(Name = "gender")]
+        [DataMember(Name = "level")]
         public Level Level { get; set; }
         [DataMember(Name = "religionId")]
         public int ReligionId { get; set; }

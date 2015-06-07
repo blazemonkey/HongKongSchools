@@ -106,11 +106,17 @@ namespace HongKongSchools.DataParser
             var categories = new List<Category>();
             var financeTypes = new List<FinanceType>();
             var genders = new List<Gender>();
+            var districts = new List<District>();
+            var levels = new List<Level>();
+            var religions = new List<Religion>();
             PopulateLocationAndInformation(addresses, inputs, x => x.EnglishAddress, x=> x.ChineseAddress);
             PopulateLocationAndInformation(names, inputs, x => x.EnglishName, x=> x.ChineseName);
             PopulateLocationAndInformation(categories, inputs, x => x.EnglishCategory, x => x.ChineseCategory);
             PopulateLocationAndInformation(financeTypes, inputs, x => x.EnglishFinanceType, x => x.ChineseFinanceType);
             PopulateLocationAndInformation(genders, inputs, x => x.EnglishGender, x => x.ChineseGender);
+            PopulateLocationAndInformation(districts, inputs, x => x.EnglishDistrict, x => x.ChineseDistrict);
+            PopulateLocationAndInformation(levels, inputs, x => x.EnglishLevel, x => x.ChineseLevel);
+            PopulateLocationAndInformation(religions, inputs, x => x.EnglishReligion, x => x.ChineseReligion);
 
             var id = 1;
             foreach (var input in inputs)
@@ -129,6 +135,9 @@ namespace HongKongSchools.DataParser
                 school.CategoryId = categories.First(x => x.Name == input.EnglishCategory).GroupId;
                 school.FinanceTypeId = financeTypes.First(x => x.Name == input.EnglishFinanceType).GroupId;
                 school.GenderId = genders.First(x => x.Name == input.EnglishGender).GroupId;
+                school.DistrictId = districts.First(x => x.Name == input.EnglishDistrict).GroupId;
+                school.LevelId = levels.First(x => x.Name == input.EnglishLevel).GroupId;
+                school.ReligionId = religions.First(x => x.Name == input.EnglishReligion).GroupId;
                 schools.Add(school);
             }
 

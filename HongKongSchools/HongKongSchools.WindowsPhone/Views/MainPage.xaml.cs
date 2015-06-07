@@ -22,8 +22,14 @@ namespace HongKongSchools.Views
     {
         public MainPage()
         {
-            this.InitializeComponent();            
+            this.InitializeComponent();
+            LoadingStoryboard.Begin();
         }
 
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+
+            base.OnNavigatedFrom(e);
+        }
     }
 }

@@ -10,15 +10,19 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Navigation;
 
 namespace HongKongSchools.ViewModels
 {
     public class SettingsPageViewModel : ViewModel, ISettingsPageViewModel
     {
+        public static bool ReloadRequired { get; set; }
+
         private ISqlLiteService _db;
         private INavigationService _nav;
         private ObservableCollection<Language> _languages;
         private Language _selectedLanguage;
+        private int _initialLanguageId;
 
         public ObservableCollection<Language> Languages
         {
@@ -56,6 +60,7 @@ namespace HongKongSchools.ViewModels
                 Languages.Add(lang);
 
             SetLanguage(CultureInfo.CurrentCulture);
+            _initialLanguageId = SelectedLanguage.LanguageId;
         }
 
         private void SetLanguage(CultureInfo ci)
@@ -76,10 +81,16 @@ namespace HongKongSchools.ViewModels
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(culture);
         }
 
-        public override async void OnNavigatedTo(object navigationParameter, Windows.UI.Xaml.Navigation.NavigationMode navigationMode, Dictionary<string, object> viewModelState)
+        public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
             await PopulateLanguages();
             base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
+        }
+
+        public override void OnNavigatedFrom(Dictionary<string, object> viewModelState, bool suspending)
+        {
+            ReloadRequired = _initialLanguageId == SelectedLanguage.LanguageId ? false : true;
+            base.OnNavigatedFrom(viewModelState, suspending);
         }
     }
 }

@@ -126,11 +126,20 @@
   <data name="nearby.Header" xml:space="preserve">
     <value>附近学校</value>
   </data>
+  <data name="pi_info.Header" xml:space="preserve">
+    <value>資料</value>
+  </data>
+  <data name="pi_map.Header" xml:space="preserve">
+    <value>地图</value>
+  </data>
   <data name="pi_settings.Header" xml:space="preserve">
     <value>设定</value>
   </data>
   <data name="search.Header" xml:space="preserve">
     <value>搜寻</value>
+  </data>
+  <data name="tb_loading.Text" xml:space="preserve">
+    <value>正在加载...</value>
   </data>
   <data name="tb_search.PlaceholderText" xml:space="preserve">
     <value>输入名称</value>

@@ -126,11 +126,20 @@
   <data name="nearby.Header" xml:space="preserve">
     <value>nearby</value>
   </data>
+  <data name="pi_info.Header" xml:space="preserve">
+    <value>info</value>
+  </data>
+  <data name="pi_map.Header" xml:space="preserve">
+    <value>map</value>
+  </data>
   <data name="pi_settings.Header" xml:space="preserve">
     <value>settings</value>
   </data>
   <data name="search.Header" xml:space="preserve">
     <value>search</value>
+  </data>
+  <data name="tb_loading.Text" xml:space="preserve">
+    <value>Loading...</value>
   </data>
   <data name="tb_search.PlaceholderText" xml:space="preserve">
     <value>enter a school name</value>

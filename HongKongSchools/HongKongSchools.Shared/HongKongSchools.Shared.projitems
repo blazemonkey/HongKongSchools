@@ -16,7 +16,10 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\PageBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\ImageFullPathConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\InverseBooleanConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ItemClickCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LocalizedStrings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Address.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Category.cs" />
@@ -43,12 +46,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\SqlLiteService\SqlLiteService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Data\addresses.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\districts.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\genders.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\finance_types.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\categories.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\levels.json" />
+    <Content Include="$(MSBuildThisFileDirectory)Data\names.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\religions.json" />
+    <Content Include="$(MSBuildThisFileDirectory)Data\schools.json" />
     <Content Include="$(MSBuildThisFileDirectory)Images\Badges\CHAN SUI KI %28LA SALLE%29 PRIMARY SCHOOL.png" />
   </ItemGroup>
   <ItemGroup>

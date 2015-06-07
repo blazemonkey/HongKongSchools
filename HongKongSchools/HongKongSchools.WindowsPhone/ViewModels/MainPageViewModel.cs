@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Navigation;
 
 namespace HongKongSchools.ViewModels
 {
@@ -20,6 +21,8 @@ namespace HongKongSchools.ViewModels
 
         private ObservableCollection<Category> _categories;
         private ObservableCollection<School> _schools;
+
+        private bool _isLoading;
 
         public ObservableCollection<Category> Categories
         {
@@ -41,7 +44,18 @@ namespace HongKongSchools.ViewModels
             }
         }
 
+        public bool IsLoading
+        {
+            get { return _isLoading; }
+            private set
+            {
+                _isLoading = value;
+                OnPropertyChanged("IsLoading");
+            }
+        }
+
         public DelegateCommand TapSettingsCommand { get; set; }
+        public DelegateCommand TapSchoolCommand { get; set; }
 
         public MainPageViewModel(ISqlLiteService db, INavigationService nav)
         {
@@ -52,20 +66,12 @@ namespace HongKongSchools.ViewModels
             Schools = new ObservableCollection<School>();
 
             TapSettingsCommand = new DelegateCommand(ExecuteTapSettingsCommand);
+            TapSchoolCommand = new DelegateCommand(ExecuteTapSchoolCommand);
         }
 
-        private async Task PopulateCategories()
-        {
-            Categories.Clear();
-            var categories = await _db.GetCategories();
-            foreach (var category in categories)
-                Categories.Add(category);
-        }
-
-        private async Task PopulateSchools()
+        private void PopulateSchools(IEnumerable<School> schools)
         {
             Schools.Clear();
-            var schools = await _db.GetSchools();
             foreach (var school in schools)
                 Schools.Add(school);
         }
@@ -75,12 +81,47 @@ namespace HongKongSchools.ViewModels
             _nav.Navigate(Experiences.Settings, null);
         }
 
-        public override async void OnNavigatedTo(object navigationParameter, Windows.UI.Xaml.Navigation.NavigationMode navigationMode, Dictionary<string, object> viewModelState)
+        public void ExecuteTapSchoolCommand()
         {
-            await PopulateCategories();
-            await PopulateSchools();
+            _nav.Navigate(Experiences.School, null);
+        }
+
+        public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
+        {
+            IsLoading = true;
+
+            if (viewModelState.Any(x => x.Key == "Schools"))
+            {
+                if (SettingsPageViewModel.ReloadRequired)
+                {
+                    var schools = await _db.GetSchools();
+                    PopulateSchools(schools);
+                    SettingsPageViewModel.ReloadRequired = false;
+                }
+                else
+                {
+                    var schools = viewModelState.First(x => x.Key == "Schools").Value as ObservableCollection<School>;
+                    Schools = schools;
+                }
+            }
+            else
+            {
+                var schools = await _db.GetSchools();
+                PopulateSchools(schools);
+            }
+
+            IsLoading = false;
+
             base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
         }
 
+        public override void OnNavigatedFrom(Dictionary<string, object> viewModelState, bool suspending)
+        {
+            if (viewModelState.Any(x => x.Key == "Schools"))
+                viewModelState.Remove("Schools");
+
+            viewModelState.Add("Schools", Schools);
+            base.OnNavigatedFrom(viewModelState, suspending);
+        }
     }
 }

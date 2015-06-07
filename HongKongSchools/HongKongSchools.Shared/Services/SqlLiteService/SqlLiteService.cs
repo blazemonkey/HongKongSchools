@@ -64,16 +64,9 @@ namespace HongKongSchools.Services.SqlLiteService
         {
             if (await _conn.Table<School>().CountAsync() == 0)
             {
-                var school = new School
-                {
-                    Id = 1,
-                    NameId = 1,
-                    AddressId = 1,
-                    CategoryId = 1,
-                    ImagePath = "CHAN SUI KI (LA SALLE) PRIMARY SCHOOL.png",
-                };
-
-                await _conn.InsertAsync(school);
+                var schoolJSON = await _fileReader.ReadFile(Package.Current.InstalledLocation, "schools.json");
+                var schools = _json.Deserialize<List<School>>(schoolJSON);
+                await _conn.InsertAllAsync(schools);
             }
         }
 
@@ -81,15 +74,9 @@ namespace HongKongSchools.Services.SqlLiteService
         {
             if (await _conn.Table<Address>().CountAsync() == 0)
             {
-                var address = new Address
-                {
-                    Id = 1,
-                    AddressId = 1,
-                    LanguageId = 2,
-                    Name = "九龍九龍城常盛街22號"
-                };
-
-                await _conn.InsertAsync(address);
+                var addressJSON = await _fileReader.ReadFile(Package.Current.InstalledLocation, "addresses.json");
+                var addresses = _json.Deserialize<List<Address>>(addressJSON);
+                await _conn.InsertAllAsync(addresses);
             }
         }
 
@@ -97,15 +84,9 @@ namespace HongKongSchools.Services.SqlLiteService
         {
             if (await _conn.Table<Name>().CountAsync() == 0)
             {
-                var name = new Name
-                {
-                    Id = 1,
-                    NameId = 1,
-                    LanguageId = 2,
-                    SchoolName = "陳瑞祺(喇沙)小學"
-                };
-
-                await _conn.InsertAsync(name);
+                var nameJSON = await _fileReader.ReadFile(Package.Current.InstalledLocation, "names.json");
+                var names = _json.Deserialize<List<Name>>(nameJSON);
+                await _conn.InsertAllAsync(names);
             }
         }
 
@@ -170,22 +151,6 @@ namespace HongKongSchools.Services.SqlLiteService
                 await _conn.InsertAsync(english);
                 await _conn.InsertAsync(cht);
                 await _conn.InsertAsync(chs);
-            }
-        }
-
-        private async Task DoInsertDataAsync<T>()
-        {
-            var type = typeof(SQLiteAsyncConnection);
-            var category = typeof(Category);
-            var methods = type.GetRuntimeMethods();
-            
-            foreach (var method in methods)
-            {
-                if (method.Name == "Table")
-                {
-                    var tableMethod = method.MakeGenericMethod(new Type[] { typeof(T) });
-                    var a = tableMethod.GetType();
-                }
             }
         }
 
