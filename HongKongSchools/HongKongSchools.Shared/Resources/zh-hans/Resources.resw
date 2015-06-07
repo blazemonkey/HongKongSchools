@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="appbar_call.Label" xml:space="preserve">
+    <value>致电</value>
+  </data>
   <data name="appbar_setting.Label" xml:space="preserve">
     <value>设定</value>
   </data>
@@ -138,8 +141,44 @@
   <data name="search.Header" xml:space="preserve">
     <value>搜寻</value>
   </data>
+  <data name="tb_info_address.Text" xml:space="preserve">
+    <value>地址</value>
+  </data>
+  <data name="tb_info_category.Text" xml:space="preserve">
+    <value>类别</value>
+  </data>
+  <data name="tb_info_district.Text" xml:space="preserve">
+    <value>分区</value>
+  </data>
+  <data name="tb_info_fax.Text" xml:space="preserve">
+    <value>传真号码</value>
+  </data>
+  <data name="tb_info_financeType.Text" xml:space="preserve">
+    <value>资助种类</value>
+  </data>
+  <data name="tb_info_gender.Text" xml:space="preserve">
+    <value>就读学生性别</value>
+  </data>
+  <data name="tb_info_level.Text" xml:space="preserve">
+    <value>学校类型</value>
+  </data>
+  <data name="tb_info_session.Text" xml:space="preserve">
+    <value>学校授课时间</value>
+  </data>
+  <data name="tb_info_telephone.Text" xml:space="preserve">
+    <value>联络电话</value>
+  </data>
+  <data name="tb_info_website.Text" xml:space="preserve">
+    <value>网页</value>
+  </data>
   <data name="tb_loading.Text" xml:space="preserve">
     <value>正在加载...</value>
+  </data>
+  <data name="tb_map_latitude.Text" xml:space="preserve">
+    <value>纬度</value>
+  </data>
+  <data name="tb_map_longitude.Text" xml:space="preserve">
+    <value>经度</value>
   </data>
   <data name="tb_search.PlaceholderText" xml:space="preserve">
     <value>输入名称</value>

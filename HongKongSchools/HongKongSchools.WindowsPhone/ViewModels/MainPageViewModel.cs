@@ -55,7 +55,7 @@ namespace HongKongSchools.ViewModels
         }
 
         public DelegateCommand TapSettingsCommand { get; set; }
-        public DelegateCommand TapSchoolCommand { get; set; }
+        public DelegateCommand<School> TapSchoolCommand { get; set; }
 
         public MainPageViewModel(ISqlLiteService db, INavigationService nav)
         {
@@ -66,7 +66,7 @@ namespace HongKongSchools.ViewModels
             Schools = new ObservableCollection<School>();
 
             TapSettingsCommand = new DelegateCommand(ExecuteTapSettingsCommand);
-            TapSchoolCommand = new DelegateCommand(ExecuteTapSchoolCommand);
+            TapSchoolCommand = new DelegateCommand<School>(ExecuteTapSchoolCommand);
         }
 
         private void PopulateSchools(IEnumerable<School> schools)
@@ -81,9 +81,9 @@ namespace HongKongSchools.ViewModels
             _nav.Navigate(Experiences.Settings, null);
         }
 
-        public void ExecuteTapSchoolCommand()
+        public void ExecuteTapSchoolCommand(School school)
         {
-            _nav.Navigate(Experiences.School, null);
+            _nav.Navigate(Experiences.School, school);
         }
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)

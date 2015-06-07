@@ -192,7 +192,11 @@ namespace HongKongSchools.Services.SqlLiteService
         {
             school.Category = await GetCategoryById(school.CategoryId);
             school.Address = await GetAddressById(school.AddressId);
-            school.SchoolName = await GetSchoolNameById(school.NameId);            
+            school.SchoolName = await GetSchoolNameById(school.NameId);
+            school.District = await GetDistrictById(school.DistrictId);
+            school.FinanceType = await GetFinanceTypeById(school.FinanceTypeId);
+            school.Level = await GetLevelById(school.LevelId);
+            school.Gender = await GetGenderById(school.GenderId);
         }
 
         public async Task<IEnumerable<Address>> GetAddresses()

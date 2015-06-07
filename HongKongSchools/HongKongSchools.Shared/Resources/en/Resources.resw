@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="appbar_call.Label" xml:space="preserve">
+    <value>call</value>
+  </data>
   <data name="appbar_setting.Label" xml:space="preserve">
     <value>settings</value>
   </data>
@@ -138,8 +141,44 @@
   <data name="search.Header" xml:space="preserve">
     <value>search</value>
   </data>
+  <data name="tb_info_address.Text" xml:space="preserve">
+    <value>address</value>
+  </data>
+  <data name="tb_info_category.Text" xml:space="preserve">
+    <value>category</value>
+  </data>
+  <data name="tb_info_district.Text" xml:space="preserve">
+    <value>district</value>
+  </data>
+  <data name="tb_info_fax.Text" xml:space="preserve">
+    <value>fax</value>
+  </data>
+  <data name="tb_info_financeType.Text" xml:space="preserve">
+    <value>finance type</value>
+  </data>
+  <data name="tb_info_gender.Text" xml:space="preserve">
+    <value>gender</value>
+  </data>
+  <data name="tb_info_level.Text" xml:space="preserve">
+    <value>level</value>
+  </data>
+  <data name="tb_info_session.Text" xml:space="preserve">
+    <value>session</value>
+  </data>
+  <data name="tb_info_telephone.Text" xml:space="preserve">
+    <value>telephone</value>
+  </data>
+  <data name="tb_info_website.Text" xml:space="preserve">
+    <value>website</value>
+  </data>
   <data name="tb_loading.Text" xml:space="preserve">
     <value>Loading...</value>
+  </data>
+  <data name="tb_map_latitude.Text" xml:space="preserve">
+    <value>latitude</value>
+  </data>
+  <data name="tb_map_longitude.Text" xml:space="preserve">
+    <value>longitude</value>
   </data>
   <data name="tb_search.PlaceholderText" xml:space="preserve">
     <value>enter a school name</value>

@@ -1,4 +1,4 @@
-﻿<controls:PageBase
+﻿<controls:PageBase xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps" 
     x:Class="HongKongSchools.Views.SchoolPage"
     prism:ViewModelLocator.AutoWireViewModel="True"
     xmlns:controls="using:HongKongSchools.Controls"
@@ -15,7 +15,8 @@
     d:DataContext="{d:DesignInstance vm:SchoolPageViewModel}">
 
     <Grid>
-        <Pivot Background="{StaticResource PivotHeaderBackgroundColor}">
+        <Pivot Background="{StaticResource PivotHeaderBackgroundColor}"
+               DataContext="{Binding SelectedSchool}">
             <Pivot.HeaderTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding}" 
@@ -28,12 +29,198 @@
                    Background="{StaticResource PivotItemForegroundColor}" 
                    Margin="-10,0,-10,0"
                    Padding="30">
+                <ScrollViewer>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0"
+                                   HorizontalAlignment="Center"                               
+                                   FontSize="28"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center"
+                                   Text="{Binding SchoolName.SchoolName}"/> 
+                        <Grid Grid.Row="1"
+                                    Margin="0,20,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.35*"/>
+                                <ColumnDefinition Width="0.65*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock x:Uid="tb_info_district"
+                                       Grid.Row="0"
+                                       Grid.Column="0"
+                                       Margin="5"
+                                       FontSize="18"/>
+                            <TextBlock Text="{Binding District.Name}"
+                                       Grid.Row="0"
+                                       Grid.Column="1"
+                                       Margin="5"
+                                       FontSize="18"
+                                       TextWrapping="Wrap"
+                                       Foreground="Gray"/>
+                            <TextBlock x:Uid="tb_info_address"
+                                       Grid.Row="1"
+                                       Grid.Column="0"
+                                       Margin="5"
+                                       FontSize="18"/>
+                            <TextBlock Text="{Binding Address.Name}"
+                                       Grid.Row="1"
+                                       Grid.Column="1"
+                                       Margin="5"
+                                       FontSize="18"
+                                       TextWrapping="Wrap"
+                                       Foreground="Gray"/>
+                            <TextBlock x:Uid="tb_info_category"
+                                       Grid.Row="2"
+                                       Grid.Column="0"
+                                       Margin="5"
+                                       FontSize="18"/>
+                            <TextBlock Text="{Binding Category.Name}"
+                                       Grid.Row="2"
+                                       Grid.Column="1"
+                                       Margin="5"
+                                       FontSize="18"
+                                       TextWrapping="Wrap"
+                                       Foreground="Gray"/>
+                            <TextBlock x:Uid="tb_info_gender"
+                                       Grid.Row="3"
+                                       Grid.Column="0"
+                                       Margin="5"
+                                       FontSize="18"/>
+                            <TextBlock Text="{Binding Gender.Name}"
+                                       Grid.Row="3"
+                                       Grid.Column="1"
+                                       Margin="5"
+                                       FontSize="18"
+                                       TextWrapping="Wrap"
+                                       Foreground="Gray"/>
+                            <TextBlock x:Uid="tb_info_financeType"
+                                       Grid.Row="4"
+                                       Grid.Column="0"
+                                       Margin="5"
+                                       FontSize="18"/>
+                            <TextBlock Text="{Binding FinanceType.Name}"
+                                       Grid.Row="4"
+                                       Grid.Column="1"
+                                       Margin="5"
+                                       FontSize="18"
+                                       TextWrapping="Wrap"
+                                       Foreground="Gray"/>
+                            <TextBlock x:Uid="tb_info_level"
+                                       Grid.Row="5"
+                                       Grid.Column="0"
+                                       Margin="5"
+                                       FontSize="18"/>
+                            <TextBlock Text="{Binding Level.Name}"
+                                       Grid.Row="5"
+                                       Grid.Column="1"
+                                       Margin="5"
+                                       FontSize="18"
+                                       TextWrapping="Wrap"
+                                       Foreground="Gray"/>
+                            <TextBlock x:Uid="tb_info_telephone"
+                                       Grid.Row="6"
+                                       Grid.Column="0"
+                                       Margin="5,30,5,5"
+                                       FontSize="18"/>
+                            <TextBlock Text="{Binding Telephone}"
+                                       Grid.Row="6"
+                                       Grid.Column="1"
+                                       Margin="5,30,5,5"
+                                       FontSize="18"
+                                       Foreground="Gray"/>
+                            <TextBlock x:Uid="tb_info_fax"
+                                       Grid.Row="7"
+                                       Grid.Column="0"
+                                       Margin="5"
+                                       FontSize="18"/>
+                            <TextBlock Text="{Binding Fax}"
+                                       Grid.Row="7"
+                                       Grid.Column="1"
+                                       Margin="5"
+                                       FontSize="18"
+                                       TextWrapping="Wrap"
+                                       Foreground="Gray"/>
+                            <TextBlock x:Uid="tb_info_website"
+                                       Grid.Row="8"
+                                       Grid.Column="0"
+                                       Margin="5"
+                                       FontSize="18"/>
+                            <TextBlock Text="{Binding Website}"
+                                       Grid.Row="8"
+                                       Grid.Column="1"
+                                       Margin="5"
+                                       FontSize="18"
+                                       TextWrapping="Wrap"
+                                       Foreground="Gray"/>
+                        </Grid>
+                    </Grid>
+                </ScrollViewer>
             </PivotItem>
             <PivotItem x:Uid ="pi_map"               
                    Background="{StaticResource PivotItemForegroundColor}" 
                    Margin="-10,0,-10,0"
                    Padding="30">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.35*"/>
+                        <ColumnDefinition Width="0.65*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock x:Uid="tb_map_longitude"
+                                       Grid.Row="0"
+                                       Grid.Column="0"
+                                       Margin="5"
+                                       FontSize="18"/>
+                    <TextBlock Text="{Binding Longitude}"
+                                       Grid.Row="0"
+                                       Grid.Column="1"
+                                       Margin="5"
+                                       FontSize="18"
+                                       TextWrapping="Wrap"
+                                       Foreground="Gray"/>
+                    <TextBlock x:Uid="tb_map_latitude"
+                                       Grid.Row="1"
+                                       Grid.Column="0"
+                                       Margin="5"
+                                       FontSize="18"/>
+                    <TextBlock Text="{Binding Latitude}"
+                                       Grid.Row="1"
+                                       Grid.Column="1"
+                                       Margin="5"
+                                       FontSize="18"
+                                       TextWrapping="Wrap"
+                                       Foreground="Gray"/>
+                    <Maps:MapControl Grid.Row="2"
+                                     Grid.ColumnSpan="2"
+                                     Margin="5"
+                                     ZoomLevel="12"/>
+                </Grid>                
             </PivotItem>
         </Pivot>
     </Grid>
+    <controls:PageBase.BottomAppBar>
+        <CommandBar>
+            <AppBarButton x:Uid="appbar_call"
+                          Icon="Phone" 
+                          Command="{Binding CallCommand}" />
+        </CommandBar>
+    </controls:PageBase.BottomAppBar>
 </controls:PageBase>
