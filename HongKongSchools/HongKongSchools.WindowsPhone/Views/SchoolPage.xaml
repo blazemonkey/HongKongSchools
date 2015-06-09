@@ -5,6 +5,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:HongKongSchools"
+    xmlns:converters="using:HongKongSchools.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="using:Microsoft.Practices.Prism.Mvvm"
@@ -13,7 +14,11 @@
     Background="{StaticResource AppBackgroundColor}"
     Foreground="{StaticResource AppForegroundColor}"
     d:DataContext="{d:DesignInstance vm:SchoolPageViewModel}">
-
+    
+    <controls:PageBase.Resources>
+        <converters:LatitudeLongitudeConverter x:Key="LatitudeLongitudeConverter"/>
+    </controls:PageBase.Resources>
+    
     <Grid>
         <Pivot Background="{StaticResource PivotHeaderBackgroundColor}"
                DataContext="{Binding SelectedSchool}">
@@ -189,7 +194,7 @@
                                        Grid.Column="0"
                                        Margin="5"
                                        FontSize="18"/>
-                    <TextBlock Text="{Binding Longitude}"
+                    <TextBlock Text="{Binding Longitude, Converter={StaticResource LatitudeLongitudeConverter}, ConverterParameter=E}"
                                        Grid.Row="0"
                                        Grid.Column="1"
                                        Margin="5"
@@ -201,7 +206,7 @@
                                        Grid.Column="0"
                                        Margin="5"
                                        FontSize="18"/>
-                    <TextBlock Text="{Binding Latitude}"
+                    <TextBlock Text="{Binding Latitude, Converter={StaticResource LatitudeLongitudeConverter}, ConverterParameter=N}"
                                        Grid.Row="1"
                                        Grid.Column="1"
                                        Margin="5"
@@ -221,6 +226,9 @@
             <AppBarButton x:Uid="appbar_call"
                           Icon="Phone" 
                           Command="{Binding CallCommand}" />
+            <AppBarButton x:Uid="appbar_website"
+                          Icon="World" 
+                          Command="{Binding OpenWebsiteCommand}" />
         </CommandBar>
     </controls:PageBase.BottomAppBar>
 </controls:PageBase>

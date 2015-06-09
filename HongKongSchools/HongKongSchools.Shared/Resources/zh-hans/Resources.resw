@@ -123,6 +123,9 @@
   <data name="appbar_setting.Label" xml:space="preserve">
     <value>设定</value>
   </data>
+  <data name="appbar_website.Label" xml:space="preserve">
+    <value>网页</value>
+  </data>
   <data name="language.Text" xml:space="preserve">
     <value>语言: </value>
   </data>

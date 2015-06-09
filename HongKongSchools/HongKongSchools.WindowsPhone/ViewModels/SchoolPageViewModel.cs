@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.System;
 using Windows.UI.Xaml.Navigation;
 
 namespace HongKongSchools.ViewModels
@@ -26,10 +27,12 @@ namespace HongKongSchools.ViewModels
         }
 
         public DelegateCommand CallCommand { get; set; }
+        public DelegateCommand OpenWebsiteCommand { get; set; }
 
         public SchoolPageViewModel()
         {
             CallCommand = new DelegateCommand(ExecuteCallCommand);
+            OpenWebsiteCommand = new DelegateCommand(ExecuteOpenWebsiteCommand);
         }
 
         private void ExecuteCallCommand()
@@ -38,7 +41,15 @@ namespace HongKongSchools.ViewModels
                 return;
 
             var original = SelectedSchool.Telephone;
-            Windows.ApplicationModel.Calls.PhoneCallManager.ShowPhoneCallUI(original, SelectedSchool.Address.Name);
+            Windows.ApplicationModel.Calls.PhoneCallManager.ShowPhoneCallUI(original, SelectedSchool.SchoolName.SchoolName);
+        }
+
+        private async void ExecuteOpenWebsiteCommand()
+        {
+            if (string.IsNullOrEmpty(SelectedSchool.Website))
+                return;
+
+            await Launcher.LaunchUriAsync(new Uri(SelectedSchool.Website));
         }
 
         public override void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
