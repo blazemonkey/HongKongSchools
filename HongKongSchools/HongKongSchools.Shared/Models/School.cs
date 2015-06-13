@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
+using Windows.Devices.Geolocation;
 
 namespace HongKongSchools.Models
 {
@@ -66,5 +67,6 @@ namespace HongKongSchools.Models
         public int ReligionId { get; set; }
         [DataMember(Name = "religion")]
         public Religion Religion { get; set; }
+        public Geopoint Geopoint { get; set; }
     }
 }

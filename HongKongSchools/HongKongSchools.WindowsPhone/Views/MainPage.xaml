@@ -1,4 +1,4 @@
-﻿<controls:PageBase
+﻿<controls:PageBase xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps" 
     x:Class="HongKongSchools.Views.MainPage"
     prism:ViewModelLocator.AutoWireViewModel="True"
     xmlns:controls="using:HongKongSchools.Controls"
@@ -101,7 +101,61 @@
         <PivotItem x:Uid ="nearby"
                    Background="{StaticResource PivotItemForegroundColor}" 
                    Margin="-10,0,-10,0">
-
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.35*"/>
+                    <ColumnDefinition Width="0.65*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Status: "
+                                       Grid.Row="0"
+                                       Grid.Column="0"
+                                       Margin="5"
+                                       FontSize="18"/>
+                <TextBlock Text="{Binding PositionStatus}"
+                                       Grid.Row="0"
+                                       Grid.Column="1"
+                                       Margin="5"
+                                       FontSize="18"
+                                       TextWrapping="Wrap"
+                                       Foreground="Gray"/>
+                <TextBlock x:Uid="tb_map_longitude"
+                                       Grid.Row="1"
+                                       Grid.Column="0"
+                                       Margin="5"
+                                       FontSize="18"/>
+                <TextBlock Text="{Binding LongitudeSelf}"
+                                       Grid.Row="1"
+                                       Grid.Column="1"
+                                       Margin="5"
+                                       FontSize="18"
+                                       TextWrapping="Wrap"
+                                       Foreground="Gray"/>
+                    <TextBlock x:Uid="tb_map_latitude"
+                                       Grid.Row="2"
+                                       Grid.Column="0"
+                                       Margin="5"
+                                       FontSize="18"/>
+                <TextBlock Text="{Binding LatitudeSelf}"
+                                       Grid.Row="2"
+                                       Grid.Column="1"
+                                       Margin="5"
+                                       FontSize="18"
+                                       TextWrapping="Wrap"
+                                       Foreground="Gray"/>
+                <Maps:MapControl x:Name="MapControl"
+                                     Grid.Row="3"
+                                     Grid.ColumnSpan="2"
+                                     Margin="5"
+                                     ZoomLevel="18"
+                                     Center="{Binding GeopointSelf}">
+                </Maps:MapControl>
+            </Grid>
         </PivotItem>
     </Pivot>
     <controls:PageBase.BottomAppBar>

@@ -8,8 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
+using System.Reactive.Threading;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Devices.Geolocation;
 using Windows.UI.Xaml.Navigation;
 
 namespace HongKongSchools.ViewModels
@@ -23,6 +28,14 @@ namespace HongKongSchools.ViewModels
         private ObservableCollection<School> _schools;
 
         private bool _isLoading;
+        private Geolocator _geolocator;
+        private PositionStatus _positionStatus;
+        private Geopoint _geopointSelf;
+        private double _latitudeSelf;
+        private double _longitudeSelf;
+
+        private IDisposable _statusChanged;
+        private IDisposable _positionChanged;
 
         public ObservableCollection<Category> Categories
         {
@@ -54,6 +67,76 @@ namespace HongKongSchools.ViewModels
             }
         }
 
+        public Geolocator Geolocator
+        {
+            get { return _geolocator; }
+            private set
+            {
+                _geolocator = value;
+                OnPropertyChanged("Geolocator");
+            }
+        }
+
+        public PositionStatus PositionStatus
+        {
+            get { return _positionStatus; }
+            private set
+            {
+                _positionStatus = value;
+                OnPropertyChanged("PositionStatus");
+            }
+        }
+
+        public Geopoint GeopointSelf
+        {
+            get { return _geopointSelf; }
+            private set
+            {
+                _geopointSelf = value;
+                OnPropertyChanged("GeopointSelf");
+            }
+        }
+
+        public double LatitudeSelf
+        {
+            get { return _latitudeSelf; }
+            private set
+            {
+                _latitudeSelf = value;
+                OnPropertyChanged("LatitudeSelf");
+            }
+        }
+
+        public double LongitudeSelf
+        {
+            get { return _longitudeSelf; }
+            private set
+            {
+                _longitudeSelf = value;
+                OnPropertyChanged("LongitudeSelf");
+            }
+        }
+
+        public IDisposable StatusChanged
+        {
+            get { return _statusChanged; }
+            private set
+            {
+                _statusChanged = value;
+                OnPropertyChanged("StatusChanged");
+            }
+        }
+
+        public IDisposable PositionChanged
+        {
+            get { return _positionChanged; }
+            private set
+            {
+                _positionChanged = value;
+                OnPropertyChanged("PositionChanged");
+            }
+        }
+
         public DelegateCommand TapSettingsCommand { get; set; }
         public DelegateCommand<School> TapSchoolCommand { get; set; }
 
@@ -69,11 +152,46 @@ namespace HongKongSchools.ViewModels
             TapSchoolCommand = new DelegateCommand<School>(ExecuteTapSchoolCommand);
         }
 
+        private void Dispose()
+        {
+            StatusChanged.Dispose();
+            PositionChanged.Dispose();
+        }
+
         private void PopulateSchools(IEnumerable<School> schools)
         {
             Schools.Clear();
             foreach (var school in schools)
                 Schools.Add(school);
+        }
+
+        private void InitializeGeolocator()
+        {
+            Geolocator = new Geolocator();
+            Geolocator.DesiredAccuracy = PositionAccuracy.High;
+            Geolocator.MovementThreshold = 100;
+            StatusChanged = Observable.FromEventPattern<StatusChangedEventArgs>(Geolocator, "StatusChanged")
+                .ObserveOnDispatcher()
+                .Do(x => UpdateStatusChanged(x)).Subscribe();
+            PositionChanged = Observable.FromEventPattern<PositionChangedEventArgs>(Geolocator, "PositionChanged")
+                .ObserveOnDispatcher()
+                .Do(x => UpdatePositionChanged(x)).Subscribe();       
+        }
+
+        private void UpdateStatusChanged(EventPattern<StatusChangedEventArgs> e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.EventArgs.Status);
+            PositionStatus = e.EventArgs.Status;
+        }
+
+        private void UpdatePositionChanged(EventPattern<PositionChangedEventArgs> e)
+        {
+            GeopointSelf = new Geopoint(e.EventArgs.Position.Coordinate.Point.Position);
+            LatitudeSelf = e.EventArgs.Position.Coordinate.Point.Position.Latitude;
+            LongitudeSelf = e.EventArgs.Position.Coordinate.Point.Position.Longitude;
+            System.Diagnostics.Debug.WriteLine(string.Format("Latitude: {0}, Longitude: {1}",
+                GeopointSelf.Position.Latitude,
+                GeopointSelf.Position.Longitude));                
         }
 
         public void ExecuteTapSettingsCommand()
@@ -88,6 +206,7 @@ namespace HongKongSchools.ViewModels
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
+            InitializeGeolocator();
             IsLoading = true;
 
             if (viewModelState.Any(x => x.Key == "Schools"))
@@ -111,12 +230,14 @@ namespace HongKongSchools.ViewModels
             }
 
             IsLoading = false;
-
+            
             base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
         }
 
         public override void OnNavigatedFrom(Dictionary<string, object> viewModelState, bool suspending)
         {
+            Dispose();
+
             if (viewModelState.Any(x => x.Key == "Schools"))
                 viewModelState.Remove("Schools");
 

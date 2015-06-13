@@ -1,4 +1,5 @@
 ﻿using HongKongSchools.Controls;
+using HongKongSchools.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,6 +9,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
@@ -35,6 +37,12 @@ namespace HongKongSchools.Views
         /// This parameter is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            var selectedSchool = e.Parameter as School;
+            
+            var mapIcon = new MapIcon();
+            mapIcon.Title = selectedSchool.SchoolName.SchoolName;
+            mapIcon.Location = Helpers.CoordinatesConverter.DMSToDDGeopoint(selectedSchool.Latitude, selectedSchool.Longitude);
+            MapControl.MapElements.Add(mapIcon);
         }
     }
 }

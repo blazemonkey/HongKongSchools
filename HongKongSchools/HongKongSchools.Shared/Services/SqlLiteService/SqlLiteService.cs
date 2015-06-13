@@ -173,7 +173,7 @@ namespace HongKongSchools.Services.SqlLiteService
             {
                 var languageId = await GetCurrentLanguageId();
                 var school = await _conn.Table<School>().Where(x => x.Id == id).FirstAsync();
-                await SetSchoolProperties(school);
+                await SetSchoolProperties(school);                
                 return school;
             }
             catch (InvalidOperationException ioe)
@@ -197,6 +197,7 @@ namespace HongKongSchools.Services.SqlLiteService
             school.FinanceType = await GetFinanceTypeById(school.FinanceTypeId);
             school.Level = await GetLevelById(school.LevelId);
             school.Gender = await GetGenderById(school.GenderId);
+            school.Geopoint = Helpers.CoordinatesConverter.DMSToDDGeopoint(school.Latitude, school.Longitude);
         }
 
         public async Task<IEnumerable<Address>> GetAddresses()

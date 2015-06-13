@@ -67,7 +67,8 @@ namespace SQLite
             IgnoreTypes.Add(typeof(School));
             IgnoreTypes.Add(typeof(Gender));
             IgnoreTypes.Add(typeof(Level));
-            IgnoreTypes.Add(typeof(Religion));            
+            IgnoreTypes.Add(typeof(Religion));
+            IgnoreTypes.Add(typeof(Windows.Devices.Geolocation.Geopoint));
         }
     }
 
