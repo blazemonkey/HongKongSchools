@@ -7,6 +7,7 @@ using OfficeOpenXml;
 using System.IO;
 using HongKongSchools.DataParser.Models;
 using Newtonsoft.Json;
+using System.Xml.Linq;
 
 namespace HongKongSchools.DataParser
 {
@@ -185,7 +186,72 @@ namespace HongKongSchools.DataParser
 
         private static bool ReadBasicInfo()
         {
+            var filePath = "Data\\SchoolBasicInfo.xml";
+            if (!File.Exists(filePath))
+            {
+                Console.WriteLine(string.Format(fileNotFoundMessage, filePath));
+                return false;
+            }
+
+            var doc = XDocument.Load(filePath);
+
+            var schools = doc.Element("Schools").Elements("SchoolBasicInfo").ToList();
+            var schoolBasicInfos = new List<SchoolBasicInfo>();
+
+            foreach (var school in schools)
+            {
+                var schoolBasicInfo = new SchoolBasicInfo()
+                {
+                      SchoolNameEng = SetBasicInfoString(school.Element("SchoolNameEng")),
+                      SchoolNameChi = SetBasicInfoString(school.Element("SchoolNameChi")),
+                      SchoolNumber = UInt32.Parse(school.Element("SchoolNumber").Value.Trim()),
+                      LocationID = Byte.Parse(school.Element("LocationID").Value.Trim()),
+                      SchoolLevelEng = SetBasicInfoString(school.Element("SchoolLevelEng")),
+                      SchoolLevelChi = SetBasicInfoString(school.Element("SchoolLevelChi")),
+                      SchoolSessionEng = SetBasicInfoString(school.Element("SchoolSessionEng")),
+                      SchoolSessionChi = SetBasicInfoString(school.Element("SchoolSessionChi")),
+                      StudentGenderEng = SetBasicInfoString(school.Element("StudentGenderEng")),
+                      StudentGenderChi = SetBasicInfoString(school.Element("StudentGenderChi")),
+                      DistrictEng = SetBasicInfoString(school.Element("DistrictEng")),
+                      DistrictChi = SetBasicInfoString(school.Element("DistrictChi")),
+                      FinanceTypeEng = SetBasicInfoString(school.Element("FinanceTypeEng")),
+                      FinanceTypeChi = SetBasicInfoString(school.Element("FinanceTypeChi")),
+                      TelephoneNumber = SetBasicInfoString(school.Element("TelephoneNumber")),
+                      FaxNumber = SetBasicInfoString(school.Element("FaxNumber")),
+                      SchoolWebSite = SetBasicInfoString(school.Element("SchoolWebSite")),
+                      SchoolAddressEng = SetBasicInfoString(school.Element("SchoolAddressEng")),
+                      SchoolAddressChi = SetBasicInfoString(school.Element("SchoolAddressChi")),
+                      LocationMapUrl = SetBasicInfoString(school.Element("LocationMapUrl")),
+                      GeoInfoMapUrl = SetBasicInfoString(school.Element("GeoInfoMapUrl")),
+                      RegistrationStatusEng = SetBasicInfoString(school.Element("RegistrationStatusEng")),
+                      RegistrationStatusChi = SetBasicInfoString(school.Element("RegistrationStatusChi")),
+                      SchoolRegistrationNumber = SetBasicInfoString(school.Element("SchoolRegistrationNumber")),
+                      RegistrationDate = DateTime.Parse(school.Element("RegistrationDate").Value)
+
+                };
+                schoolBasicInfos.Add(schoolBasicInfo);
+            }
+
+            var grouped = schoolBasicInfos.Where(x => x.SchoolLevelEng != "OTHERS")
+                .GroupBy(x => x.SchoolNumber)
+                .Select(group => new
+                {
+                    School = group.Key,
+                    Count = group.Count()
+                });
+
+            foreach (var school in grouped)
+            {
+                System.Diagnostics.Debug.WriteLine(string.Format("{0}: {1}", school.School, school.Count));
+            }
+
             return true;
+        }
+
+        private static string SetBasicInfoString(XElement property)
+        {
+            return property != null ? property.Value.Trim() : "";
         }
     }
 }
+
