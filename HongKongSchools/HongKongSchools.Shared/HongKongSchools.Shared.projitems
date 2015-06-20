@@ -15,12 +15,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\LocationPoint.xaml.cs">
+      <DependentUpon>LocationPoint.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\PageBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\ImageFullPathConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\InverseBooleanConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\LatitudeLongitudeConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\CoordinatesConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\GeopointsHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ItemClickCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LocalizedStrings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Address.cs" />
@@ -36,10 +40,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\Name.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Religion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\School.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\AppDataService\AppDataService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\AppDataService\IAppDataService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\FileReaderService\FileReaderService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\FileReaderService\IFileReaderService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\JSONService\IJSONService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\JSONService\JSONService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\MessengerService\IMessengerService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\MessengerService\MessengerService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\NavigationService\INavigationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\NavigationService\NavigationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\SqlLiteService\ISqlLiteService.cs" />
@@ -63,5 +71,11 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)Resources\en\Resources.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Resources\zh-hans\Resources.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Resources\zh-hant\Resources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\LocationPoint.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>

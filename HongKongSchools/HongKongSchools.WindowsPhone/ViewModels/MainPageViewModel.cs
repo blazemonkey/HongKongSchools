@@ -1,5 +1,7 @@
 ﻿using HongKongSchools.Interfaces;
 using HongKongSchools.Models;
+using HongKongSchools.Services.AppDataService;
+using HongKongSchools.Services.MessengerService;
 using HongKongSchools.Services.NavigationService;
 using HongKongSchools.Services.SqlLiteService;
 using Microsoft.Practices.Prism.Commands;
@@ -23,6 +25,8 @@ namespace HongKongSchools.ViewModels
     {
         private ISqlLiteService _db;
         private INavigationService _nav;
+        private IMessengerService _msg;
+        private IAppDataService _appData;
 
         private ObservableCollection<Category> _categories;
         private ObservableCollection<School> _schools;
@@ -140,10 +144,12 @@ namespace HongKongSchools.ViewModels
         public DelegateCommand TapSettingsCommand { get; set; }
         public DelegateCommand<School> TapSchoolCommand { get; set; }
 
-        public MainPageViewModel(ISqlLiteService db, INavigationService nav)
+        public MainPageViewModel(ISqlLiteService db, INavigationService nav, IMessengerService msg, IAppDataService appData)
         {
             _db = db;
             _nav = nav;
+            _msg = msg;
+            _appData = appData;
 
             Categories = new ObservableCollection<Category>();
             Schools = new ObservableCollection<School>();
@@ -169,7 +175,8 @@ namespace HongKongSchools.ViewModels
         {
             Geolocator = new Geolocator();
             Geolocator.DesiredAccuracy = PositionAccuracy.High;
-            Geolocator.MovementThreshold = 100;
+            Geolocator.MovementThreshold = 10;
+
             StatusChanged = Observable.FromEventPattern<StatusChangedEventArgs>(Geolocator, "StatusChanged")
                 .ObserveOnDispatcher()
                 .Do(x => UpdateStatusChanged(x)).Subscribe();
@@ -182,6 +189,23 @@ namespace HongKongSchools.ViewModels
         {
             System.Diagnostics.Debug.WriteLine(e.EventArgs.Status);
             PositionStatus = e.EventArgs.Status;
+
+            if (PositionStatus == PositionStatus.Ready)
+            {
+                _msg.Send<PositionStatus>(PositionStatus, "StatusChanged");
+                return;
+            }
+            
+            LongitudeSelf = _appData.GetKeyValue<double>("LastPositionLongitude");
+            LatitudeSelf = _appData.GetKeyValue<double>("LastPositionLatitude");
+            
+            var basicGeoposition = new BasicGeoposition();
+            basicGeoposition.Latitude = LatitudeSelf;
+            basicGeoposition.Longitude = LongitudeSelf;
+            GeopointSelf = new Geopoint(basicGeoposition);
+
+            _msg.Send<PositionStatus>(PositionStatus, "StatusChanged");
+            _msg.Send<Geopoint>(GeopointSelf, "PositionChanged");
         }
 
         private void UpdatePositionChanged(EventPattern<PositionChangedEventArgs> e)
@@ -191,7 +215,17 @@ namespace HongKongSchools.ViewModels
             LongitudeSelf = e.EventArgs.Position.Coordinate.Point.Position.Longitude;
             System.Diagnostics.Debug.WriteLine(string.Format("Latitude: {0}, Longitude: {1}",
                 GeopointSelf.Position.Latitude,
-                GeopointSelf.Position.Longitude));                
+                GeopointSelf.Position.Longitude));
+
+            foreach (var school in SchoolsWithinsSquare(GeopointSelf))
+            {
+                System.Diagnostics.Debug.WriteLine(school.SchoolName.SchoolName);
+            }
+
+            _appData.UpdateKeyValue<double>("LastPositionLongitude", LongitudeSelf);
+            _appData.UpdateKeyValue<double>("LastPositionLatitude", LatitudeSelf);
+
+            _msg.Send<Geopoint>(GeopointSelf, "PositionChanged");
         }
 
         public void ExecuteTapSettingsCommand()
@@ -202,6 +236,16 @@ namespace HongKongSchools.ViewModels
         public void ExecuteTapSchoolCommand(School school)
         {
             _nav.Navigate(Experiences.School, school);
+        }
+
+        private IEnumerable<School> SchoolsWithinsSquare(Geopoint center)
+        {
+            var schools = Schools.Where(x => (x.Geopoint.Position.Longitude <= center.Position.Longitude + 0.0025) &&
+                        (x.Geopoint.Position.Longitude >= center.Position.Longitude - 0.0025) &&
+                        (x.Geopoint.Position.Latitude <= center.Position.Latitude + 0.0025) &&
+                        (x.Geopoint.Position.Latitude >= center.Position.Latitude - 0.0025));
+
+            return schools;
         }
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)

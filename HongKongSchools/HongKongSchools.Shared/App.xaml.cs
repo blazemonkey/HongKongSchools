@@ -1,5 +1,7 @@
-﻿using HongKongSchools.Services.FileReaderService;
+﻿using HongKongSchools.Services.AppDataService;
+using HongKongSchools.Services.FileReaderService;
 using HongKongSchools.Services.JSONService;
+using HongKongSchools.Services.MessengerService;
 using HongKongSchools.Services.NavigationService;
 using HongKongSchools.Services.SqlLiteService;
 using Microsoft.Practices.Prism.Mvvm;
@@ -13,8 +15,10 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -37,7 +41,7 @@ namespace HongKongSchools
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
-        public static readonly Container _container = new Container();
+        public static readonly Container Container = new Container();
         public static double ScrollOffset;
 
         public App()
@@ -47,19 +51,22 @@ namespace HongKongSchools
 
         protected override async Task OnInitializeAsync(IActivatedEventArgs args)
         {
-            _container.RegisterSingle(NavigationService);
-            _container.Register<INavigationService, NavigationService>();
-            _container.Register<IFileReaderService, FileReaderService>();
-            _container.Register<IJSONService, JSONService>();
-            _container.Register<ISqlLiteService, SqlLiteService>();
+            Container.RegisterSingle(NavigationService);
+            Container.Register<IAppDataService, AppDataService>();
+            Container.Register<INavigationService, NavigationService>();
+            Container.Register<IMessengerService, MessengerService>();
+            Container.Register<IFileReaderService, FileReaderService>();
+            Container.Register<IJSONService, JSONService>();
+            Container.Register<ISqlLiteService, SqlLiteService>();
 
-            await _container.GetInstance<SqlLiteService>().ClearLocalDb();
+            await Container.GetInstance<SqlLiteService>().ClearLocalDb();
+            Container.GetInstance<AppDataService>().InitializeAppDataContainer();
             return;
         }
 
         protected override object Resolve(Type type)
         {
-            return _container.GetInstance(type);
+            return Container.GetInstance(type);
         }
 
         protected override Task OnLaunchApplicationAsync(LaunchActivatedEventArgs e)
