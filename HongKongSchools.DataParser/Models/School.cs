@@ -12,11 +12,11 @@ namespace HongKongSchools.DataParser.Models
         [JsonProperty("id")]
         public int Id { get; set; }
         [JsonProperty("schoolNumber")]
-        public int SchoolNumber { get; set; }
+        public uint SchoolNumber { get; set; }
         [JsonProperty("provisionalRegistrationDate")]
-        public DateTime ProvisionalRegistrationDate { get; set; }
+        public DateTime? ProvisionalRegistrationDate { get; set; }
         [JsonProperty("registrationDate")]
-        public DateTime RegistrationDate { get; set; }
+        public DateTime? RegistrationDate { get; set; }
         [JsonProperty("longitude")]
         public string Longitude { get; set; }
         [JsonProperty("latitude")]
@@ -49,5 +49,12 @@ namespace HongKongSchools.DataParser.Models
         public int LevelId { get; set; }
         [JsonProperty("religionId")]
         public int ReligionId { get; set; }
+        [JsonProperty("sessionIds")]
+        public List<int> SessionIds { get; set; }
+
+        public School()
+        {
+            SessionIds = new List<int>();
+        }
     }
 }

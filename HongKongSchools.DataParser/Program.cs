@@ -68,38 +68,7 @@ namespace HongKongSchools.DataParser
                 return false;
             }
 
-            var inputs = new List<LocationAndInformation>();
-
-            var existingFile = new FileInfo(filePath);
-            using (var package = new ExcelPackage(existingFile))
-            {
-                var workBook = package.Workbook;
-                if (workBook != null)
-                {
-                    if (workBook.Worksheets.Count > 0)
-                    {
-                        var currentWorksheet = workBook.Worksheets.First();
-                        var columnCount = 32;
-
-                        for (var x = 2; x <= 10000; x++)
-                        {
-                            if (currentWorksheet.Cells[x, 1].Value == null)
-                                break;
-
-                            var input = new LocationAndInformation();                            
-                            for (var y = 1; y <= columnCount; y++)
-                            {
-                                var cell = currentWorksheet.Cells[x, y].Value;
-                                var value = cell == null ? "" : cell.ToString();
-                                Console.WriteLine(value);
-                                input.SetProperty(y, value);
-                            }
-
-                            inputs.Add(input);
-                        }
-                    }
-                }
-            }
+            var inputs = ImportLocationAndInformation(filePath);
 
             var schools = new List<School>();
             var addresses = new List<Address>();
@@ -142,15 +111,52 @@ namespace HongKongSchools.DataParser
                 schools.Add(school);
             }
 
-            var addressesJSON = JsonConvert.SerializeObject(addresses);
-            File.WriteAllText("addresses.json", addressesJSON, Encoding.Unicode);
+            //var addressesJSON = JsonConvert.SerializeObject(addresses);
+            //File.WriteAllText("addresses.json", addressesJSON, Encoding.Unicode);
 
-            var namesJSON = JsonConvert.SerializeObject(names);
-            File.WriteAllText("names.json", namesJSON, Encoding.Unicode);
+            //var namesJSON = JsonConvert.SerializeObject(names);
+            //File.WriteAllText("names.json", namesJSON, Encoding.Unicode);
 
-            var schoolsJSON = JsonConvert.SerializeObject(schools);
-            File.WriteAllText("schools.json", schoolsJSON, Encoding.Unicode);
+            //var schoolsJSON = JsonConvert.SerializeObject(schools);
+            //File.WriteAllText("schools.json", schoolsJSON, Encoding.Unicode);
             return true;
+        }
+
+        private static List<LocationAndInformation> ImportLocationAndInformation(string filePath)
+        {
+            var inputs = new List<LocationAndInformation>();
+
+            var existingFile = new FileInfo(filePath);
+            using (var package = new ExcelPackage(existingFile))
+            {
+                var workBook = package.Workbook;
+                if (workBook != null)
+                {
+                    if (workBook.Worksheets.Count > 0)
+                    {
+                        var currentWorksheet = workBook.Worksheets.First();
+                        var columnCount = 32;
+
+                        for (var x = 2; x <= 10000; x++)
+                        {
+                            if (currentWorksheet.Cells[x, 1].Value == null)
+                                break;
+
+                            var input = new LocationAndInformation();
+                            for (var y = 1; y <= columnCount; y++)
+                            {
+                                var cell = currentWorksheet.Cells[x, y].Value;
+                                var value = cell == null ? "" : cell.ToString();
+                                input.SetProperty(y, value);
+                            }
+
+                            inputs.Add(input);
+                        }
+                    }
+                }
+            }
+
+            return inputs;
         }
 
         private static void PopulateLocationAndInformation<T>(List<T> collection, List<LocationAndInformation> inputs, Func<LocationAndInformation, string> engProp, Func<LocationAndInformation, string> chiProp) where T : IBase, new()
@@ -193,6 +199,79 @@ namespace HongKongSchools.DataParser
                 return false;
             }
 
+            var schoolBasicInfos = ImportSchoolBasicInfo(filePath);
+
+            var filteredList = schoolBasicInfos.Where(x => x.SchoolLevelEng != "OTHERS" && x.SchoolLevelEng != "POST-SECONDARY").ToList();
+            var fullSchools = new List<School>();
+            var addresses = new List<Address>();
+            var names = new List<SchoolName>();
+            var financeTypes = new List<FinanceType>();
+            var genders = new List<Gender>();
+            var districts = new List<District>();
+            var levels = new List<Level>();
+            var sessions = new List<Session>();
+            PopulateSchoolBasicInfo(addresses, filteredList, x => x.SchoolAddressEng, x => x.SchoolAddressChi);
+            PopulateSchoolBasicInfo(names, filteredList, x => x.SchoolNameEng, x => x.SchoolNameChi);
+            PopulateSchoolBasicInfo(financeTypes, filteredList, x => x.FinanceTypeEng, x => x.FinanceTypeChi);
+            PopulateSchoolBasicInfo(genders, filteredList, x => x.StudentGenderEng, x => x.StudentGenderChi);
+            PopulateSchoolBasicInfo(districts, filteredList, x => x.DistrictEng, x => x.DistrictChi);
+            PopulateSchoolBasicInfo(levels, filteredList, x => x.SchoolLevelEng, x => x.SchoolLevelChi);
+            PopulateSchoolBasicInfo(sessions, filteredList, x => x.SchoolSessionEng, x => x.SchoolSessionChi);
+
+            var addressesJSON = JsonConvert.SerializeObject(addresses);
+            File.WriteAllText("addresses.json", addressesJSON, Encoding.Unicode);
+
+            var namesJSON = JsonConvert.SerializeObject(names);
+            File.WriteAllText("names.json", namesJSON, Encoding.Unicode);
+
+            var collection = schoolBasicInfos.Where(x => x.SchoolLevelEng != "OTHERS")
+                .GroupBy(x => new { x.SchoolNumber, x.SchoolAddressEng, x.SchoolLevelEng })
+                .Select(group => new School()
+                {
+                    SchoolNumber = group.Key.SchoolNumber,
+                    LevelId = levels.First(x => x.Name == group.Key.SchoolLevelEng).GroupId,
+                    AddressId = addresses.First(x => x.Name == group.Key.SchoolAddressEng).GroupId,
+                    NameId = names.First(x => x.Name == group.Select(z => z.SchoolNameEng).First()).GroupId,
+                    FinanceTypeId = financeTypes.First(x => x.Name == group.Select(z => z.FinanceTypeEng).First()).GroupId,
+                    DistrictId = districts.First(x => x.Name == group.Select(z => z.DistrictEng).First()).GroupId,
+                    GenderId = genders.First(x => x.Name == group.Select(z => z.StudentGenderEng).First()).GroupId,
+                    RegistrationDate = group.Select(x => x.RegistrationDate).First(),
+                    ProvisionalRegistrationDate = group.Select(x => x.ProvisionalRegistrationDate).First(),
+                    Telephone = group.Select(x => x.TelephoneNumber).First(),
+                    Fax = group.Select(x => x.FaxNumber).First(),
+                    Website = group.Select(x => x.SchoolWebSite).First(),
+                    SessionIds = group.Select(x => sessions.First(z => z.Name == x.SchoolSessionEng).Id).ToList()
+                });
+
+            var filePathLoc = "Data\\SCH_LOC_EDB.xlsx";
+            if (!File.Exists(filePathLoc))
+            {
+                Console.WriteLine(string.Format(fileNotFoundMessage, filePathLoc));
+                return false;
+            }
+            var locationAndInformation = ImportLocationAndInformation(filePathLoc);
+            var unmatchedList = filteredList.Where(x => !locationAndInformation.Exists(z => z.ChineseName.StartsWith(x.SchoolNameChi))).Select(x => x.SchoolNameChi);
+
+            foreach (var school in unmatchedList.Distinct())
+            {
+                System.Diagnostics.Trace.WriteLine(school);
+            }
+
+            return true;
+        }
+
+        private static string SetBasicInfoString(XElement property)
+        {
+            return property != null ? property.Value.Trim().Normalize(NormalizationForm.FormKC) : "";
+        }
+
+        private static DateTime? SetBasicInfoDateTime(XElement property)
+        {
+            return property != null ? DateTime.Parse(property.Value) : default(DateTime);
+        }
+
+        private static List<SchoolBasicInfo> ImportSchoolBasicInfo(string filePath)
+        {
             var doc = XDocument.Load(filePath);
 
             var schools = doc.Element("Schools").Elements("SchoolBasicInfo").ToList();
@@ -202,55 +281,75 @@ namespace HongKongSchools.DataParser
             {
                 var schoolBasicInfo = new SchoolBasicInfo()
                 {
-                      SchoolNameEng = SetBasicInfoString(school.Element("SchoolNameEng")),
-                      SchoolNameChi = SetBasicInfoString(school.Element("SchoolNameChi")),
-                      SchoolNumber = UInt32.Parse(school.Element("SchoolNumber").Value.Trim()),
-                      LocationID = Byte.Parse(school.Element("LocationID").Value.Trim()),
-                      SchoolLevelEng = SetBasicInfoString(school.Element("SchoolLevelEng")),
-                      SchoolLevelChi = SetBasicInfoString(school.Element("SchoolLevelChi")),
-                      SchoolSessionEng = SetBasicInfoString(school.Element("SchoolSessionEng")),
-                      SchoolSessionChi = SetBasicInfoString(school.Element("SchoolSessionChi")),
-                      StudentGenderEng = SetBasicInfoString(school.Element("StudentGenderEng")),
-                      StudentGenderChi = SetBasicInfoString(school.Element("StudentGenderChi")),
-                      DistrictEng = SetBasicInfoString(school.Element("DistrictEng")),
-                      DistrictChi = SetBasicInfoString(school.Element("DistrictChi")),
-                      FinanceTypeEng = SetBasicInfoString(school.Element("FinanceTypeEng")),
-                      FinanceTypeChi = SetBasicInfoString(school.Element("FinanceTypeChi")),
-                      TelephoneNumber = SetBasicInfoString(school.Element("TelephoneNumber")),
-                      FaxNumber = SetBasicInfoString(school.Element("FaxNumber")),
-                      SchoolWebSite = SetBasicInfoString(school.Element("SchoolWebSite")),
-                      SchoolAddressEng = SetBasicInfoString(school.Element("SchoolAddressEng")),
-                      SchoolAddressChi = SetBasicInfoString(school.Element("SchoolAddressChi")),
-                      LocationMapUrl = SetBasicInfoString(school.Element("LocationMapUrl")),
-                      GeoInfoMapUrl = SetBasicInfoString(school.Element("GeoInfoMapUrl")),
-                      RegistrationStatusEng = SetBasicInfoString(school.Element("RegistrationStatusEng")),
-                      RegistrationStatusChi = SetBasicInfoString(school.Element("RegistrationStatusChi")),
-                      SchoolRegistrationNumber = SetBasicInfoString(school.Element("SchoolRegistrationNumber")),
-                      RegistrationDate = DateTime.Parse(school.Element("RegistrationDate").Value)
-
+                    SchoolNameEng = SetBasicInfoString(school.Element("SchoolNameEng")),
+                    SchoolNameChi = SetBasicInfoString(school.Element("SchoolNameChi")),
+                    SchoolNumber = UInt32.Parse(school.Element("SchoolNumber").Value.Trim()),
+                    LocationID = Byte.Parse(school.Element("LocationID").Value.Trim()),
+                    SchoolLevelEng = SetBasicInfoString(school.Element("SchoolLevelEng")),
+                    SchoolLevelChi = SetBasicInfoString(school.Element("SchoolLevelChi")),
+                    SchoolSessionEng = SetBasicInfoString(school.Element("SchoolSessionEng")),
+                    SchoolSessionChi = SetBasicInfoString(school.Element("SchoolSessionChi")),
+                    StudentGenderEng = SetBasicInfoString(school.Element("StudentGenderEng")),
+                    StudentGenderChi = SetBasicInfoString(school.Element("StudentGenderChi")),
+                    DistrictEng = SetBasicInfoString(school.Element("DistrictEng")),
+                    DistrictChi = SetBasicInfoString(school.Element("DistrictChi")),
+                    FinanceTypeEng = SetBasicInfoString(school.Element("FinanceTypeEng")),
+                    FinanceTypeChi = SetBasicInfoString(school.Element("FinanceTypeChi")),
+                    TelephoneNumber = SetBasicInfoString(school.Element("TelephoneNumber")),
+                    FaxNumber = SetBasicInfoString(school.Element("FaxNumber")),
+                    SchoolWebSite = SetBasicInfoString(school.Element("SchoolWebSite")),
+                    SchoolAddressEng = SetBasicInfoString(school.Element("SchoolAddressEng")),
+                    SchoolAddressChi = SetBasicInfoString(school.Element("SchoolAddressChi")),
+                    LocationMapUrl = SetBasicInfoString(school.Element("LocationMapUrl")),
+                    GeoInfoMapUrl = SetBasicInfoString(school.Element("GeoInfoMapUrl")),
+                    RegistrationStatusEng = SetBasicInfoString(school.Element("RegistrationStatusEng")),
+                    RegistrationStatusChi = SetBasicInfoString(school.Element("RegistrationStatusChi")),
+                    SchoolRegistrationNumber = SetBasicInfoString(school.Element("SchoolRegistrationNumber")),
+                    RegistrationDate = SetBasicInfoDateTime(school.Element("RegistrationDate")),
+                    ProvisionalRegistrationDate = SetBasicInfoDateTime(school.Element("ProvisionalRegistrationDate")),
                 };
+
                 schoolBasicInfos.Add(schoolBasicInfo);
             }
 
-            var grouped = schoolBasicInfos.Where(x => x.SchoolLevelEng != "OTHERS")
-                .GroupBy(x => x.SchoolNumber)
-                .Select(group => new
-                {
-                    School = group.Key,
-                    Count = group.Count()
-                });
-
-            foreach (var school in grouped)
-            {
-                System.Diagnostics.Debug.WriteLine(string.Format("{0}: {1}", school.School, school.Count));
-            }
-
-            return true;
+            return schoolBasicInfos;
         }
 
-        private static string SetBasicInfoString(XElement property)
+        private static void PopulateSchoolBasicInfo<T>(List<T> collection, List<SchoolBasicInfo> inputs, Func<SchoolBasicInfo, string> engProp, Func<SchoolBasicInfo, string> chiProp) where T : IBase, new()
         {
-            return property != null ? property.Value.Trim() : "";
+            var id = 1;
+            var groupId = 1;
+
+            foreach (var input in inputs)
+            {
+                var valid = false;
+
+                for (var i = 1; i <= 2; i++)
+                {
+                    var model = new T();
+                    model.Id = id;
+                    model.GroupId = groupId;
+                    model.LanguageId = i;
+                    if (model.LanguageId == 1)
+                        model.Name = engProp.Invoke(input);
+                    else
+                        model.Name = chiProp.Invoke(input);
+
+                    if (collection.Exists(x => x.Name == model.Name))
+                        continue;
+
+                    id++;
+                    collection.Add(model);
+                    valid = true;
+                }
+                if (valid)
+                    groupId++;
+            }
+        }
+
+        private static void GetStatisticsOfSchoolBasicInfo(IEnumerable<ConsolidatedSchoolBasicInfo> group)
+        {
+            System.Diagnostics.Debug.WriteLine(string.Format("Number of No School Addresses: {0}", group.Where(x => string.IsNullOrEmpty(x.SchoolAddress)).Count()));
         }
     }
 }
