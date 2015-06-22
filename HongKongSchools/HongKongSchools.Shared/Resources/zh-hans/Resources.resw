@@ -120,6 +120,9 @@
   <data name="appbar_call.Label" xml:space="preserve">
     <value>致电</value>
   </data>
+  <data name="appbar_nearby.Label" xml:space="preserve">
+    <value>名单</value>
+  </data>
   <data name="appbar_setting.Label" xml:space="preserve">
     <value>设定</value>
   </data>

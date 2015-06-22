@@ -1,5 +1,6 @@
 ﻿using HongKongSchools.Controls;
 using HongKongSchools.Helpers;
+using HongKongSchools.Models;
 using HongKongSchools.Services.MessengerService;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Shapes;
 
@@ -39,6 +41,23 @@ namespace HongKongSchools.Views
             _msg = App.Container.GetInstance<MessengerService>();
             _msg.Register<Geopoint>(this, "PositionChanged", x => DrawPositionChanged(x));
             _msg.Register<PositionStatus>(this, "StatusChanged", x => DrawStatusChanged(x));
+            _msg.Register<IEnumerable<School>>(this, "NearbySchoolsChanged", x => DrawNearbySchoolsChanged(x));
+        }
+
+        private void MainPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (MainPivot.SelectedIndex)
+            {
+                case 0:
+                    AppBarSetting.Visibility = Visibility.Visible;
+                    AppBarNearby.Visibility = Visibility.Collapsed;
+                    break;
+                case 1:
+                    AppBarSetting.Visibility = Visibility.Collapsed;
+                    AppBarNearby.Visibility = Visibility.Visible;
+                    break;
+            }
+
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -63,6 +82,8 @@ namespace HongKongSchools.Views
 
         private void DrawPositionChanged(Geopoint geopoint)
         {
+            ClearMapIcons<Ellipse>();
+
             var center = new BasicGeoposition();
             center.Longitude = geopoint.Position.Longitude;
             center.Latitude = geopoint.Position.Latitude;
@@ -70,10 +91,23 @@ namespace HongKongSchools.Views
             AddPushpin(center);
         }
 
-        public async void AddPushpin(BasicGeoposition location)
+        private void DrawNearbySchoolsChanged(IEnumerable<School> schools)
         {
-            MapControl.Children.Clear();
+            ClearMapIcons<Image>();
 
+            var index = 1;
+            foreach (var school in schools)
+            {
+                var position = new BasicGeoposition();
+                position.Longitude = school.Geopoint.Position.Longitude;
+                position.Latitude = school.Geopoint.Position.Latitude;
+
+                AddNearbySchool(position, index++);
+            }
+        }
+
+        private async void AddPushpin(BasicGeoposition location)
+        {
             var pin = new Grid()
             {
                 Width = 30,
@@ -82,14 +116,13 @@ namespace HongKongSchools.Views
             };
 
             pin.Children.Add(new Ellipse()
-            {
-                Name = "GPS",
-                Fill = _gpsStatusColor,
-                Stroke = new SolidColorBrush(Colors.White),
-                StrokeThickness = 3,
-                Width = 30,
-                Height = 30
-            });
+                {                    
+                    Fill = _gpsStatusColor,
+                    Stroke = new SolidColorBrush(Colors.White),
+                    StrokeThickness = 3,
+                    Width = 30,
+                    Height = 30
+                });
 
             MapControl.Children.Add(pin);
             var center = new Geopoint(location);
@@ -97,5 +130,45 @@ namespace HongKongSchools.Views
             await MapControl.TrySetViewAsync(center);            
         }
 
+        private void AddNearbySchool(BasicGeoposition location, int index)
+        {
+            var school = new Grid()
+            {
+                Width = 30,
+                Height = 30,
+                Margin = new Windows.UI.Xaml.Thickness(-12)
+            };
+
+            school.Children.Add(new Image()
+                {
+                    Source = new BitmapImage(new Uri("ms-appx:///Images/SchoolIcon.png")),
+                    Width = 30,
+                    Height = 30
+                });
+
+            school.Children.Add(new TextBlock()
+                {
+                    Text = index.ToString(),
+                    FontSize = 16,
+                    Foreground = new SolidColorBrush(Colors.White),
+                    HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center,
+                    VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Center,
+                });
+
+            MapControl.Children.Add(school);
+            var position = new Geopoint(location);
+            MapControl.SetLocation(school, position);
+        }
+
+        private void ClearMapIcons<T>()
+        {
+            var types = MapControl.Children.Where(x => x.GetType() == typeof(Grid));
+            for (var x = 0; x < types.Count(); x++)
+            {
+                var grid = (Grid)types.ElementAt(x);
+                if (grid.Children.Any(z => z.GetType() == typeof(T)))
+                    MapControl.Children.Remove(grid);
+            }
+        }
     }
 }

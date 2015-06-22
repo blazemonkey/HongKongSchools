@@ -120,6 +120,9 @@
   <data name="appbar_call.Label" xml:space="preserve">
     <value>call</value>
   </data>
+  <data name="appbar_nearby.Label" xml:space="preserve">
+    <value>list</value>
+  </data>
   <data name="appbar_setting.Label" xml:space="preserve">
     <value>settings</value>
   </data>

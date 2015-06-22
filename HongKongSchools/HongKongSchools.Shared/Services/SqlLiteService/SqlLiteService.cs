@@ -161,7 +161,7 @@ namespace HongKongSchools.Services.SqlLiteService
 
             foreach (var school in schools)
             {
-                await SetSchoolProperties(school);
+                await SetSchoolProperties(school, false);
             }
 
             return schools;
@@ -173,7 +173,7 @@ namespace HongKongSchools.Services.SqlLiteService
             {
                 var languageId = await GetCurrentLanguageId();
                 var school = await _conn.Table<School>().Where(x => x.Id == id).FirstAsync();
-                await SetSchoolProperties(school);                
+                await SetSchoolProperties(school, true);                
                 return school;
             }
             catch (InvalidOperationException ioe)
@@ -188,8 +188,16 @@ namespace HongKongSchools.Services.SqlLiteService
             }
         }
 
-        private async Task SetSchoolProperties(School school)
+        private async Task SetSchoolProperties(School school, bool loadAll)
         {
+            if (!loadAll)
+            {
+                school.Address = await GetAddressById(school.AddressId);
+                school.SchoolName = await GetSchoolNameById(school.NameId);
+                school.Geopoint = Helpers.CoordinatesConverter.DMSToDDGeopoint(school.Latitude, school.Longitude);
+                return;
+            }
+
             school.Category = await GetCategoryById(school.CategoryId);
             school.Address = await GetAddressById(school.AddressId);
             school.SchoolName = await GetSchoolNameById(school.NameId);

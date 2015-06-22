@@ -102,7 +102,6 @@ namespace HongKongSchools.DataParser
                 school.Website = input.EnglishWebsite;
                 school.AddressId = addresses.First(x => x.Name == input.EnglishAddress).GroupId;
                 school.NameId = names.First(x => x.Name == input.EnglishName).GroupId;
-                school.CategoryId = categories.First(x => x.Name == input.EnglishCategory).GroupId;
                 school.FinanceTypeId = financeTypes.First(x => x.Name == input.EnglishFinanceType).GroupId;
                 school.GenderId = genders.First(x => x.Name == input.EnglishGender).GroupId;
                 school.DistrictId = districts.First(x => x.Name == input.EnglishDistrict).GroupId;
@@ -224,10 +223,12 @@ namespace HongKongSchools.DataParser
             var namesJSON = JsonConvert.SerializeObject(names);
             File.WriteAllText("names.json", namesJSON, Encoding.Unicode);
 
-            var collection = schoolBasicInfos.Where(x => x.SchoolLevelEng != "OTHERS")
+            var id = 1;
+            var collection = filteredList
                 .GroupBy(x => new { x.SchoolNumber, x.SchoolAddressEng, x.SchoolLevelEng })
                 .Select(group => new School()
                 {
+                    Id = id++,
                     SchoolNumber = group.Key.SchoolNumber,
                     LevelId = levels.First(x => x.Name == group.Key.SchoolLevelEng).GroupId,
                     AddressId = addresses.First(x => x.Name == group.Key.SchoolAddressEng).GroupId,
@@ -241,7 +242,7 @@ namespace HongKongSchools.DataParser
                     Fax = group.Select(x => x.FaxNumber).First(),
                     Website = group.Select(x => x.SchoolWebSite).First(),
                     SessionIds = group.Select(x => sessions.First(z => z.Name == x.SchoolSessionEng).Id).ToList()
-                });
+                }).ToList();
 
             var filePathLoc = "Data\\SCH_LOC_EDB.xlsx";
             if (!File.Exists(filePathLoc))
@@ -256,6 +257,23 @@ namespace HongKongSchools.DataParser
             {
                 System.Diagnostics.Trace.WriteLine(school);
             }
+
+            var matchedList = filteredList.Where(x => locationAndInformation.Exists(z => z.ChineseName.StartsWith(x.SchoolNameChi))).ToList();
+
+
+            foreach (var school in matchedList.Distinct())
+            {
+                var locInfo = locationAndInformation.First(x => x.ChineseName.StartsWith(school.SchoolNameChi));
+                var nameId = names.First(x => x.Name == school.SchoolNameChi).GroupId;
+                var basicInfo = collection.First(x => x.NameId == nameId);
+                basicInfo.Latitude = locInfo.EnglishLatitude;
+                basicInfo.Longitude = locInfo.EnglishLongitude;
+                basicInfo.Northing = locInfo.EnglishNorthing;
+                basicInfo.Easting = locInfo.EnglishEasting;
+            }
+
+            var schoolsJSON = JsonConvert.SerializeObject(collection);
+            File.WriteAllText("schools.json", schoolsJSON, Encoding.Unicode);
 
             return true;
         }

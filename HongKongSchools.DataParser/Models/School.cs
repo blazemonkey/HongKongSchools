@@ -37,8 +37,6 @@ namespace HongKongSchools.DataParser.Models
         public int AddressId { get; set; }
         [JsonProperty("nameId")]
         public int NameId { get; set; }
-        [JsonProperty("categoryId")]
-        public int CategoryId { get; set; }
         [JsonProperty("districtId")]
         public int DistrictId { get; set; }
         [JsonProperty("financeTypeId")]

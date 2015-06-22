@@ -66,6 +66,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Data\religions.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\schools.json" />
     <Content Include="$(MSBuildThisFileDirectory)Images\Badges\CHAN SUI KI %28LA SALLE%29 PRIMARY SCHOOL.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\SchoolIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)Resources\en\Resources.resw" />

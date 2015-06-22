@@ -217,7 +217,8 @@ namespace HongKongSchools.ViewModels
                 GeopointSelf.Position.Latitude,
                 GeopointSelf.Position.Longitude));
 
-            foreach (var school in SchoolsWithinsSquare(GeopointSelf))
+            var schools = SchoolsWithinsSquare(GeopointSelf);
+            foreach (var school in schools)
             {
                 System.Diagnostics.Debug.WriteLine(school.SchoolName.SchoolName);
             }
@@ -226,6 +227,7 @@ namespace HongKongSchools.ViewModels
             _appData.UpdateKeyValue<double>("LastPositionLatitude", LatitudeSelf);
 
             _msg.Send<Geopoint>(GeopointSelf, "PositionChanged");
+            _msg.Send<IEnumerable<School>>(schools, "NearbySchoolsChanged");
         }
 
         public void ExecuteTapSettingsCommand()
@@ -233,9 +235,10 @@ namespace HongKongSchools.ViewModels
             _nav.Navigate(Experiences.Settings, null);
         }
 
-        public void ExecuteTapSchoolCommand(School school)
+        public async void ExecuteTapSchoolCommand(School school)
         {
-            _nav.Navigate(Experiences.School, school);
+            var fullSchool = await _db.GetSchoolById(school.Id);
+            _nav.Navigate(Experiences.School, fullSchool);
         }
 
         private IEnumerable<School> SchoolsWithinsSquare(Geopoint center)
