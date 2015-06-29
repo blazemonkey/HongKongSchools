@@ -36,6 +36,7 @@ namespace HongKongSchools.Views
         public MainPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = Windows.UI.Xaml.Navigation.NavigationCacheMode.Enabled;
             LoadingStoryboard.Begin();
 
             _msg = App.Container.GetInstance<MessengerService>();
@@ -62,8 +63,6 @@ namespace HongKongSchools.Views
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            _msg.Unregister<Geopoint>(this, "PositionChanged", x => DrawPositionChanged(x));
-            _msg.Unregister<PositionStatus>(this, "StatusChanged", x => DrawStatusChanged(x));
             base.OnNavigatedFrom(e);
         }
 
@@ -76,7 +75,7 @@ namespace HongKongSchools.Views
                 return;
             }
 
-            _gpsStatusColor = new SolidColorBrush(Colors.Red);            
+            _gpsStatusColor = new SolidColorBrush(Colors.Red);
             //GPSStoryboard.Begin();
         }
 
@@ -102,7 +101,7 @@ namespace HongKongSchools.Views
                 position.Longitude = school.Geopoint.Position.Longitude;
                 position.Latitude = school.Geopoint.Position.Latitude;
 
-                AddNearbySchool(position, index++);
+                AddNearbySchool(school, position, index++);
             }
         }
 
@@ -116,7 +115,7 @@ namespace HongKongSchools.Views
             };
 
             pin.Children.Add(new Ellipse()
-                {                    
+                {
                     Fill = _gpsStatusColor,
                     Stroke = new SolidColorBrush(Colors.White),
                     StrokeThickness = 3,
@@ -127,26 +126,27 @@ namespace HongKongSchools.Views
             MapControl.Children.Add(pin);
             var center = new Geopoint(location);
             MapControl.SetLocation(pin, center);
-            await MapControl.TrySetViewAsync(center);            
+            await MapControl.TrySetViewAsync(center);
         }
 
-        private void AddNearbySchool(BasicGeoposition location, int index)
+        private void AddNearbySchool(School school, BasicGeoposition location, int index)
         {
-            var school = new Grid()
+            var grid = new Grid()
             {
                 Width = 30,
                 Height = 30,
-                Margin = new Windows.UI.Xaml.Thickness(-12)
+                Margin = new Windows.UI.Xaml.Thickness(-12),
+                Tag = school
             };
-
-            school.Children.Add(new Image()
+            grid.Tapped += school_Tapped;
+            grid.Children.Add(new Image()
                 {
                     Source = new BitmapImage(new Uri("ms-appx:///Images/SchoolIcon.png")),
                     Width = 30,
                     Height = 30
                 });
 
-            school.Children.Add(new TextBlock()
+            grid.Children.Add(new TextBlock()
                 {
                     Text = index.ToString(),
                     FontSize = 16,
@@ -155,20 +155,30 @@ namespace HongKongSchools.Views
                     VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Center,
                 });
 
-            MapControl.Children.Add(school);
+            MapControl.Children.Add(grid);
             var position = new Geopoint(location);
-            MapControl.SetLocation(school, position);
+            MapControl.SetLocation(grid, position);
         }
 
         private void ClearMapIcons<T>()
         {
-            var types = MapControl.Children.Where(x => x.GetType() == typeof(Grid));
+            var types = MapControl.Children.Where(x => x.GetType() == typeof(Grid))
+            .Where(x => ((Grid)x).Children.Any(z => z.GetType() == typeof(T))).ToList();
+
             for (var x = 0; x < types.Count(); x++)
             {
                 var grid = (Grid)types.ElementAt(x);
-                if (grid.Children.Any(z => z.GetType() == typeof(T)))
-                    MapControl.Children.Remove(grid);
+                grid.Tapped -= school_Tapped;
+                MapControl.Children.Remove(grid);
             }
         }
+
+        private void school_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            var grid = (Grid)sender;
+            var school = (School)grid.Tag;
+            _msg.Send<School>(school, "TapSchool");
+        }
+
     }
 }

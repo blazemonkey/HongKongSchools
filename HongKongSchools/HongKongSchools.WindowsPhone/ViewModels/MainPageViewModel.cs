@@ -38,6 +38,8 @@ namespace HongKongSchools.ViewModels
         private double _latitudeSelf;
         private double _longitudeSelf;
 
+        private IEnumerable<School> _nearbySchools;
+
         private IDisposable _statusChanged;
         private IDisposable _positionChanged;
 
@@ -121,6 +123,16 @@ namespace HongKongSchools.ViewModels
             }
         }
 
+        public IEnumerable<School> NearbySchools
+        {
+            get { return _nearbySchools; }
+            private set
+            {
+                _nearbySchools = value;
+                OnPropertyChanged("NearbySchools");
+            }
+        }
+
         public IDisposable StatusChanged
         {
             get { return _statusChanged; }
@@ -143,6 +155,7 @@ namespace HongKongSchools.ViewModels
 
         public DelegateCommand TapSettingsCommand { get; set; }
         public DelegateCommand<School> TapSchoolCommand { get; set; }
+        public DelegateCommand TapNearbyCommand { get; set; }
 
         public MainPageViewModel(ISqlLiteService db, INavigationService nav, IMessengerService msg, IAppDataService appData)
         {
@@ -156,12 +169,17 @@ namespace HongKongSchools.ViewModels
 
             TapSettingsCommand = new DelegateCommand(ExecuteTapSettingsCommand);
             TapSchoolCommand = new DelegateCommand<School>(ExecuteTapSchoolCommand);
+            TapNearbyCommand = new DelegateCommand(ExecuteTapNearbyCommand);
+
+            _msg.Register<School>(this, "TapSchool", TapSchool);
         }
 
         private void Dispose()
         {
             StatusChanged.Dispose();
             PositionChanged.Dispose();
+
+            _msg.Unregister<School>(this, "TapSchool", TapSchool);
         }
 
         private void PopulateSchools(IEnumerable<School> schools)
@@ -217,8 +235,8 @@ namespace HongKongSchools.ViewModels
                 GeopointSelf.Position.Latitude,
                 GeopointSelf.Position.Longitude));
 
-            var schools = SchoolsWithinsSquare(GeopointSelf);
-            foreach (var school in schools)
+            NearbySchools = SchoolsWithinsSquare(GeopointSelf);
+            foreach (var school in NearbySchools)
             {
                 System.Diagnostics.Debug.WriteLine(school.SchoolName.SchoolName);
             }
@@ -227,7 +245,7 @@ namespace HongKongSchools.ViewModels
             _appData.UpdateKeyValue<double>("LastPositionLatitude", LatitudeSelf);
 
             _msg.Send<Geopoint>(GeopointSelf, "PositionChanged");
-            _msg.Send<IEnumerable<School>>(schools, "NearbySchoolsChanged");
+            _msg.Send<IEnumerable<School>>(NearbySchools, "NearbySchoolsChanged");
         }
 
         public void ExecuteTapSettingsCommand()
@@ -241,55 +259,92 @@ namespace HongKongSchools.ViewModels
             _nav.Navigate(Experiences.School, fullSchool);
         }
 
+        public void ExecuteTapNearbyCommand()
+        {
+            _nav.Navigate(Experiences.NearbyList, NearbySchools);
+        }
+
+        public async void TapSchool(School school)
+        {
+            var fullSchool = await _db.GetSchoolById(school.Id);
+            _nav.Navigate(Experiences.School, fullSchool);
+        }
+
         private IEnumerable<School> SchoolsWithinsSquare(Geopoint center)
         {
             var schools = Schools.Where(x => (x.Geopoint.Position.Longitude <= center.Position.Longitude + 0.0025) &&
                         (x.Geopoint.Position.Longitude >= center.Position.Longitude - 0.0025) &&
                         (x.Geopoint.Position.Latitude <= center.Position.Latitude + 0.0025) &&
-                        (x.Geopoint.Position.Latitude >= center.Position.Latitude - 0.0025));
+                        (x.Geopoint.Position.Latitude >= center.Position.Latitude - 0.0025));            
+             
+            return schools.OrderBy(x => GetNearestSchool(x));
+        }
 
-            return schools;
+        private double GetNearestSchool(School school)
+        {
+            var latitude = school.Geopoint.Position.Latitude - LatitudeSelf;
+            var longitude = school.Geopoint.Position.Longitude - LongitudeSelf;
+
+            latitude = latitude < 0 ? latitude * -1 : latitude;
+            longitude = longitude < 0 ? longitude * -1 : longitude;
+
+            return latitude + longitude;
         }
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
-            InitializeGeolocator();
-            IsLoading = true;
+            if (Geolocator == null)
+                InitializeGeolocator();
 
-            if (viewModelState.Any(x => x.Key == "Schools"))
-            {
-                if (SettingsPageViewModel.ReloadRequired)
-                {
-                    var schools = await _db.GetSchools();
-                    PopulateSchools(schools);
-                    SettingsPageViewModel.ReloadRequired = false;
-                }
-                else
-                {
-                    var schools = viewModelState.First(x => x.Key == "Schools").Value as ObservableCollection<School>;
-                    Schools = schools;
-                }
-            }
-            else
+            IsLoading = true;
+            if (!Schools.Any())
             {
                 var schools = await _db.GetSchools();
                 PopulateSchools(schools);
             }
+            //if (viewModelState.Any(x => x.Key == "Schools"))
+            //{
+            //    if (SettingsPageViewModel.ReloadRequired)
+            //    {
+            //        var schools = await _db.GetSchools();
+            //        PopulateSchools(schools);
+            //        SettingsPageViewModel.ReloadRequired = false;
+            //    }
+            //    else
+            //    {
+            //        var schools = viewModelState.First(x => x.Key == "Schools").Value as ObservableCollection<School>;
+            //        Schools = schools;
+
+            //        //if (!Schools.Any())
+            //        //{
+            //        //    var reload = await _db.GetSchools();
+            //        //    PopulateSchools(reload);
+            //        //}
+            //    }
+            //}
+            //else
+            //{
+            //    var schools = await _db.GetSchools();
+            //    PopulateSchools(schools);
+            //}
 
             IsLoading = false;
+
+            if (Geolocator.LocationStatus == PositionStatus.Ready)
+                _msg.Send<Geopoint>(GeopointSelf, "PositionChanged");
             
             base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
         }
 
-        public override void OnNavigatedFrom(Dictionary<string, object> viewModelState, bool suspending)
-        {
-            Dispose();
+        //public override void OnNavigatedFrom(Dictionary<string, object> viewModelState, bool suspending)
+        //{
+        //    //Dispose();
 
-            if (viewModelState.Any(x => x.Key == "Schools"))
-                viewModelState.Remove("Schools");
+        //    if (viewModelState.Any(x => x.Key == "Schools"))
+        //        viewModelState.Remove("Schools");
 
-            viewModelState.Add("Schools", Schools);
-            base.OnNavigatedFrom(viewModelState, suspending);
-        }
+        //    viewModelState.Add("Schools", Schools);
+        //    base.OnNavigatedFrom(viewModelState, suspending);
+        //}
     }
 }

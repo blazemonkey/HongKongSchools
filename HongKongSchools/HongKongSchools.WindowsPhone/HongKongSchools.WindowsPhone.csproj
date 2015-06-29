@@ -81,15 +81,20 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IMainPageViewModel.cs" />
+    <Compile Include="Interfaces\INearbyListPageViewModel.cs" />
     <Compile Include="Interfaces\ISchoolPageViewModel.cs" />
     <Compile Include="Interfaces\ISettingsPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
+    <Compile Include="ViewModels\NearbyListPageViewModel.cs" />
     <Compile Include="ViewModels\SchoolPageViewModel.cs" />
     <Compile Include="ViewModels\SettingsPageViewModel.cs" />
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\NearbyListPage.xaml.cs">
+      <DependentUpon>NearbyListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SchoolPage.xaml.cs">
       <DependentUpon>SchoolPage.xaml</DependentUpon>
     </Compile>
@@ -115,6 +120,10 @@
     <Page Include="Views\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NearbyListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SchoolPage.xaml">
       <SubType>Designer</SubType>

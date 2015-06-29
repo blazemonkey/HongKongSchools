@@ -186,6 +186,12 @@
   <data name="tb_map_longitude.Text" xml:space="preserve">
     <value>longitude</value>
   </data>
+  <data name="tb_nearby_schools.Text" xml:space="preserve">
+    <value>NEARBY SCHOOLS LIST</value>
+  </data>
+  <data name="tb_nearby_schools_empty.Text" xml:space="preserve">
+    <value>There are no Hong Kong schools found within 500m.</value>
+  </data>
   <data name="tb_search.PlaceholderText" xml:space="preserve">
     <value>enter a school name</value>
   </data>

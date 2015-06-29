@@ -186,6 +186,12 @@
   <data name="tb_map_longitude.Text" xml:space="preserve">
     <value>经度</value>
   </data>
+  <data name="tb_nearby_schools.Text" xml:space="preserve">
+    <value>附近学校名单</value>
+  </data>
+  <data name="tb_nearby_schools_empty.Text" xml:space="preserve">
+    <value>500米范围内找不到香港学校。</value>
+  </data>
   <data name="tb_search.PlaceholderText" xml:space="preserve">
     <value>输入名称</value>
   </data>

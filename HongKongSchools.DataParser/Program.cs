@@ -241,7 +241,7 @@ namespace HongKongSchools.DataParser
                     Telephone = group.Select(x => x.TelephoneNumber).First(),
                     Fax = group.Select(x => x.FaxNumber).First(),
                     Website = group.Select(x => x.SchoolWebSite).First(),
-                    SessionIds = group.Select(x => sessions.First(z => z.Name == x.SchoolSessionEng).Id).ToList()
+                    SessionIds = group.Select(x => sessions.First(z => z.Name == x.SchoolSessionEng).GroupId).ToList()
                 }).ToList();
 
             var filePathLoc = "Data\\SCH_LOC_EDB.xlsx";

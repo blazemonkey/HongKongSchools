@@ -117,47 +117,8 @@
                     <ColumnDefinition Width="0.65*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock Text="Status: "
-                                       Grid.Row="0"
-                                       Grid.Column="0"
-                                       Margin="5"
-                                       FontSize="18"/>
-                <TextBlock Text="{Binding PositionStatus}"
-                                       Grid.Row="0"
-                                       Grid.Column="1"
-                                       Margin="5"
-                                       FontSize="18"
-                                       TextWrapping="Wrap"
-                                       Foreground="Gray"/>
-                <TextBlock x:Uid="tb_map_longitude"
-                                       Grid.Row="1"
-                                       Grid.Column="0"
-                                       Margin="5"
-                                       FontSize="18"/>
-                <TextBlock Text="{Binding LongitudeSelf, UpdateSourceTrigger=PropertyChanged}"
-                                       Grid.Row="1"
-                                       Grid.Column="1"
-                                       Margin="5"
-                                       FontSize="18"
-                                       TextWrapping="Wrap"
-                                       Foreground="Gray"/>
-                    <TextBlock x:Uid="tb_map_latitude"
-                                       Grid.Row="2"
-                                       Grid.Column="0"
-                                       Margin="5"
-                                       FontSize="18"/>
-                <TextBlock Text="{Binding LatitudeSelf, UpdateSourceTrigger=PropertyChanged}"
-                                       Grid.Row="2"
-                                       Grid.Column="1"
-                                       Margin="5"
-                                       FontSize="18"
-                                       TextWrapping="Wrap"
-                                       Foreground="Gray"/>
+                </Grid.RowDefinitions>                
                 <Maps:MapControl x:Name="MapControl"
                                      Grid.Row="3"
                                      Grid.ColumnSpan="2"
@@ -176,7 +137,8 @@
                           Command="{Binding TapSettingsCommand}" />
             <AppBarButton x:Name="AppBarNearby"
                           x:Uid="appbar_nearby"
-                          Icon="ShowResults" />
+                          Icon="ShowResults"
+                          Command="{Binding TapNearbyCommand}"/>
         </CommandBar>
     </controls:PageBase.BottomAppBar>
 </controls:PageBase>
