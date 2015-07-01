@@ -33,13 +33,14 @@ namespace HongKongSchools.Services.SqlLiteService
             {
                 _conn.CreateTableAsync<Address>(),
                 _conn.CreateTableAsync<Name>(),
-                _conn.CreateTableAsync<Category>(),
                 _conn.CreateTableAsync<District>(),
                 _conn.CreateTableAsync<FinanceType>(),
                 _conn.CreateTableAsync<Gender>(),
                 _conn.CreateTableAsync<Level>(),
                 _conn.CreateTableAsync<Religion>(),
                 _conn.CreateTableAsync<School>(),
+                _conn.CreateTableAsync<Session>(),
+                _conn.CreateTableAsync<SchoolSession>(),
                 _conn.CreateTableAsync<Language>()
             };
 
@@ -52,12 +53,13 @@ namespace HongKongSchools.Services.SqlLiteService
             await InsertSchools();
             await InsertNames();
             await InsertAddresses();
-            await InsertCategories();
             await InsertFinanceTypes();
             await InsertGenders();
             await InsertLevels();
             await InsertDistricts();
             await InsertLanguages();
+            await InsertSessions();
+            await InsertSchoolSessions();
         }
 
         private async Task InsertSchools()
@@ -87,16 +89,6 @@ namespace HongKongSchools.Services.SqlLiteService
                 var nameJSON = await _fileReader.ReadFile(Package.Current.InstalledLocation, "names.json");
                 var names = _json.Deserialize<List<Name>>(nameJSON);
                 await _conn.InsertAllAsync(names);
-            }
-        }
-
-        private async Task InsertCategories()
-        {
-            if (await _conn.Table<Category>().CountAsync() == 0)
-            {
-                var categoryJSON = await _fileReader.ReadFile(Package.Current.InstalledLocation, "categories.json");
-                var categories = _json.Deserialize<List<Category>>(categoryJSON);
-                await _conn.InsertAllAsync(categories);
             }
         }
 
@@ -137,6 +129,26 @@ namespace HongKongSchools.Services.SqlLiteService
                 var districtJSON = await _fileReader.ReadFile(Package.Current.InstalledLocation, "districts.json");
                 var districts = _json.Deserialize<List<District>>(districtJSON);
                 await _conn.InsertAllAsync(districts);
+            }
+        }
+
+        private async Task InsertSessions()
+        {
+            if (await _conn.Table<Session>().CountAsync() == 0)
+            {
+                var sessionJSON = await _fileReader.ReadFile(Package.Current.InstalledLocation, "sessions.json");
+                var sessions = _json.Deserialize<List<Session>>(sessionJSON);
+                await _conn.InsertAllAsync(sessions);
+            }
+        }
+
+        private async Task InsertSchoolSessions()
+        {
+            if (await _conn.Table<SchoolSession>().CountAsync() == 0)
+            {
+                var ssJSON = await _fileReader.ReadFile(Package.Current.InstalledLocation, "school_sessions.json");
+                var sessions = _json.Deserialize<List<SchoolSession>>(ssJSON);
+                await _conn.InsertAllAsync(sessions);
             }
         }
 
@@ -194,11 +206,11 @@ namespace HongKongSchools.Services.SqlLiteService
             {
                 school.Address = await GetAddressById(school.AddressId);
                 school.SchoolName = await GetSchoolNameById(school.NameId);
+                school.Level = await GetLevelById(school.LevelId);
                 school.Geopoint = Helpers.CoordinatesConverter.DMSToDDGeopoint(school.Latitude, school.Longitude);
                 return;
             }
 
-            school.Category = await GetCategoryById(school.CategoryId);
             school.Address = await GetAddressById(school.AddressId);
             school.SchoolName = await GetSchoolNameById(school.NameId);
             school.District = await GetDistrictById(school.DistrictId);
@@ -206,6 +218,15 @@ namespace HongKongSchools.Services.SqlLiteService
             school.Level = await GetLevelById(school.LevelId);
             school.Gender = await GetGenderById(school.GenderId);
             school.Geopoint = Helpers.CoordinatesConverter.DMSToDDGeopoint(school.Latitude, school.Longitude);
+            school.Sessions = new List<Session>();
+
+            var sessionIds = await GetSessionIdsById(school.Id);
+
+            foreach (var s in sessionIds)
+            {
+                var session = await GetSessionById(s.SessionId);
+                school.Sessions.Add(session);
+            }
         }
 
         public async Task<IEnumerable<Address>> GetAddresses()
@@ -221,7 +242,15 @@ namespace HongKongSchools.Services.SqlLiteService
                 var languageId = await GetCurrentLanguageId();
                 var address = await _conn.Table<Address>().Where(x => x.LanguageId == languageId)
                                                           .Where(x => x.AddressId == id)
-                                                          .FirstAsync();
+                                                          .FirstOrDefaultAsync();
+
+                if (address == null)
+                {
+                    address = await _conn.Table<Address>().Where(x => x.LanguageId == 1)
+                                          .Where(x => x.AddressId == id)
+                                          .FirstAsync();
+                }
+
                 return address;
             }
             catch (InvalidOperationException ioe)
@@ -249,7 +278,15 @@ namespace HongKongSchools.Services.SqlLiteService
                 var languageId = await GetCurrentLanguageId();
                 var name = await _conn.Table<Name>().Where(x => x.LanguageId == languageId)
                                                     .Where(x => x.NameId == id)
+                                                    .FirstOrDefaultAsync();
+
+                if (name == null)
+                {
+                    name = await _conn.Table<Name>().Where(x => x.LanguageId == 1)
+                                                    .Where(x => x.NameId == id)
                                                     .FirstAsync();
+                }
+
                 return name;
             }
             catch (InvalidOperationException ioe)
@@ -260,34 +297,6 @@ namespace HongKongSchools.Services.SqlLiteService
             catch (Exception e)
             {
                 Debug.WriteLine(string.Format("GetSchoolNameById Error", id));
-                throw e;
-            }
-        }
-
-        public async Task<IEnumerable<Category>> GetCategories()
-        {
-            var languageId = await GetCurrentLanguageId();
-            return await _conn.Table<Category>().Where(x => x.LanguageId == languageId).ToListAsync();
-        }
-
-        public async Task<Category> GetCategoryById(int id)
-        {
-            try
-            {
-                var languageId = await GetCurrentLanguageId();
-                var category = await _conn.Table<Category>().Where(x => x.LanguageId == languageId)
-                                                            .Where(x => x.CategoryId == id)
-                                                            .FirstAsync();
-                return category;
-            }
-            catch (InvalidOperationException ioe)
-            {
-                Debug.WriteLine(string.Format("Category Id ({0}) could not be found.", id));
-                throw ioe;
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(string.Format("GetCategoryById Error", id));
                 throw e;
             }
         }
@@ -404,6 +413,54 @@ namespace HongKongSchools.Services.SqlLiteService
             }
         }
 
+        public async Task<IEnumerable<Session>> GetSessions()
+        {
+            var languageId = await GetCurrentLanguageId();
+            return await _conn.Table<Session>().Where(x => x.LanguageId == languageId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<SchoolSession>> GetSessionIdsById(int id)
+        {
+            try
+            {
+                var ids = await _conn.Table<SchoolSession>().Where(x => x.SchoolId == id)
+                                                            .ToListAsync();
+                return ids;
+            }
+            catch (InvalidOperationException ioe)
+            {
+                Debug.WriteLine(string.Format("Session Id ({0}) could not be found.", id));
+                throw ioe;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(string.Format("GetSessionIdsById Error", id));
+                throw e;
+            }
+        }
+
+        public async Task<Session> GetSessionById(int id)
+        {
+            try
+            {
+                var languageId = await GetCurrentLanguageId();
+                var session = await _conn.Table<Session>().Where(x => x.LanguageId == languageId)
+                                                            .Where(x => x.SessionId == id)
+                                                            .FirstAsync();
+                return session;
+            }
+            catch (InvalidOperationException ioe)
+            {
+                Debug.WriteLine(string.Format("Session Id ({0}) could not be found.", id));
+                throw ioe;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(string.Format("GetSessionById Error", id));
+                throw e;
+            }
+        }
+
         public async Task<IEnumerable<Language>> GetLanguages()
         {
             return await _conn.Table<Language>().ToListAsync();
@@ -448,10 +505,10 @@ namespace HongKongSchools.Services.SqlLiteService
 
         public async Task ClearLocalDb()
         {
-            await _conn.DropTableAsync<Address>();                     
+            await _conn.DropTableAsync<Address>();      
             await _conn.DropTableAsync<Religion>();
             await _conn.DropTableAsync<School>();
-            await _conn.DropTableAsync<Name>();            
+            await _conn.DropTableAsync<Name>();
             await InitDb();
         }
     }

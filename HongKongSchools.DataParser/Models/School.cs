@@ -47,7 +47,6 @@ namespace HongKongSchools.DataParser.Models
         public int LevelId { get; set; }
         [JsonProperty("religionId")]
         public int ReligionId { get; set; }
-        [JsonProperty("sessionIds")]
         public List<int> SessionIds { get; set; }
 
         public School()

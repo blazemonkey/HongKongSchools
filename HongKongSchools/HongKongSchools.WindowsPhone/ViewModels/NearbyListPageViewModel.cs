@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Navigation;
 
 namespace HongKongSchools.ViewModels
@@ -19,17 +20,6 @@ namespace HongKongSchools.ViewModels
         private ISqlLiteService _db;
         private INavigationService _nav;
 
-        private ObservableCollection<SchoolsWithIndex> _schools;
-
-        public ObservableCollection<SchoolsWithIndex> Schools
-        {
-            get { return _schools; }
-            private set
-            {
-                _schools = value;
-                OnPropertyChanged("Schools");
-            }
-        }
 
         public DelegateCommand<SchoolsWithIndex> TapSchoolCommand { get; set; }
         public DelegateCommand<SchoolsWithIndex> CallCommand { get; set; }
@@ -56,28 +46,6 @@ namespace HongKongSchools.ViewModels
 
             var original = school.School.Telephone;
             Windows.ApplicationModel.Calls.PhoneCallManager.ShowPhoneCallUI(original, school.School.SchoolName.SchoolName);
-        }
-
-        public override void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
-        {
-            var schools = navigationParameter as IEnumerable<School>;
-
-            if (schools == null)
-                return;
-
-            var schoolsWithIndex = new ObservableCollection<SchoolsWithIndex>();
-            var index = 1;
-            foreach (var school in schools)
-            {
-                var schoolWithIndex = new SchoolsWithIndex
-                {
-                    School = school,
-                    Index = index++
-                };
-                schoolsWithIndex.Add(schoolWithIndex);
-            }
-
-            Schools = new ObservableCollection<SchoolsWithIndex>(schoolsWithIndex);
         }
     }
 

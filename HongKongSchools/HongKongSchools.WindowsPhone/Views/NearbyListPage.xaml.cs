@@ -1,7 +1,9 @@
 ﻿using HongKongSchools.Controls;
 using HongKongSchools.Models;
+using HongKongSchools.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -46,6 +48,24 @@ namespace HongKongSchools.Views
 
             SchoolsListTextBlock.Visibility = Visibility.Collapsed;
             SchoolsListView.Visibility = Visibility.Visible;
+
+            var schoolsWithIndex = new ObservableCollection<SchoolsWithIndex>();
+            var index = 1;
+            foreach (var school in schools)
+            {
+                var schoolWithIndex = new SchoolsWithIndex
+                {
+                    School = school,
+                    Index = index++
+                };
+                schoolsWithIndex.Add(schoolWithIndex);
+            }
+
+            var grouped = schoolsWithIndex.GroupBy(x => x.School.Level.Name)                           
+                            .OrderBy(x => x.Key).ToList();
+
+            schoolsCvs.Source = grouped;     
         }
+
     }
 }

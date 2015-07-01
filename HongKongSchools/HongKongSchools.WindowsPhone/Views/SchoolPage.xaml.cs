@@ -41,6 +41,9 @@ namespace HongKongSchools.Views
         {
             var selectedSchool = e.Parameter as School;
 
+            if (selectedSchool.Geopoint == null)
+                return;
+
             var position = new BasicGeoposition();
             position.Longitude = selectedSchool.Geopoint.Position.Longitude;
             position.Latitude = selectedSchool.Geopoint.Position.Latitude;

@@ -11,12 +11,10 @@ namespace HongKongSchools.Services.SqlLiteService
     {
         Task<IEnumerable<School>> GetSchools();
         Task<School> GetSchoolById(int id);
-        Task<IEnumerable<Category>> GetCategories();
         Task<IEnumerable<Address>> GetAddresses();
         Task<Address> GetAddressById(int id);
         Task<IEnumerable<Name>> GetSchoolNames();
         Task<Name> GetSchoolNameById(int id);
-        Task<Category> GetCategoryById(int id);
         Task<IEnumerable<FinanceType>> GetFinanceTypes();
         Task<FinanceType> GetFinanceTypeById(int id);
         Task<IEnumerable<Gender>> GetGenders();
@@ -25,6 +23,8 @@ namespace HongKongSchools.Services.SqlLiteService
         Task<Level> GetLevelById(int id);
         Task<IEnumerable<District>> GetDistricts();
         Task<District> GetDistrictById(int id);
+        Task<IEnumerable<Session>> GetSessions();
+        Task<Session> GetSessionById(int id);
         Task<IEnumerable<Language>> GetLanguages();
         Task<Language> GetLanguageById(int id);
     }

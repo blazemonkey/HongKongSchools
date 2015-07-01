@@ -47,31 +47,11 @@ using System.Collections.ObjectModel;
 using Sqlite3DatabaseHandle = System.IntPtr;
 using Sqlite3Statement = System.IntPtr;
 using HongKongSchools.Models;
+using System.Collections;
 #endif
 
 namespace SQLite
 {
-    public static class SpecialTypes
-    {
-        public static List<Type> IgnoreTypes { get; private set; }
-
-        static SpecialTypes()
-        {
-            IgnoreTypes = new List<Type>();
-            IgnoreTypes.Add(typeof(Address));
-            IgnoreTypes.Add(typeof(Category));
-            IgnoreTypes.Add(typeof(School));
-            IgnoreTypes.Add(typeof(Name));
-            IgnoreTypes.Add(typeof(District));
-            IgnoreTypes.Add(typeof(FinanceType));
-            IgnoreTypes.Add(typeof(School));
-            IgnoreTypes.Add(typeof(Gender));
-            IgnoreTypes.Add(typeof(Level));
-            IgnoreTypes.Add(typeof(Religion));
-            IgnoreTypes.Add(typeof(Windows.Devices.Geolocation.Geopoint));
-        }
-    }
-
     public class SQLiteException : Exception
     {
         public SQLite3.Result Result { get; private set; }
@@ -1775,7 +1755,7 @@ namespace SQLite
                 var ignore = p.GetCustomAttributes(typeof(IgnoreAttribute), true).Count() > 0;
 #endif
 
-                if (p.CanWrite && !ignore && !SpecialTypes.IgnoreTypes.Contains(p.PropertyType) && p.PropertyType.GenericTypeArguments.All(x => !SpecialTypes.IgnoreTypes.Contains(x)))
+                if (p.CanWrite && !ignore)
                 {
                     cols.Add(new Column(p, createFlags));
                 }

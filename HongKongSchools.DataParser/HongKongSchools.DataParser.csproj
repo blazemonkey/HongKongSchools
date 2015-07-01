@@ -51,7 +51,6 @@
     <Compile Include="FileEnum.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Base.cs" />
-    <Compile Include="Models\Category.cs" />
     <Compile Include="Models\ConsolidatedSchoolBasicInfo.cs" />
     <Compile Include="Models\District.cs" />
     <Compile Include="Models\FinanceType.cs" />
@@ -62,6 +61,7 @@
     <Compile Include="Models\SchoolBasicInfo.cs" />
     <Compile Include="Models\SchoolName.cs" />
     <Compile Include="Models\School.cs" />
+    <Compile Include="Models\SchoolSession.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

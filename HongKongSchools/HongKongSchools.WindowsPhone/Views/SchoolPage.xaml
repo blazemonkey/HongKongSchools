@@ -17,6 +17,7 @@
     
     <controls:PageBase.Resources>
         <converters:LatitudeLongitudeConverter x:Key="LatitudeLongitudeConverter"/>
+        <converters:SessionsConverter x:Key="SessionsConverter"/>
     </controls:PageBase.Resources>
     
     <Grid>
@@ -88,12 +89,12 @@
                                        FontSize="18"
                                        TextWrapping="Wrap"
                                        Foreground="Gray"/>
-                            <TextBlock x:Uid="tb_info_category"
+                            <TextBlock x:Uid="tb_info_session"
                                        Grid.Row="2"
                                        Grid.Column="0"
                                        Margin="5"
                                        FontSize="18"/>
-                            <TextBlock Text="{Binding Category.Name}"
+                            <TextBlock Text="{Binding Sessions, Converter={StaticResource SessionsConverter}}"
                                        Grid.Row="2"
                                        Grid.Column="1"
                                        Margin="5"

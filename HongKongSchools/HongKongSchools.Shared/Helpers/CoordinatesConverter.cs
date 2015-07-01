@@ -9,6 +9,9 @@ namespace HongKongSchools.Helpers
     {
         public static Geopoint DMSToDDGeopoint(string latitude, string longitude)
         {
+            if ((string.IsNullOrEmpty(latitude) || (string.IsNullOrEmpty(longitude))))
+                return null;
+
             return new Geopoint(new BasicGeoposition() { Latitude = DMSToDD(latitude), Longitude = DMSToDD(longitude) });
         }
 

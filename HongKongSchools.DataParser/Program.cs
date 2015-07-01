@@ -73,7 +73,6 @@ namespace HongKongSchools.DataParser
             var schools = new List<School>();
             var addresses = new List<Address>();
             var names = new List<SchoolName>();
-            var categories = new List<Category>();
             var financeTypes = new List<FinanceType>();
             var genders = new List<Gender>();
             var districts = new List<District>();
@@ -81,7 +80,6 @@ namespace HongKongSchools.DataParser
             var religions = new List<Religion>();
             PopulateLocationAndInformation(addresses, inputs, x => x.EnglishAddress, x=> x.ChineseAddress);
             PopulateLocationAndInformation(names, inputs, x => x.EnglishName, x=> x.ChineseName);
-            PopulateLocationAndInformation(categories, inputs, x => x.EnglishCategory, x => x.ChineseCategory);
             PopulateLocationAndInformation(financeTypes, inputs, x => x.EnglishFinanceType, x => x.ChineseFinanceType);
             PopulateLocationAndInformation(genders, inputs, x => x.EnglishGender, x => x.ChineseGender);
             PopulateLocationAndInformation(districts, inputs, x => x.EnglishDistrict, x => x.ChineseDistrict);
@@ -209,6 +207,7 @@ namespace HongKongSchools.DataParser
             var districts = new List<District>();
             var levels = new List<Level>();
             var sessions = new List<Session>();
+            var schoolSessions = new List<SchoolSession>();
             PopulateSchoolBasicInfo(addresses, filteredList, x => x.SchoolAddressEng, x => x.SchoolAddressChi);
             PopulateSchoolBasicInfo(names, filteredList, x => x.SchoolNameEng, x => x.SchoolNameChi);
             PopulateSchoolBasicInfo(financeTypes, filteredList, x => x.FinanceTypeEng, x => x.FinanceTypeChi);
@@ -216,12 +215,14 @@ namespace HongKongSchools.DataParser
             PopulateSchoolBasicInfo(districts, filteredList, x => x.DistrictEng, x => x.DistrictChi);
             PopulateSchoolBasicInfo(levels, filteredList, x => x.SchoolLevelEng, x => x.SchoolLevelChi);
             PopulateSchoolBasicInfo(sessions, filteredList, x => x.SchoolSessionEng, x => x.SchoolSessionChi);
-
-            var addressesJSON = JsonConvert.SerializeObject(addresses);
-            File.WriteAllText("addresses.json", addressesJSON, Encoding.Unicode);
-
-            var namesJSON = JsonConvert.SerializeObject(names);
-            File.WriteAllText("names.json", namesJSON, Encoding.Unicode);
+            
+            OutputJSONFile<Address>(addresses, "addresses.json");
+            OutputJSONFile<SchoolName>(names, "names.json");
+            OutputJSONFile<District>(districts, "districts.json");
+            OutputJSONFile<FinanceType>(financeTypes, "financeTypes.json");
+            OutputJSONFile<Gender>(genders, "genders.json");
+            OutputJSONFile<Level>(levels, "levels.json");
+            OutputJSONFile<Session>(sessions, "sessions.json");
 
             var id = 1;
             var collection = filteredList
@@ -243,6 +244,20 @@ namespace HongKongSchools.DataParser
                     Website = group.Select(x => x.SchoolWebSite).First(),
                     SessionIds = group.Select(x => sessions.First(z => z.Name == x.SchoolSessionEng).GroupId).ToList()
                 }).ToList();
+
+            foreach (var c in collection)
+            {
+                foreach (var s in c.SessionIds)
+                {
+                    var schoolSession = new SchoolSession()
+                    {
+                        SchoolId = c.Id,
+                        SessionId = s
+                    };
+
+                    schoolSessions.Add(schoolSession);
+                }
+            }
 
             var filePathLoc = "Data\\SCH_LOC_EDB.xlsx";
             if (!File.Exists(filePathLoc))
@@ -271,6 +286,9 @@ namespace HongKongSchools.DataParser
                 basicInfo.Northing = locInfo.EnglishNorthing;
                 basicInfo.Easting = locInfo.EnglishEasting;
             }
+
+            var ssJSON = JsonConvert.SerializeObject(schoolSessions);
+            File.WriteAllText("school_sessions.json", ssJSON, Encoding.Unicode);
 
             var schoolsJSON = JsonConvert.SerializeObject(collection);
             File.WriteAllText("schools.json", schoolsJSON, Encoding.Unicode);
@@ -368,6 +386,12 @@ namespace HongKongSchools.DataParser
         private static void GetStatisticsOfSchoolBasicInfo(IEnumerable<ConsolidatedSchoolBasicInfo> group)
         {
             System.Diagnostics.Debug.WriteLine(string.Format("Number of No School Addresses: {0}", group.Where(x => string.IsNullOrEmpty(x.SchoolAddress)).Count()));
+        }
+
+        private static void OutputJSONFile<T>(List<T> collection, string fileName) where T : IBase
+        {
+            var json = JsonConvert.SerializeObject(collection);
+            File.WriteAllText(fileName, json, Encoding.Unicode);
         }
     }
 }

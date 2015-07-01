@@ -28,7 +28,6 @@ namespace HongKongSchools.ViewModels
         private IMessengerService _msg;
         private IAppDataService _appData;
 
-        private ObservableCollection<Category> _categories;
         private ObservableCollection<School> _schools;
 
         private bool _isLoading;
@@ -42,16 +41,6 @@ namespace HongKongSchools.ViewModels
 
         private IDisposable _statusChanged;
         private IDisposable _positionChanged;
-
-        public ObservableCollection<Category> Categories
-        {
-            get { return _categories; }
-            private set
-            {
-                _categories = value;
-                OnPropertyChanged("Categories");
-            }
-        }
 
         public ObservableCollection<School> Schools
         {
@@ -164,7 +153,6 @@ namespace HongKongSchools.ViewModels
             _msg = msg;
             _appData = appData;
 
-            Categories = new ObservableCollection<Category>();
             Schools = new ObservableCollection<School>();
 
             TapSettingsCommand = new DelegateCommand(ExecuteTapSettingsCommand);
@@ -272,7 +260,8 @@ namespace HongKongSchools.ViewModels
 
         private IEnumerable<School> SchoolsWithinsSquare(Geopoint center)
         {
-            var schools = Schools.Where(x => (x.Geopoint.Position.Longitude <= center.Position.Longitude + 0.0025) &&
+            var schools = Schools.Where(x => x.Geopoint != null)
+                        .Where(x => (x.Geopoint.Position.Longitude <= center.Position.Longitude + 0.0025) &&
                         (x.Geopoint.Position.Longitude >= center.Position.Longitude - 0.0025) &&
                         (x.Geopoint.Position.Latitude <= center.Position.Latitude + 0.0025) &&
                         (x.Geopoint.Position.Latitude >= center.Position.Latitude - 0.0025));            

@@ -38,35 +38,45 @@ namespace HongKongSchools.Models
         [DataMember(Name = "addressId")]
         public int AddressId { get; set; }
         [DataMember(Name = "address")]
+        [Ignore]
         public Address Address { get; set; }
         [DataMember(Name = "nameId")]
         public int NameId { get; set; }
         [DataMember(Name = "schoolName")]
+        [Ignore]
         public Name SchoolName { get; set; }
-        [DataMember(Name = "categoryId")]
-        public int CategoryId { get; set; }
-        [DataMember(Name = "category")]
-        public Category Category { get; set; }
         [DataMember(Name = "districtId")]
         public int DistrictId { get; set; }
         [DataMember(Name = "district")]
+        [Ignore]
         public District District { get; set; }
         [DataMember(Name = "financeTypeId")]
         public int FinanceTypeId { get; set; }
         [DataMember(Name = "financeType")]
+        [Ignore]
         public FinanceType FinanceType { get; set; }
         [DataMember(Name = "genderId")]
         public int GenderId { get; set; }
         [DataMember(Name = "gender")]
+        [Ignore]
         public Gender Gender { get; set; }
         [DataMember(Name = "levelId")]
         public int LevelId { get; set; }
         [DataMember(Name = "level")]
+        [Ignore]
         public Level Level { get; set; }
         [DataMember(Name = "religionId")]
         public int ReligionId { get; set; }
+        [Ignore]
         [DataMember(Name = "religion")]
         public Religion Religion { get; set; }
+        [Ignore]
+        [DataMember(Name = "sessionIds")]
+        public List<int> SessionIds { get; set; }
+        [Ignore]
+        [DataMember(Name = "sessions")]
+        public List<Session> Sessions { get; set; }
+        [Ignore]
         public Geopoint Geopoint { get; set; }
     }
 }

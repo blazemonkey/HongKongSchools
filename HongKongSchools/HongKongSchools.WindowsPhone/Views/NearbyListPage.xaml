@@ -15,81 +15,141 @@
     Background="{StaticResource AppBackgroundColor}"
     Foreground="{StaticResource AppForegroundColor}">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <TextBlock x:Uid="tb_nearby_schools"
+    <controls:PageBase.Resources>
+        <CollectionViewSource x:Name="schoolsCvs" IsSourceGrouped="True"/>
+    </controls:PageBase.Resources>
+    
+    <ScrollViewer>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock x:Uid="tb_nearby_schools"
                    Grid.Row="0"
                    FontSize="16"
                    FontWeight="Bold"
                    Margin="10"/>
-        <TextBlock x:Name="SchoolsListTextBlock"
+            <TextBlock x:Name="SchoolsListTextBlock"
             x:Uid="tb_nearby_schools_empty"
             Grid.Row="1"
             Margin="10"
             FontSize="{StaticResource PivotItemTextSize}"
             Text="No schools"/>
-        <ListView x:Name="SchoolsListView"
+            <ListView x:Name="SchoolsListView"
                   Grid.Row="1" 
-                  ItemsSource="{Binding Schools}"
+                  ItemsSource="{Binding Source={StaticResource schoolsCvs}}" 
                   FontSize="{StaticResource PivotItemTextSize}"
                   SelectionMode="None"
-                  IsItemClickEnabled="True"
+                  IsItemClickEnabled="True"                  
                   helpers:ItemClickCommand.Command="{Binding TapSchoolCommand}"
                   Tag="{Binding DataContext, ElementName=Root}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid Margin="5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid Grid.Column="0"
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0"
                               Margin="20">
-                            <Image
+                                <Image
                                Source="ms-appx:///Images/SchoolIcon.png"
                                Width="30"
                                Height="30"/>
-                            <TextBlock Text="{Binding Index}"
+                                <TextBlock Text="{Binding Index}"
                                        Foreground="White"
                                        VerticalAlignment="Center"
                                        HorizontalAlignment="Center"/>
-                        </Grid>
-                        <Grid Grid.Column="1" 
+                            </Grid>
+                            <Grid Grid.Column="1" 
                                   Margin="10,0"
                                   VerticalAlignment="Center">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0"
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0"
                                            TextWrapping="Wrap" 
                                            Text="{Binding School.SchoolName.SchoolName}"       
                                            FontSize="{StaticResource ListViewTextSize}"/>
-                            <TextBlock Grid.Row="1"
+                                <TextBlock Grid.Row="1"
                                            TextWrapping="Wrap" 
                                            Text="{Binding School.Address.Name}"       
                                            FontSize="{StaticResource ListViewTextSize}"
                                            Foreground="Gray"/>
-                        </Grid>
-                        <AppBarButton Grid.Column="2"
+                            </Grid>
+                            <AppBarButton Grid.Column="2"
                                       Width="Auto"                                           
                                       Icon="Phone"
                                       IsCompact="True"
                                       Margin="10"
                                       Command="{Binding Tag.CallCommand, ElementName=SchoolsListView}"
                                       CommandParameter="{Binding}"/>
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                </Style>
-            </ListView.ItemContainerStyle>
-        </ListView>
-    </Grid>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel></VirtualizingStackPanel>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.GroupStyle>
+                    <GroupStyle HidesIfEmpty="True">
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="GroupItem">
+                                <Setter Property="IsTabStop" Value="False"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="GroupItem">
+                                            <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="*"/>
+                                                    </Grid.RowDefinitions>
+                                                    <ContentControl x:Name="HeaderContent" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" 
+                                                                Content="{TemplateBinding Content}" IsTabStop="False" Margin="{TemplateBinding Padding}" TabIndex="0"/>
+                                                    <ItemsControl x:Name="ItemsControl" IsTabStop="False" ItemsSource="{Binding GroupItems}" Grid.Row="1" TabIndex="1" TabNavigation="Once">
+                                                        <ItemsControl.ItemContainerTransitions>
+                                                            <TransitionCollection>
+                                                                <AddDeleteThemeTransition/>
+                                                                <ContentThemeTransition/>
+                                                                <ReorderThemeTransition/>
+                                                                <EntranceThemeTransition IsStaggeringEnabled="False"/>
+                                                            </TransitionCollection>
+                                                        </ItemsControl.ItemContainerTransitions>
+                                                    </ItemsControl>
+                                                </Grid>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                        <GroupStyle.HeaderTemplate>
+                            <DataTemplate>
+                                <Grid Background="{StaticResource ListViewHeaderBackgroundColor}" Margin="0">
+                                    <TextBlock Text='{Binding Key}' 
+                                               Foreground="White" 
+                                               FontSize="16"
+                                               FontWeight="Bold"
+                                               Margin="5"
+                                               Padding="5"/>
+                                </Grid>
+                            </DataTemplate>
+                        </GroupStyle.HeaderTemplate>
+                    </GroupStyle>
+                </ListView.GroupStyle>
+            </ListView>
+        </Grid>
+    </ScrollViewer>
 </controls:PageBase>

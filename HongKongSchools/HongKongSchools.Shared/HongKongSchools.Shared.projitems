@@ -23,12 +23,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\ImageFullPathConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\InverseBooleanConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\LatitudeLongitudeConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\SessionsConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\CoordinatesConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\GeopointsHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ItemClickCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LocalizedStrings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Address.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\Category.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\District.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\FinanceType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\FullSchoolModel.cs" />
@@ -40,6 +40,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\Name.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Religion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\School.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\SchoolSession.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Session.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\AppDataService\AppDataService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\AppDataService\IAppDataService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\FileReaderService\FileReaderService.cs" />
@@ -65,6 +67,8 @@
     <Content Include="$(MSBuildThisFileDirectory)Data\names.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\religions.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\schools.json" />
+    <Content Include="$(MSBuildThisFileDirectory)Data\school_sessions.json" />
+    <Content Include="$(MSBuildThisFileDirectory)Data\sessions.json" />
     <Content Include="$(MSBuildThisFileDirectory)Images\Badges\CHAN SUI KI %28LA SALLE%29 PRIMARY SCHOOL.png" />
     <Content Include="$(MSBuildThisFileDirectory)Images\SchoolIcon.png" />
   </ItemGroup>
