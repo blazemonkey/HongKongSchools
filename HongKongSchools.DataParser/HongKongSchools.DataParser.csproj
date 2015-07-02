@@ -35,6 +35,7 @@
     <Reference Include="EPPlus">
       <HintPath>..\packages\EPPlus.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -49,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileEnum.cs" />
+    <Compile Include="Helpers\ChineseHelper.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Base.cs" />
     <Compile Include="Models\ConsolidatedSchoolBasicInfo.cs" />

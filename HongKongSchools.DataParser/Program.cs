@@ -8,6 +8,7 @@ using System.IO;
 using HongKongSchools.DataParser.Models;
 using Newtonsoft.Json;
 using System.Xml.Linq;
+using HongKongSchools.DataParser.Helpers;
 
 namespace HongKongSchools.DataParser
 {
@@ -183,6 +184,8 @@ namespace HongKongSchools.DataParser
                     collection.Add(model);
                 }
 
+
+                
                 groupId++;
             }
         }
@@ -377,6 +380,17 @@ namespace HongKongSchools.DataParser
                     id++;
                     collection.Add(model);
                     valid = true;
+
+                    if (model.LanguageId == 2)
+                    {
+                        var modelS = new T();
+                        modelS.Id = id;
+                        modelS.LanguageId = 3;
+                        modelS.GroupId = groupId;
+                        modelS.Name = ChineseHelper.Trad2Simp(model.Name);
+                        collection.Add(modelS);
+                        id++;
+                    }
                 }
                 if (valid)
                     groupId++;
