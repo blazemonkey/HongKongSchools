@@ -120,6 +120,9 @@
   <data name="appbar_call.Label" xml:space="preserve">
     <value>致電</value>
   </data>
+  <data name="appbar_center_map.Label" xml:space="preserve">
+    <value>中心位置</value>
+  </data>
   <data name="appbar_nearby.Label" xml:space="preserve">
     <value>名單</value>
   </data>
@@ -128,6 +131,9 @@
   </data>
   <data name="appbar_website.Label" xml:space="preserve">
     <value>網頁</value>
+  </data>
+  <data name="b_search_schools.Content" xml:space="preserve">
+    <value>搜尋學校</value>
   </data>
   <data name="language.Text" xml:space="preserve">
     <value>語言: </value>
@@ -191,6 +197,12 @@
   </data>
   <data name="tb_nearby_schools_empty.Text" xml:space="preserve">
     <value>500m範圍內找不到香港學校.</value>
+  </data>
+  <data name="tb_results.Text" xml:space="preserve">
+    <value>學校搜尋名單</value>
+  </data>
+  <data name="tb_results_empty.Text" xml:space="preserve">
+    <value>找不到符合搜尋條件的學校</value>
   </data>
   <data name="tb_search.PlaceholderText" xml:space="preserve">
     <value>輸入名稱</value>

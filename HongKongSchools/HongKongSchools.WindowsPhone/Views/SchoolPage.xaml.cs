@@ -1,5 +1,6 @@
 ﻿using HongKongSchools.Controls;
 using HongKongSchools.Models;
+using HongKongSchools.Services.MessengerService;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,9 +28,14 @@ namespace HongKongSchools.Views
     /// </summary>
     public sealed partial class SchoolPage : PageBase
     {
+        private IMessengerService _msg;
+
         public SchoolPage()
         {
             this.InitializeComponent();
+
+            _msg = App.Container.GetInstance<MessengerService>();
+            _msg.Register<School>(this, "ResetZoomLevel", x => ResetZoomLevel(x));
         }
 
         /// <summary>
@@ -37,6 +43,25 @@ namespace HongKongSchools.Views
         /// </summary>
         /// <param name="e">Event data that describes how this page was reached.
         /// This parameter is typically used to configure the page.</param>
+
+        private void MainPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (MainPivot.SelectedIndex)
+            {
+                case 0:
+                    AppBarCall.Visibility = Visibility.Visible;
+                    AppBarWebsite.Visibility = Visibility.Visible;
+                    AppBarCenterMap.Visibility = Visibility.Collapsed;
+                    break;
+                case 1:
+                    AppBarCall.Visibility = Visibility.Collapsed;
+                    AppBarWebsite.Visibility = Visibility.Collapsed;
+                    AppBarCenterMap.Visibility = Visibility.Visible;
+                    break;
+            }
+
+        }
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             var selectedSchool = e.Parameter as School;
@@ -70,6 +95,16 @@ namespace HongKongSchools.Views
             var position = new Geopoint(location);
             MapControl.SetLocation(school, position);
             await MapControl.TrySetViewAsync(position);    
+        }
+
+        private async void ResetZoomLevel(School school)
+        {
+            var position = new BasicGeoposition();
+            position.Longitude = school.Geopoint.Position.Longitude;
+            position.Latitude = school.Geopoint.Position.Latitude;
+
+            var center = new Geopoint(position);
+            await MapControl.TrySetViewAsync(center, 18);
         }
     }
 }

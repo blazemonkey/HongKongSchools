@@ -1,4 +1,5 @@
-﻿<controls:PageBase xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps" 
+﻿<controls:PageBase x:Name="Root"
+    xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps" 
     x:Class="HongKongSchools.Views.SchoolPage"
     prism:ViewModelLocator.AutoWireViewModel="True"
     xmlns:controls="using:HongKongSchools.Controls"
@@ -21,8 +22,10 @@
     </controls:PageBase.Resources>
     
     <Grid>
-        <Pivot Background="{StaticResource PivotHeaderBackgroundColor}"
-               DataContext="{Binding SelectedSchool}">
+        <Pivot x:Name="MainPivot"
+               Background="{StaticResource PivotHeaderBackgroundColor}"
+               DataContext="{Binding SelectedSchool}"
+               SelectionChanged="MainPivot_SelectionChanged">
             <Pivot.HeaderTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding}" 
@@ -227,12 +230,18 @@
     </Grid>
     <controls:PageBase.BottomAppBar>
         <CommandBar>
-            <AppBarButton x:Uid="appbar_call"
+            <AppBarButton x:Name="AppBarCall"
+                          x:Uid="appbar_call"
                           Icon="Phone" 
                           Command="{Binding CallCommand}" />
-            <AppBarButton x:Uid="appbar_website"
+            <AppBarButton x:Name="AppBarWebsite"
+                          x:Uid="appbar_website"
                           Icon="World" 
                           Command="{Binding OpenWebsiteCommand}" />
+            <AppBarButton x:Name="AppBarCenterMap"
+                          x:Uid="appbar_center_map"    
+                          Icon="Target"
+                          Command="{Binding TapCenterMapCommand}"/>
         </CommandBar>
     </controls:PageBase.BottomAppBar>
 </controls:PageBase>

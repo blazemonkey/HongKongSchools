@@ -1,5 +1,6 @@
 ﻿using HongKongSchools.Interfaces;
 using HongKongSchools.Models;
+using HongKongSchools.Services.MessengerService;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using System;
@@ -15,6 +16,8 @@ namespace HongKongSchools.ViewModels
 {
     public class SchoolPageViewModel : ViewModel, ISchoolPageViewModel
     {
+        private IMessengerService _msg;
+
         private School _selectedSchool;
 
         public School SelectedSchool
@@ -29,11 +32,15 @@ namespace HongKongSchools.ViewModels
 
         public DelegateCommand CallCommand { get; set; }
         public DelegateCommand OpenWebsiteCommand { get; set; }
+        public DelegateCommand TapCenterMapCommand { get; set; }
 
-        public SchoolPageViewModel()
+        public SchoolPageViewModel(IMessengerService msg)
         {
+            _msg = msg;
+
             CallCommand = new DelegateCommand(ExecuteCallCommand);
             OpenWebsiteCommand = new DelegateCommand(ExecuteOpenWebsiteCommand);
+            TapCenterMapCommand = new DelegateCommand(ExecuteTapCenterMapCommand);
         }
 
         private void ExecuteCallCommand()
@@ -51,6 +58,11 @@ namespace HongKongSchools.ViewModels
                 return;
 
             await Launcher.LaunchUriAsync(new Uri(SelectedSchool.Website));
+        }
+
+        public void ExecuteTapCenterMapCommand()
+        {
+            _msg.Send<School>(SelectedSchool, "ResetZoomLevel");
         }
 
         public override void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)

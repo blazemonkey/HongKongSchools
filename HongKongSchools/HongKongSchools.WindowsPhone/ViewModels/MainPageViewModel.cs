@@ -30,6 +30,15 @@ namespace HongKongSchools.ViewModels
 
         private ObservableCollection<School> _schools;
 
+        private ObservableCollection<District> _districts;
+        private District _selectedDistrict;
+        private ObservableCollection<Level> _levels;
+        private Level _selectedLevel;
+        private ObservableCollection<Gender> _genders;
+        private Gender _selectedGender;
+        private ObservableCollection<Session> _sessions;
+        private Session _selectedSession;
+
         private bool _isLoading;
         private Geolocator _geolocator;
         private PositionStatus _positionStatus;
@@ -49,6 +58,86 @@ namespace HongKongSchools.ViewModels
             {
                 _schools = value;
                 OnPropertyChanged("Schools");
+            }
+        }
+
+        public ObservableCollection<District> Districts
+        {
+            get { return _districts; }
+            private set
+            {
+                _districts = value;
+                OnPropertyChanged("Districts");
+            }
+        }
+
+        public District SelectedDistrict
+        {
+            get { return _selectedDistrict; }
+            set
+            {
+                _selectedDistrict = value;
+                OnPropertyChanged("SelectedDistrict");
+            }
+        }
+
+        public ObservableCollection<Level> Levels
+        {
+            get { return _levels; }
+            private set
+            {
+                _levels = value;
+                OnPropertyChanged("Levels");
+            }
+        }
+
+        public Level SelectedLevel
+        {
+            get { return _selectedLevel; }
+            set
+            {
+                _selectedLevel = value;
+                OnPropertyChanged("SelectedLevel");
+            }
+        }
+
+        public ObservableCollection<Gender> Genders
+        {
+            get { return _genders; }
+            private set
+            {
+                _genders = value;
+                OnPropertyChanged("Genders");
+            }
+        }
+
+        public Gender SelectedGender
+        {
+            get { return _selectedGender; }
+            set
+            {
+                _selectedGender = value;
+                OnPropertyChanged("SelectedGender");
+            }
+        }
+
+        public ObservableCollection<Session> Sessions
+        {
+            get { return _sessions; }
+            private set
+            {
+                _sessions = value;
+                OnPropertyChanged("Sessions");
+            }
+        }
+
+        public Session SelectedSession
+        {
+            get { return _selectedSession; }
+            set
+            {
+                _selectedSession = value;
+                OnPropertyChanged("SelectedSession");
             }
         }
 
@@ -142,9 +231,11 @@ namespace HongKongSchools.ViewModels
             }
         }
 
+        public DelegateCommand TapSearchSchoolsCommand { get; set; }
         public DelegateCommand TapSettingsCommand { get; set; }
         public DelegateCommand<School> TapSchoolCommand { get; set; }
         public DelegateCommand TapNearbyCommand { get; set; }
+        public DelegateCommand TapCenterMapCommand { get; set; }
 
         public MainPageViewModel(ISqlLiteService db, INavigationService nav, IMessengerService msg, IAppDataService appData)
         {
@@ -154,10 +245,16 @@ namespace HongKongSchools.ViewModels
             _appData = appData;
 
             Schools = new ObservableCollection<School>();
+            Districts = new ObservableCollection<District>();
+            Levels = new ObservableCollection<Level>();
+            Genders = new ObservableCollection<Gender>();
+            Sessions = new ObservableCollection<Session>();
 
+            TapSearchSchoolsCommand = new DelegateCommand(ExecuteTapSearchSchoolsCommand);
             TapSettingsCommand = new DelegateCommand(ExecuteTapSettingsCommand);
             TapSchoolCommand = new DelegateCommand<School>(ExecuteTapSchoolCommand);
             TapNearbyCommand = new DelegateCommand(ExecuteTapNearbyCommand);
+            TapCenterMapCommand = new DelegateCommand(ExecuteTapCenterMapCommand);
 
             _msg.Register<School>(this, "TapSchool", TapSchool);
         }
@@ -168,6 +265,31 @@ namespace HongKongSchools.ViewModels
             PositionChanged.Dispose();
 
             _msg.Unregister<School>(this, "TapSchool", TapSchool);
+        }
+
+        private async Task PopulateSearchBoxes()
+        {
+            var districts = await _db.GetDistricts();
+            var levels = await _db.GetLevels();
+            var genders = await _db.GetGenders();
+            var sessions = await _db.GetSessions();
+
+            foreach (var district in districts)
+                Districts.Add(district);
+
+            foreach (var level in levels)
+                Levels.Add(level);
+
+            foreach (var gender in genders)
+                Genders.Add(gender);
+
+            foreach (var session in sessions)
+                Sessions.Add(session);
+
+            SelectedDistrict = Districts.First();
+            SelectedLevel = Levels.First();
+            SelectedGender = Genders.First();
+            SelectedSession = Sessions.First();
         }
 
         private void PopulateSchools(IEnumerable<School> schools)
@@ -181,7 +303,7 @@ namespace HongKongSchools.ViewModels
         {
             Geolocator = new Geolocator();
             Geolocator.DesiredAccuracy = PositionAccuracy.High;
-            Geolocator.MovementThreshold = 10;
+            Geolocator.MovementThreshold = 100;
 
             StatusChanged = Observable.FromEventPattern<StatusChangedEventArgs>(Geolocator, "StatusChanged")
                 .ObserveOnDispatcher()
@@ -236,6 +358,16 @@ namespace HongKongSchools.ViewModels
             _msg.Send<IEnumerable<School>>(NearbySchools, "NearbySchoolsChanged");
         }
 
+        public void ExecuteTapSearchSchoolsCommand()
+        {
+            var results = Schools.Where(x => x.DistrictId == SelectedDistrict.DistrictId)
+                                 .Where(x => x.LevelId == SelectedLevel.LevelId)
+                                 .Where(x => x.GenderId == SelectedGender.GenderId)
+                                 .ToList();
+
+            _nav.Navigate(Experiences.Results, results);
+        }
+
         public void ExecuteTapSettingsCommand()
         {
             _nav.Navigate(Experiences.Settings, null);
@@ -250,6 +382,14 @@ namespace HongKongSchools.ViewModels
         public void ExecuteTapNearbyCommand()
         {
             _nav.Navigate(Experiences.NearbyList, NearbySchools);
+        }
+
+        public void ExecuteTapCenterMapCommand()
+        {
+            if (Geolocator.LocationStatus == PositionStatus.Ready)
+            {
+                _msg.Send<Geopoint>(GeopointSelf, "ResetZoomLevel");
+            }
         }
 
         public async void TapSchool(School school)
@@ -286,11 +426,14 @@ namespace HongKongSchools.ViewModels
                 InitializeGeolocator();
 
             IsLoading = true;
+
             if (!Schools.Any())
             {
+                await PopulateSearchBoxes();
                 var schools = await _db.GetSchools();
                 PopulateSchools(schools);
             }
+
             //if (viewModelState.Any(x => x.Key == "Schools"))
             //{
             //    if (SettingsPageViewModel.ReloadRequired)
@@ -320,7 +463,11 @@ namespace HongKongSchools.ViewModels
             IsLoading = false;
 
             if (Geolocator.LocationStatus == PositionStatus.Ready)
+            {
+                NearbySchools = SchoolsWithinsSquare(GeopointSelf);
                 _msg.Send<Geopoint>(GeopointSelf, "PositionChanged");
+                _msg.Send<IEnumerable<School>>(NearbySchools, "DrawNearbySchoolsChanged");
+            }
             
             base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
         }

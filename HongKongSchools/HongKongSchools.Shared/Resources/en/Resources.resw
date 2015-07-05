@@ -120,6 +120,9 @@
   <data name="appbar_call.Label" xml:space="preserve">
     <value>call</value>
   </data>
+  <data name="appbar_center_map.Label" xml:space="preserve">
+    <value>center map</value>
+  </data>
   <data name="appbar_nearby.Label" xml:space="preserve">
     <value>list</value>
   </data>
@@ -128,6 +131,9 @@
   </data>
   <data name="appbar_website.Label" xml:space="preserve">
     <value>website</value>
+  </data>
+  <data name="b_search_schools.Content" xml:space="preserve">
+    <value>search schools</value>
   </data>
   <data name="language.Text" xml:space="preserve">
     <value>Language:</value>
@@ -191,6 +197,12 @@
   </data>
   <data name="tb_nearby_schools_empty.Text" xml:space="preserve">
     <value>There are no Hong Kong schools found within 500m.</value>
+  </data>
+  <data name="tb_results.Text" xml:space="preserve">
+    <value>SEARCH SCHOOLS LIST</value>
+  </data>
+  <data name="tb_results_empty.Text" xml:space="preserve">
+    <value>There are no schools found with the selected criteria.</value>
   </data>
   <data name="tb_search.PlaceholderText" xml:space="preserve">
     <value>enter a school name</value>

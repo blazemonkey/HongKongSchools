@@ -43,6 +43,7 @@ namespace HongKongSchools.Views
             _msg.Register<Geopoint>(this, "PositionChanged", x => DrawPositionChanged(x));
             _msg.Register<PositionStatus>(this, "StatusChanged", x => DrawStatusChanged(x));
             _msg.Register<IEnumerable<School>>(this, "NearbySchoolsChanged", x => DrawNearbySchoolsChanged(x));
+            _msg.Register<Geopoint>(this, "ResetZoomLevel", x => ResetZoomLevel(x));
         }
 
         private void MainPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -52,10 +53,12 @@ namespace HongKongSchools.Views
                 case 0:
                     AppBarSetting.Visibility = Visibility.Visible;
                     AppBarNearby.Visibility = Visibility.Collapsed;
+                    AppBarCenterMap.Visibility = Visibility.Collapsed;
                     break;
                 case 1:
                     AppBarSetting.Visibility = Visibility.Collapsed;
                     AppBarNearby.Visibility = Visibility.Visible;
+                    AppBarCenterMap.Visibility = Visibility.Visible;
                     break;
             }
 
@@ -171,6 +174,11 @@ namespace HongKongSchools.Views
                 grid.Tapped -= school_Tapped;
                 MapControl.Children.Remove(grid);
             }
+        }
+
+        private async void ResetZoomLevel(Geopoint center)
+        {
+            await MapControl.TrySetViewAsync(center, 16);            
         }
 
         private void school_Tapped(object sender, TappedRoutedEventArgs e)

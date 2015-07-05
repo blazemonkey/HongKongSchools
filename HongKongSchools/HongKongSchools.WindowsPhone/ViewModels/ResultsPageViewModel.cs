@@ -10,12 +10,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Navigation;
 
 namespace HongKongSchools.ViewModels
 {
-    public class NearbyListPageViewModel : ViewModel, INearbyListPageViewModel
+    public class ResultsPageViewModel : ViewModel, IResultsPageViewModel
     {
         private ISqlLiteService _db;
         private INavigationService _nav;
@@ -23,7 +22,7 @@ namespace HongKongSchools.ViewModels
         public DelegateCommand<SchoolsWithIndex> TapSchoolCommand { get; set; }
         public DelegateCommand<SchoolsWithIndex> CallCommand { get; set; }
 
-        public NearbyListPageViewModel(ISqlLiteService db, INavigationService nav)
+        public ResultsPageViewModel(ISqlLiteService db, INavigationService nav)
         {
             _db = db;
             _nav = nav;
@@ -46,11 +45,5 @@ namespace HongKongSchools.ViewModels
             var original = school.School.Telephone;
             Windows.ApplicationModel.Calls.PhoneCallManager.ShowPhoneCallUI(original, school.School.SchoolName.SchoolName);
         }
-    }
-
-    public class SchoolsWithIndex
-    {
-        public School School { get; set; }
-        public int Index { get; set; }
     }
 }

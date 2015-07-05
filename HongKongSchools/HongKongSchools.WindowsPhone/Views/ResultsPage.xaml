@@ -1,8 +1,8 @@
 ﻿<controls:PageBase
     x:Name="Root"
-    x:Class="HongKongSchools.Views.NearbyListPage"
     prism:ViewModelLocator.AutoWireViewModel="True"
     xmlns:controls="using:HongKongSchools.Controls"
+    x:Class="HongKongSchools.Views.ResultsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:HongKongSchools.Views"
@@ -25,16 +25,16 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Uid="tb_nearby_schools"
+        <TextBlock x:Uid="tb_results"
                    Grid.Row="0"
                    FontSize="16"
                    FontWeight="Bold"
                    Margin="10"/>
         <TextBlock x:Name="SchoolsListTextBlock"
-            x:Uid="tb_nearby_schools_empty"
-            Grid.Row="1"
-            Margin="10"
-            FontSize="{StaticResource PivotItemTextSize}"/>
+                    x:Uid="tb_results_empty"
+                    Grid.Row="1"
+                    Margin="10"
+                    FontSize="{StaticResource PivotItemTextSize}"/>
         <ListView x:Name="SchoolsListView"
                   Grid.Row="2" 
                   ItemsSource="{Binding Source={StaticResource schoolsCvs}}" 

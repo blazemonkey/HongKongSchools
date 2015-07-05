@@ -98,6 +98,7 @@ namespace HongKongSchools.Services.SqlLiteService
             {
                 var financeTypeJSON = await _fileReader.ReadFile(Package.Current.InstalledLocation, "finance_types.json");
                 var financeTypes = _json.Deserialize<List<FinanceType>>(financeTypeJSON);
+                
                 await _conn.InsertAllAsync(financeTypes);
             }
         }
@@ -170,10 +171,27 @@ namespace HongKongSchools.Services.SqlLiteService
         {
             var languageId = await GetCurrentLanguageId();
             var schools =  await _conn.Table<School>().ToListAsync();
+            var addresses = await _conn.Table<Address>().ToListAsync();
+            var names = await _conn.Table<Name>().ToListAsync();
+            var levels = await _conn.Table<Level>().ToListAsync();
 
             foreach (var school in schools)
             {
-                await SetSchoolProperties(school, false);
+                school.Address = addresses.Find(x => x.AddressId == school.AddressId && x.LanguageId == languageId);
+                school.SchoolName = names.Find(x => x.NameId == school.NameId && x.LanguageId == languageId);
+                school.Level = levels.Find(x => x.LevelId == school.LevelId && x.LanguageId == languageId);
+                school.Geopoint = Helpers.CoordinatesConverter.DMSToDDGeopoint(school.Latitude, school.Longitude);
+
+                if (school.Address == null)
+                    school.Address = addresses.Find(x => x.AddressId == school.AddressId && x.LanguageId == 1);
+
+                if (school.SchoolName == null)
+                    school.SchoolName = names.Find(x => x.NameId == school.NameId && x.LanguageId == 1);
+
+                if (languageId != 1 && (!string.IsNullOrEmpty(school.Address.Name)))
+                {
+                    school.Address.Name = school.Address.Name.Substring(1, school.Address.Name.Length - 1);
+                }
             }
 
             return schools;
@@ -183,9 +201,23 @@ namespace HongKongSchools.Services.SqlLiteService
         {
             try
             {
-                var languageId = await GetCurrentLanguageId();
                 var school = await _conn.Table<School>().Where(x => x.Id == id).FirstAsync();
-                await SetSchoolProperties(school, true);                
+                school.Address = await GetAddressById(school.AddressId);
+                school.SchoolName = await GetSchoolNameById(school.NameId);
+                school.District = await GetDistrictById(school.DistrictId);
+                school.FinanceType = await GetFinanceTypeById(school.FinanceTypeId);
+                school.Level = await GetLevelById(school.LevelId);
+                school.Gender = await GetGenderById(school.GenderId);
+                school.Geopoint = Helpers.CoordinatesConverter.DMSToDDGeopoint(school.Latitude, school.Longitude);
+                school.Sessions = new List<Session>();
+
+                var sessionIds = await GetSessionIdsById(school.Id);
+
+                foreach (var s in sessionIds)
+                {
+                    var session = await GetSessionById(s.SessionId);
+                    school.Sessions.Add(session);
+                }         
                 return school;
             }
             catch (InvalidOperationException ioe)
@@ -197,35 +229,6 @@ namespace HongKongSchools.Services.SqlLiteService
             {
                 Debug.WriteLine(string.Format("GetSchoolById Error", id));
                 throw e;
-            }
-        }
-
-        private async Task SetSchoolProperties(School school, bool loadAll)
-        {
-            if (!loadAll)
-            {
-                school.Address = await GetAddressById(school.AddressId);
-                school.SchoolName = await GetSchoolNameById(school.NameId);
-                school.Level = await GetLevelById(school.LevelId);
-                school.Geopoint = Helpers.CoordinatesConverter.DMSToDDGeopoint(school.Latitude, school.Longitude);
-                return;
-            }
-
-            school.Address = await GetAddressById(school.AddressId);
-            school.SchoolName = await GetSchoolNameById(school.NameId);
-            school.District = await GetDistrictById(school.DistrictId);
-            school.FinanceType = await GetFinanceTypeById(school.FinanceTypeId);
-            school.Level = await GetLevelById(school.LevelId);
-            school.Gender = await GetGenderById(school.GenderId);
-            school.Geopoint = Helpers.CoordinatesConverter.DMSToDDGeopoint(school.Latitude, school.Longitude);
-            school.Sessions = new List<Session>();
-
-            var sessionIds = await GetSessionIdsById(school.Id);
-
-            foreach (var s in sessionIds)
-            {
-                var session = await GetSessionById(s.SessionId);
-                school.Sessions.Add(session);
             }
         }
 
@@ -249,6 +252,11 @@ namespace HongKongSchools.Services.SqlLiteService
                     address = await _conn.Table<Address>().Where(x => x.LanguageId == 1)
                                           .Where(x => x.AddressId == id)
                                           .FirstAsync();
+                }
+
+                if (languageId != 1 && (!string.IsNullOrEmpty(address.Name)))
+                {
+                    address.Name = address.Name.Substring(1, address.Name.Length - 1);
                 }
 
                 return address;
@@ -505,10 +513,11 @@ namespace HongKongSchools.Services.SqlLiteService
 
         public async Task ClearLocalDb()
         {
-            await _conn.DropTableAsync<Address>();      
-            await _conn.DropTableAsync<Religion>();
-            await _conn.DropTableAsync<School>();
-            await _conn.DropTableAsync<Name>();
+            //await _conn.DropTableAsync<Address>();      
+            //await _conn.DropTableAsync<Religion>();
+            //await _conn.DropTableAsync<School>();
+            //await _conn.DropTableAsync<Name>();  
+            //await _conn.DropTableAsync<FinanceType>();
             await InitDb();
         }
     }

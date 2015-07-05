@@ -62,7 +62,6 @@
     <Content Include="$(MSBuildThisFileDirectory)Data\districts.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\genders.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\finance_types.json" />
-    <Content Include="$(MSBuildThisFileDirectory)Data\categories.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\levels.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\names.json" />
     <Content Include="$(MSBuildThisFileDirectory)Data\religions.json" />
