@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HongKongSchools.DataParser.Models.Abstracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HongKongSchools.DataParser.Models
 {
-    public class LocationAndInformation
+    public class LocationAndInformation : ExcelFile
     {
         public string EnglishCategory { get; private set; }
         public string ChineseCategory { get; private set; }
@@ -41,7 +42,12 @@ namespace HongKongSchools.DataParser.Models
         public string EnglishReligion { get; private set; }
         public string ChineseReligion { get; private set; }
 
-        public void SetProperty(int column, string value)
+        public override int ColumCount
+        {
+            get { return 32; }
+        }
+
+        public override void SetProperty(int column, string value)
         {
             switch (column)
             {
@@ -52,10 +58,14 @@ namespace HongKongSchools.DataParser.Models
                     ChineseCategory = value;
                     break;
                 case 3:
-                    EnglishName = value;
+                    EnglishName = value.Replace("(A.M.)", "").Replace("(P.M.)", "").Replace("(WHOLE DAY)", "")
+                                  .Replace("(PRIMARY SECTION)", "").Replace("(SECONDARY SECTION)", "").TrimEnd();
                     break;
                 case 4:
-                    ChineseName = value;
+                    ChineseName = value.Replace("(A.M.)", "").Replace("(P.M.)", "").Replace("(WHOLE DAY)", "")
+                                  .Replace("(PRIMARY SECTION)", "").Replace("(SECONDARY SECTION)", "")
+                                  .Replace("(上午)", "").Replace("(下午)", "").Replace("(全日)", "")
+                                  .Replace("(小學部)", "").Replace("(中學部)", "").TrimEnd();
                     break;
                 case 5:
                     EnglishAddress = value;
@@ -112,10 +122,10 @@ namespace HongKongSchools.DataParser.Models
                     ChineseFinanceType = value;
                     break;
                 case 23:
-                    EnglishLevel = value;
+                    EnglishLevel = value.Replace("KINDERGARTEN-CUM-CHILD CARE CENTRES", "KINDERGARTEN");
                     break;
                 case 24:
-                    ChineseLevel = value;
+                    ChineseLevel = value.Replace("幼稚園暨幼兒中心", "幼稚園");
                     break;
                 case 25:
                     EnglishTelephone = value;

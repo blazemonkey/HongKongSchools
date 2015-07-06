@@ -35,6 +35,15 @@
     <Reference Include="EPPlus">
       <HintPath>..\packages\EPPlus.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.Unity">
+      <HintPath>..\packages\Unity.3.5.1404.0\lib\net45\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration">
+      <HintPath>..\packages\Unity.3.5.1404.0\lib\net45\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.RegistrationByConvention">
+      <HintPath>..\packages\Unity.3.5.1404.0\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -49,24 +58,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileEnum.cs" />
     <Compile Include="Helpers\ChineseHelper.cs" />
-    <Compile Include="Models\Address.cs" />
-    <Compile Include="Models\Base.cs" />
-    <Compile Include="Models\ConsolidatedSchoolBasicInfo.cs" />
-    <Compile Include="Models\District.cs" />
-    <Compile Include="Models\FinanceType.cs" />
-    <Compile Include="Models\Gender.cs" />
-    <Compile Include="Models\Level.cs" />
+    <Compile Include="Helpers\PropertyHelper.cs" />
+    <Compile Include="Models\Abstracts\XMLFile.cs" />
+    <Compile Include="Models\Bases\Address.cs" />
+    <Compile Include="Models\Bases\IBase.cs" />
+    <Compile Include="Models\Bases\District.cs" />
+    <Compile Include="Models\Abstracts\ExcelFile.cs" />
+    <Compile Include="Models\Bases\FinanceType.cs" />
+    <Compile Include="Models\Bases\Gender.cs" />
+    <Compile Include="Models\Bases\Level.cs" />
     <Compile Include="Models\LocationAndInformation.cs" />
-    <Compile Include="Models\Religion.cs" />
+    <Compile Include="Models\Bases\Religion.cs" />
     <Compile Include="Models\SchoolBasicInfo.cs" />
-    <Compile Include="Models\SchoolName.cs" />
-    <Compile Include="Models\School.cs" />
-    <Compile Include="Models\SchoolSession.cs" />
-    <Compile Include="Models\Session.cs" />
+    <Compile Include="Models\Bases\SchoolName.cs" />
+    <Compile Include="Models\Bases\School.cs" />
+    <Compile Include="Models\Bases\SchoolSession.cs" />
+    <Compile Include="Models\Bases\Session.cs" />
+    <Compile Include="Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ExcelReaderService\ExcelReaderService.cs" />
+    <Compile Include="Services\ExcelReaderService\IExcelReaderService.cs" />
+    <Compile Include="Services\JSONService\IJSONService.cs" />
+    <Compile Include="Services\JSONService\JSONService.cs" />
+    <Compile Include="Services\XMLReaderService\IXMLReaderService.cs" />
+    <Compile Include="Services\XMLReaderService\XMLReaderService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -82,6 +99,7 @@
     </Content>
     <Content Include="Data\SchoolPremises.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

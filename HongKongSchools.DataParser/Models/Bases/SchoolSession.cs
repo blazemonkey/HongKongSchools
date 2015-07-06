@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HongKongSchools.DataParser.Models
+namespace HongKongSchools.DataParser.Models.Bases
 {
     public class SchoolSession
     {

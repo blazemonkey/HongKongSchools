@@ -1,4 +1,6 @@
-﻿using System;
+﻿using HongKongSchools.DataParser.Helpers;
+using HongKongSchools.DataParser.Models.Abstracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +11,7 @@ namespace HongKongSchools.DataParser.Models
     /// <remarks/>
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class SchoolBasicInfo
+    public partial class SchoolBasicInfo : XMLFile
     {
         private string schoolNameEngField;
         private string schoolNameChiField;
@@ -375,6 +377,103 @@ namespace HongKongSchools.DataParser.Models
             set
             {
                 this.registrationDateField = value;
+            }
+        }
+
+        public override string RootElement
+        {
+            get { return "Schools"; }
+        }
+
+        public override string ObjectElement
+        {
+            get { return "SchoolBasicInfo"; }
+        }
+
+        public override void SetProperty(string column, string value)
+        {
+            switch (column)
+            {
+                case "SchoolNameEng":
+                    SchoolNameEng = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "SchoolNameChi":
+                    SchoolNameChi = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "SchoolNumber":
+                    SchoolNumber = UInt32.Parse(value.Trim());
+                    break;
+                case "LocationID":
+                    LocationID = Byte.Parse(value.Trim());
+                    break;
+                case "SchoolLevelEng":
+                    SchoolLevelEng = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "SchoolLevelChi":
+                    SchoolLevelChi = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "SchoolSessionEng":
+                    SchoolSessionEng = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "SchoolSessionChi":
+                    SchoolSessionChi = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "StudentGenderEng":
+                    StudentGenderEng = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "StudentGenderChi":
+                    StudentGenderChi = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "DistrictEng":
+                    DistrictEng = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "DistrictChi":
+                    DistrictChi = PropertyHelper.SetStringProperty(value);                    
+                    break;
+                case "FinanceTypeEng":
+                    FinanceTypeEng = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "FinanceTypeChi":
+                    FinanceTypeChi = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "TelephoneNumber":
+                    TelephoneNumber = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "FaxNumber":
+                    FaxNumber = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "SchoolWebSite":
+                    SchoolWebSite = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "SchoolAddressEng":
+                    SchoolAddressEng = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "SchoolAddressChi":
+                    SchoolAddressChi = PropertyHelper.SetStringProperty(value);
+                    if (!string.IsNullOrEmpty(SchoolAddressChi))
+                        SchoolAddressChi = SchoolAddressChi.Substring(1, SchoolAddressChi.Length - 1);
+                    break;
+                case "LocationMapUrl":
+                    LocationMapUrl = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "GeoInfoMapUrl":
+                    GeoInfoMapUrl = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "RegistrationStatusEng":
+                    RegistrationStatusEng = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "RegistrationStatusChi":
+                    RegistrationStatusChi = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "SchoolRegistrationNumber":
+                    SchoolRegistrationNumber = PropertyHelper.SetStringProperty(value);
+                    break;
+                case "ProvisionalRegistrationDate":
+                    ProvisionalRegistrationDate = PropertyHelper.SetDateTimeProperty(value);
+                    break;
+                case "RegistrationDate":
+                    RegistrationDate = PropertyHelper.SetDateTimeProperty(value);
+                    break;
             }
         }
     }

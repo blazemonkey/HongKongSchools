@@ -5,15 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HongKongSchools.DataParser.Models
+namespace HongKongSchools.DataParser.Models.Bases
 {
-    public class Gender : IBase
+    public class SchoolName : IBase
     {
         [JsonProperty("id")]
         public int Id { get; set; }
-        [JsonProperty("genderId")]
+        [JsonProperty("nameId")]
         public int GroupId { get; set; }
-        [JsonProperty("name")]
+        [JsonProperty("schoolName")]
         public string Name { get; set; }
         [JsonProperty("languageId")]
         public int LanguageId { get; set; }
