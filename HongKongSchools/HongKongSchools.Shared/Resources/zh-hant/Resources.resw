@@ -144,6 +144,9 @@
   <data name="pi_info.Header" xml:space="preserve">
     <value>資料</value>
   </data>
+  <data name="pi_list.Header" xml:space="preserve">
+    <value>名單</value>
+  </data>
   <data name="pi_map.Header" xml:space="preserve">
     <value>地圖</value>
   </data>

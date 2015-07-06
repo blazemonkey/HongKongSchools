@@ -16,9 +16,9 @@ namespace HongKongSchools.Models
         [DataMember(Name = "schoolNumber")]
         public int SchoolNumber { get; set; }
         [DataMember(Name = "provisionalRegistrationDate")]
-        public DateTime ProvisionalRegistrationDate { get; set; }
+        public DateTime? ProvisionalRegistrationDate { get; set; }
         [DataMember(Name = "registrationDate")]
-        public DateTime RegistrationDate { get; set; }
+        public DateTime? RegistrationDate { get; set; }
         [DataMember(Name = "longitude")]
         public string Longitude { get; set; }
         [DataMember(Name = "latitude")]
@@ -78,5 +78,7 @@ namespace HongKongSchools.Models
         public List<Session> Sessions { get; set; }
         [Ignore]
         public Geopoint Geopoint { get; set; }
+        [Ignore]
+        public int DisplayOrder { get; set; }
     }
 }

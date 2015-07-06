@@ -144,6 +144,9 @@
   <data name="pi_info.Header" xml:space="preserve">
     <value>info</value>
   </data>
+  <data name="pi_list.Header" xml:space="preserve">
+    <value>list</value>
+  </data>
   <data name="pi_map.Header" xml:space="preserve">
     <value>map</value>
   </data>

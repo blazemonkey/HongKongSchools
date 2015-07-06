@@ -57,7 +57,7 @@
                                Source="ms-appx:///Images/SchoolIcon.png"
                                Width="30"
                                Height="30"/>
-                            <TextBlock Text="{Binding Index}"
+                            <TextBlock Text="{Binding DisplayOrder}"
                                        Foreground="White"
                                        VerticalAlignment="Center"
                                        HorizontalAlignment="Center"/>
@@ -71,11 +71,11 @@
                             </Grid.RowDefinitions>
                             <TextBlock Grid.Row="0"
                                            TextWrapping="Wrap" 
-                                           Text="{Binding School.SchoolName.SchoolName}"       
+                                           Text="{Binding SchoolName.SchoolName}"       
                                            FontSize="{StaticResource ListViewTextSize}"/>
                             <TextBlock Grid.Row="1"
                                            TextWrapping="Wrap" 
-                                           Text="{Binding School.Address.Name}"       
+                                           Text="{Binding Address.Name}"       
                                            FontSize="{StaticResource ListViewTextSize}"
                                            Foreground="Gray"/>
                         </Grid>

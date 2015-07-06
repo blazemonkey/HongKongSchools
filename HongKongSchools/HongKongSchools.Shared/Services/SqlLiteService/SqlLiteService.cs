@@ -182,16 +182,11 @@ namespace HongKongSchools.Services.SqlLiteService
                 school.Level = levels.Find(x => x.LevelId == school.LevelId && x.LanguageId == languageId);
                 school.Geopoint = Helpers.CoordinatesConverter.DMSToDDGeopoint(school.Latitude, school.Longitude);
 
-                if (school.Address == null)
+                if (string.IsNullOrEmpty(school.Address.Name))
                     school.Address = addresses.Find(x => x.AddressId == school.AddressId && x.LanguageId == 1);
 
-                if (school.SchoolName == null)
+                if (string.IsNullOrEmpty(school.SchoolName.SchoolName))
                     school.SchoolName = names.Find(x => x.NameId == school.NameId && x.LanguageId == 1);
-
-                if (languageId != 1 && (!string.IsNullOrEmpty(school.Address.Name)))
-                {
-                    school.Address.Name = school.Address.Name.Substring(1, school.Address.Name.Length - 1);
-                }
             }
 
             return schools;
@@ -252,11 +247,6 @@ namespace HongKongSchools.Services.SqlLiteService
                     address = await _conn.Table<Address>().Where(x => x.LanguageId == 1)
                                           .Where(x => x.AddressId == id)
                                           .FirstAsync();
-                }
-
-                if (languageId != 1 && (!string.IsNullOrEmpty(address.Name)))
-                {
-                    address.Name = address.Name.Substring(1, address.Name.Length - 1);
                 }
 
                 return address;
@@ -513,11 +503,11 @@ namespace HongKongSchools.Services.SqlLiteService
 
         public async Task ClearLocalDb()
         {
-            //await _conn.DropTableAsync<Address>();      
-            //await _conn.DropTableAsync<Religion>();
-            //await _conn.DropTableAsync<School>();
-            //await _conn.DropTableAsync<Name>();  
-            //await _conn.DropTableAsync<FinanceType>();
+            await _conn.DropTableAsync<Address>();
+            await _conn.DropTableAsync<Religion>();
+            await _conn.DropTableAsync<School>();
+            await _conn.DropTableAsync<Name>();
+            await _conn.DropTableAsync<FinanceType>();
             await InitDb();
         }
     }

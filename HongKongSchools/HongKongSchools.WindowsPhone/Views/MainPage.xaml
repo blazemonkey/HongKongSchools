@@ -104,7 +104,7 @@
                               VerticalAlignment="Center"
                                >
                     </ComboBox>
-                    <TextBlock x:Uid="tb_info_gender"
+                    <TextBlock x:Uid="tb_info_financeType"
                                        Grid.Row="3"
                                        Grid.Column="0"
                                        Margin="5"
@@ -112,8 +112,8 @@
                                        VerticalAlignment="Center"/>
                     <ComboBox Grid.Row="3"
                               Grid.Column="1"
-                              ItemsSource="{Binding Genders}"
-                              SelectedValue="{Binding SelectedGender, Mode=TwoWay}"
+                              ItemsSource="{Binding FinanceTypes}"
+                              SelectedValue="{Binding SelectedFinanceType, Mode=TwoWay}"
                               DisplayMemberPath="Name" 
                               FontSize="18"
                               VerticalAlignment="Center">

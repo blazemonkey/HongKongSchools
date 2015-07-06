@@ -69,6 +69,7 @@ namespace HongKongSchools.ViewModels
         {
             var selectedSchool = navigationParameter as School;
             SelectedSchool = selectedSchool;
+            base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
         }
     }
 }

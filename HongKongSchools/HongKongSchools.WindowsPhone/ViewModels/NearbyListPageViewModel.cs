@@ -20,37 +20,32 @@ namespace HongKongSchools.ViewModels
         private ISqlLiteService _db;
         private INavigationService _nav;
 
-        public DelegateCommand<SchoolsWithIndex> TapSchoolCommand { get; set; }
-        public DelegateCommand<SchoolsWithIndex> CallCommand { get; set; }
+        public DelegateCommand<School> TapSchoolCommand { get; set; }
+        public DelegateCommand<School> CallCommand { get; set; }
 
         public NearbyListPageViewModel(ISqlLiteService db, INavigationService nav)
         {
             _db = db;
             _nav = nav;
 
-            TapSchoolCommand = new DelegateCommand<SchoolsWithIndex>(ExecuteTapSchoolCommand);
-            CallCommand = new DelegateCommand<SchoolsWithIndex>(ExecuteCallCommand);
+            TapSchoolCommand = new DelegateCommand<School>(ExecuteTapSchoolCommand);
+            CallCommand = new DelegateCommand<School>(ExecuteCallCommand);
         }
 
-        public async void ExecuteTapSchoolCommand(SchoolsWithIndex school)
+        public async void ExecuteTapSchoolCommand(School school)
         {
-            var fullSchool = await _db.GetSchoolById(school.School.Id);
+            var fullSchool = await _db.GetSchoolById(school.Id);
             _nav.Navigate(Experiences.School, fullSchool);
         }
 
-        private void ExecuteCallCommand(SchoolsWithIndex school)
+        private void ExecuteCallCommand(School school)
         {
-            if (string.IsNullOrEmpty(school.School.Telephone))
+            if (string.IsNullOrEmpty(school.Telephone))
                 return;
 
-            var original = school.School.Telephone;
-            Windows.ApplicationModel.Calls.PhoneCallManager.ShowPhoneCallUI(original, school.School.SchoolName.SchoolName);
+            var original = school.Telephone;
+            Windows.ApplicationModel.Calls.PhoneCallManager.ShowPhoneCallUI(original, school.SchoolName.SchoolName);
         }
     }
 
-    public class SchoolsWithIndex
-    {
-        public School School { get; set; }
-        public int Index { get; set; }
-    }
 }

@@ -64,11 +64,6 @@ namespace HongKongSchools.Views
 
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-        }
-
         private void DrawStatusChanged(PositionStatus status)
         {
             if (status == PositionStatus.Ready)

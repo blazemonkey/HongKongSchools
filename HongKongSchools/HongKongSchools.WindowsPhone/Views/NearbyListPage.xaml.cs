@@ -49,22 +49,17 @@ namespace HongKongSchools.Views
             SchoolsListTextBlock.Visibility = Visibility.Collapsed;
             SchoolsListView.Visibility = Visibility.Visible;
 
-            var schoolsWithIndex = new ObservableCollection<SchoolsWithIndex>();
             var index = 1;
             foreach (var school in schools)
             {
-                var schoolWithIndex = new SchoolsWithIndex
-                {
-                    School = school,
-                    Index = index++
-                };
-                schoolsWithIndex.Add(schoolWithIndex);
+                school.DisplayOrder = index++;
             }
 
-            var grouped = schoolsWithIndex.GroupBy(x => x.School.Level.Name)                           
-                            .OrderBy(x => x.Key).ToList();
+            var grouped = schools.GroupBy(x => x.Level.Name)
+                            .OrderBy(x => x.Key);
 
             schoolsCvs.Source = grouped;     
+            base.OnNavigatedTo(e);
         }
 
     }

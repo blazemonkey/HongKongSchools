@@ -34,10 +34,8 @@ namespace HongKongSchools.ViewModels
         private District _selectedDistrict;
         private ObservableCollection<Level> _levels;
         private Level _selectedLevel;
-        private ObservableCollection<Gender> _genders;
-        private Gender _selectedGender;
-        private ObservableCollection<Session> _sessions;
-        private Session _selectedSession;
+        private ObservableCollection<FinanceType> _financeTypes;
+        private FinanceType _selectedFinanceType;
 
         private bool _isLoading;
         private Geolocator _geolocator;
@@ -101,43 +99,23 @@ namespace HongKongSchools.ViewModels
             }
         }
 
-        public ObservableCollection<Gender> Genders
+        public ObservableCollection<FinanceType> FinanceTypes
         {
-            get { return _genders; }
+            get { return _financeTypes; }
             private set
             {
-                _genders = value;
-                OnPropertyChanged("Genders");
+                _financeTypes = value;
+                OnPropertyChanged("FinanceTypes");
             }
         }
 
-        public Gender SelectedGender
+        public FinanceType SelectedFinanceType
         {
-            get { return _selectedGender; }
+            get { return _selectedFinanceType; }
             set
             {
-                _selectedGender = value;
-                OnPropertyChanged("SelectedGender");
-            }
-        }
-
-        public ObservableCollection<Session> Sessions
-        {
-            get { return _sessions; }
-            private set
-            {
-                _sessions = value;
-                OnPropertyChanged("Sessions");
-            }
-        }
-
-        public Session SelectedSession
-        {
-            get { return _selectedSession; }
-            set
-            {
-                _selectedSession = value;
-                OnPropertyChanged("SelectedSession");
+                _selectedFinanceType = value;
+                OnPropertyChanged("SelectedFinanceType");
             }
         }
 
@@ -247,8 +225,7 @@ namespace HongKongSchools.ViewModels
             Schools = new ObservableCollection<School>();
             Districts = new ObservableCollection<District>();
             Levels = new ObservableCollection<Level>();
-            Genders = new ObservableCollection<Gender>();
-            Sessions = new ObservableCollection<Session>();
+            FinanceTypes = new ObservableCollection<FinanceType>();
 
             TapSearchSchoolsCommand = new DelegateCommand(ExecuteTapSearchSchoolsCommand);
             TapSettingsCommand = new DelegateCommand(ExecuteTapSettingsCommand);
@@ -271,8 +248,7 @@ namespace HongKongSchools.ViewModels
         {
             var districts = await _db.GetDistricts();
             var levels = await _db.GetLevels();
-            var genders = await _db.GetGenders();
-            var sessions = await _db.GetSessions();
+            var financeTypes = await _db.GetFinanceTypes();
 
             foreach (var district in districts)
                 Districts.Add(district);
@@ -280,16 +256,12 @@ namespace HongKongSchools.ViewModels
             foreach (var level in levels)
                 Levels.Add(level);
 
-            foreach (var gender in genders)
-                Genders.Add(gender);
-
-            foreach (var session in sessions)
-                Sessions.Add(session);
+            foreach (var financeType in financeTypes)
+                FinanceTypes.Add(financeType);
 
             SelectedDistrict = Districts.First();
             SelectedLevel = Levels.First();
-            SelectedGender = Genders.First();
-            SelectedSession = Sessions.First();
+            SelectedFinanceType = FinanceTypes.First();
         }
 
         private void PopulateSchools(IEnumerable<School> schools)
@@ -362,9 +334,8 @@ namespace HongKongSchools.ViewModels
         {
             var results = Schools.Where(x => x.DistrictId == SelectedDistrict.DistrictId)
                                  .Where(x => x.LevelId == SelectedLevel.LevelId)
-                                 .Where(x => x.GenderId == SelectedGender.GenderId)
-                                 .ToList();
-
+                                 .Where(x => x.FinanceTypeId == SelectedFinanceType.FinanceTypeId).ToList();
+            
             _nav.Navigate(Experiences.Results, results);
         }
 
