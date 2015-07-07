@@ -1,9 +1,4 @@
 ﻿using HongKongSchools.DataParser.Models.Abstracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HongKongSchools.DataParser.Models
 {
@@ -12,7 +7,7 @@ namespace HongKongSchools.DataParser.Models
         public string EnglishCategory { get; private set; }
         public string ChineseCategory { get; private set; }
         public string EnglishName { get; private set; }
-        public string ChineseName { get; private set; }
+        public string ChineseName { get; set; }
         public string EnglishAddress { get; private set; }
         public string ChineseAddress { get; private set; }
         public string EnglishLongitude { get; private set; }
@@ -31,8 +26,8 @@ namespace HongKongSchools.DataParser.Models
         public string ChineseDistrict { get; private set; }
         public string EnglishFinanceType { get; private set; }
         public string ChineseFinanceType { get; private set; }
-        public string EnglishLevel { get; private set; }
-        public string ChineseLevel { get; private set; }
+        public string EnglishLevel { get; set; }
+        public string ChineseLevel { get; set; }
         public string EnglishTelephone { get; private set; }
         public string ChineseTelephone { get; private set; }
         public string EnglishFaxNumber { get; private set; }
@@ -58,14 +53,10 @@ namespace HongKongSchools.DataParser.Models
                     ChineseCategory = value;
                     break;
                 case 3:
-                    EnglishName = value.Replace("(A.M.)", "").Replace("(P.M.)", "").Replace("(WHOLE DAY)", "")
-                                  .Replace("(PRIMARY SECTION)", "").Replace("(SECONDARY SECTION)", "").TrimEnd();
+                    EnglishName = value;
                     break;
                 case 4:
-                    ChineseName = value.Replace("(A.M.)", "").Replace("(P.M.)", "").Replace("(WHOLE DAY)", "")
-                                  .Replace("(PRIMARY SECTION)", "").Replace("(SECONDARY SECTION)", "")
-                                  .Replace("(上午)", "").Replace("(下午)", "").Replace("(全日)", "")
-                                  .Replace("(小學部)", "").Replace("(中學部)", "").TrimEnd();
+                    ChineseName = value;
                     break;
                 case 5:
                     EnglishAddress = value;

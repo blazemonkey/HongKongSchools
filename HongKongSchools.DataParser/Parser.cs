@@ -8,20 +8,19 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace HongKongSchools.DataParser
 {
     public class Parser
     {
-        private const string BASIC_INFO_FILE_PATH = "Data\\SchoolBasicInfo.xml";
-        private const string LOC_INFO_FILE_PATH = "Data\\SCH_LOC_EDB.xlsx";
+        private const string BasicInfoFilePath = "Data\\SchoolBasicInfo.xml";
+        private const string LocInfoFilePath = "Data\\SCH_LOC_EDB.xlsx";
+        private const string ManualUpdatesFilePath = "Data\\ManualUpdates.txt";
 
-        private IXMLReaderService _xml;
-        private IExcelReaderService _excel;
-        private IJSONService _json;
+        private readonly IXMLReaderService _xml;
+        private readonly IExcelReaderService _excel;
+        private readonly IJSONService _json;
 
         public List<Address> Addresses { get; set; }
         public List<District> Districts { get; set; }
@@ -42,11 +41,12 @@ namespace HongKongSchools.DataParser
         {
             try
             {
-                var basicInfos = _xml.Read<SchoolBasicInfo>(BASIC_INFO_FILE_PATH)
+                var basicInfos = _xml.Read<SchoolBasicInfo>(BasicInfoFilePath)
                     .Where(x => x.SchoolLevelEng != "OTHERS" && x.SchoolLevelEng != "POST-SECONDARY").ToList();
-                var locInfos = _excel.Read<LocationAndInformation>(LOC_INFO_FILE_PATH);
+                var locInfos = _excel.Read<LocationAndInformation>(LocInfoFilePath).ToList();
 
                 AnalyzeBeforeParse(basicInfos, locInfos);
+                ManualUpdatesBeforeParse(locInfos);
                 OutputBaseJsons(basicInfos);
 
                 var index = 1;
@@ -89,7 +89,7 @@ namespace HongKongSchools.DataParser
 
                     if (locInfo == null)
                     {
-                        System.Diagnostics.Trace.WriteLine(string.Format("{0}, {1}, {2}", level, district, chiName));
+                        System.Diagnostics.Trace.WriteLine(string.Format("{0}, {1}, {2}, {3}", level, district, chiName, school.Telephone));
                         continue;
                     }
 
@@ -104,23 +104,16 @@ namespace HongKongSchools.DataParser
                 var json = _json.Serialize(schools);
                 File.WriteAllText("schools.json", json, Encoding.Unicode);
 
-                var sessions = new List<SchoolSession>();
-                foreach (var c in groupedInfos)
-                {
-                    foreach (var s in c.SessionIds)
+                var sessions = (
+                    from c in groupedInfos
+                    from s in c.SessionIds
+                    select new SchoolSession()
                     {
-                        var schoolSession = new SchoolSession()
-                        {
-                            SchoolId = c.Id,
-                            SessionId = s
-                        };
+                        SchoolId = c.Id, SessionId = s
+                    }).ToList();
 
-                        sessions.Add(schoolSession);
-                    }
-                }
-
-                var ssJSON = _json.Serialize(sessions);
-                File.WriteAllText("school_sessions.json", ssJSON, Encoding.Unicode);
+                var ssJson = _json.Serialize(sessions);
+                File.WriteAllText("school_sessions.json", ssJson, Encoding.Unicode);
             }
             catch (FileNotFoundException fnfe)
             {
@@ -132,9 +125,10 @@ namespace HongKongSchools.DataParser
             }
         }
 
-        private void AnalyzeBeforeParse(IEnumerable<SchoolBasicInfo> basicInfos, IEnumerable<LocationAndInformation> locInfos)
+        private static void AnalyzeBeforeParse(List<SchoolBasicInfo> basicInfos, List<LocationAndInformation> locInfos)
         {
             var sb = new StringBuilder();
+            sb.AppendLine("================================================================================");
             sb.AppendLine(string.Format("Number of Schools in SchoolBasicInfo: {0}", basicInfos.Count()));
             sb.AppendLine(string.Format("Number of Schools in Location and Information: {0}", locInfos.Count()));
             sb.AppendLine("");
@@ -145,6 +139,7 @@ namespace HongKongSchools.DataParser
                 || z.EnglishName.StartsWith(x.SchoolNameEng) && z.ChineseDistrict == x.DistrictChi && z.ChineseLevel == x.SchoolLevelChi)))
                 .Select(x => new { x.SchoolNameChi, x.SchoolNameEng }).Distinct().ToList();
 
+            sb.AppendLine("================================================================================");
             sb.AppendLine(string.Format("List of Schools that only exist in Basic Infos ({0})", existInBasicInfosOnly.Count()));
             foreach (var bi in existInBasicInfosOnly)
             {
@@ -168,7 +163,35 @@ namespace HongKongSchools.DataParser
             File.WriteAllText("analyze.txt", sb.ToString());
         }
 
-        private void OutputBaseJsons(IEnumerable<SchoolBasicInfo> basicInfos)
+        private static void ManualUpdatesBeforeParse(List<LocationAndInformation> locInfos)
+        {
+            var updates = File.ReadAllLines(ManualUpdatesFilePath);
+            var manualUpdates = updates.Select(u => u.Split(',')).Select(split => new ManualUpdate()
+            {
+                OldName = split[0], NewName = split[1]
+            }).ToList();
+
+            foreach (var loc in locInfos.Where(x => manualUpdates.Exists(z => x.ChineseName.StartsWith(z.OldName))))
+            {
+                loc.ChineseName = manualUpdates.First(x => loc.ChineseName.StartsWith(x.OldName)).NewName;
+            }
+
+            foreach (var loc in locInfos.Where(x => string.IsNullOrEmpty(x.ChineseLevel)))
+            {
+                if (loc.ChineseName.Contains("(小學部)"))
+                {
+                    loc.ChineseLevel = "小學";
+                    loc.EnglishLevel = "PRIMARY";
+                }
+                else if (loc.ChineseName.Contains("(中學部)"))
+                {
+                    loc.ChineseLevel = "中學";
+                    loc.EnglishLevel = "SECONDARY";
+                }
+            }
+        }
+
+        private void OutputBaseJsons(List<SchoolBasicInfo> basicInfos)
         {
             Addresses = OutputJson<Address>(basicInfos, x => new Tuple<string, string>(x.SchoolAddressEng, x.SchoolAddressChi), "addresses.json");
             Districts = OutputJson<District>(basicInfos, x => new Tuple<string, string>(x.DistrictEng, x.DistrictChi), "districts.json");
@@ -190,10 +213,7 @@ namespace HongKongSchools.DataParser
             {
                 for (var i = 1; i <= 3; i++)
                 {
-                    var model = new T();
-                    model.Id = index++;
-                    model.LanguageId = i;
-                    model.GroupId = groupId;
+                    var model = new T { Id = index++, LanguageId = i, GroupId = groupId };
 
                     switch (i)
                     {

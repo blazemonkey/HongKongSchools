@@ -70,6 +70,7 @@
     <Compile Include="Models\Bases\Level.cs" />
     <Compile Include="Models\LocationAndInformation.cs" />
     <Compile Include="Models\Bases\Religion.cs" />
+    <Compile Include="Models\ManualUpdate.cs" />
     <Compile Include="Models\SchoolBasicInfo.cs" />
     <Compile Include="Models\Bases\SchoolName.cs" />
     <Compile Include="Models\Bases\School.cs" />
@@ -87,6 +88,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Content Include="Data\ManualUpdates.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\SCH_LOC_EDB.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
