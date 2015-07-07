@@ -77,6 +77,9 @@ namespace HongKongSchools.DataParser
                 {
                     var chiName = SchoolNames.First(x => x.GroupId == school.NameId && x.LanguageId == 2).Name;
                     var engName = SchoolNames.First(x => x.GroupId == school.NameId && x.LanguageId == 1).Name;
+                    if (string.IsNullOrEmpty(chiName))
+                        chiName = engName;
+
                     var district = Districts.First(x => x.GroupId == school.DistrictId && x.LanguageId == 2).Name;
                     var level = Levels.First(x => x.GroupId == school.LevelId && x.LanguageId == 2).Name;
                     
