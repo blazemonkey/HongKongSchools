@@ -42,11 +42,12 @@ namespace HongKongSchools.DataParser
             try
             {
                 var basicInfos = _xml.Read<SchoolBasicInfo>(BasicInfoFilePath)
-                    .Where(x => x.SchoolLevelEng != "OTHERS" && x.SchoolLevelEng != "POST-SECONDARY").ToList();
+                    .Where(x => x.SchoolLevelEng != "OTHERS" && x.SchoolLevelEng != "POST-SECONDARY")
+                    .Where(x => x.RegistrationDate != DateTime.MinValue).ToList();
                 var locInfos = _excel.Read<LocationAndInformation>(LocInfoFilePath).ToList();
 
+                ManualUpdatesBeforeParse(basicInfos, locInfos);
                 AnalyzeBeforeParse(basicInfos, locInfos);
-                ManualUpdatesBeforeParse(locInfos);
                 OutputBaseJsons(basicInfos);
 
                 var index = 1;
@@ -135,46 +136,44 @@ namespace HongKongSchools.DataParser
             sb.AppendLine("================================================================================");
             sb.AppendLine("");
 
-            var existInBasicInfosOnly = basicInfos.Where(x => !locInfos.Any(z => (z.ChineseName.StartsWith(x.SchoolNameChi) 
-                || z.EnglishName.StartsWith(x.SchoolNameEng) && z.ChineseDistrict == x.DistrictChi && z.ChineseLevel == x.SchoolLevelChi)))
-                .Select(x => new { x.SchoolNameChi, x.SchoolNameEng }).Distinct().ToList();
+            var existInBasicInfosOnly = basicInfos.Where(x => !(locInfos.Any(z => (z.ChineseName.StartsWith(x.SchoolNameChi) 
+                || z.EnglishName.StartsWith(x.SchoolNameEng) && z.ChineseDistrict == x.DistrictChi && z.ChineseLevel == x.SchoolLevelChi))))
+                .Select(x => new { x.SchoolNameChi, x.SchoolNameEng, x.TelephoneNumber }).Distinct().ToList();
 
             sb.AppendLine("================================================================================");
             sb.AppendLine(string.Format("List of Schools that only exist in Basic Infos ({0})", existInBasicInfosOnly.Count()));
             foreach (var bi in existInBasicInfosOnly)
             {
-                sb.AppendLine(string.Format("{0}, {1}", bi.SchoolNameChi, bi.SchoolNameEng));
+                sb.AppendLine(string.Format("{0}, {1}, {2}", bi.SchoolNameChi, bi.SchoolNameEng, bi.TelephoneNumber));
             }
 
             sb.AppendLine("");
             sb.AppendLine("================================================================================");
             sb.AppendLine("");
 
-            var existInLocInfosOnly = locInfos.Where(x => !basicInfos.Any(z => (z.SchoolNameChi.StartsWith(x.ChineseName)
-                || z.SchoolNameEng.StartsWith(x.EnglishName) && z.DistrictChi == x.ChineseDistrict && z.SchoolLevelChi == x.ChineseLevel)))
-                .Select(x => new { x.ChineseName, x.EnglishName }).Distinct().ToList();
+            var existInLocInfosOnly = locInfos.Where(x => !(basicInfos.Any(z => (x.ChineseName.StartsWith(z.SchoolNameChi)
+                || x.EnglishName.StartsWith(z.SchoolNameChi) && z.DistrictChi == x.ChineseDistrict && z.SchoolLevelChi == x.ChineseLevel))))
+                .Select(x => new { x.ChineseName, x.EnglishName, x.EnglishTelephone }).Distinct().ToList();
 
             sb.AppendLine(string.Format("List of Schools that only exist in Location Infos ({0})", existInLocInfosOnly.Count()));
             foreach (var bi in existInLocInfosOnly)
             {
-                sb.AppendLine(string.Format("{0}, {1}", bi.ChineseName, bi.EnglishName));
+                sb.AppendLine(string.Format("{0}, {1}, {2}", bi.ChineseName, bi.EnglishName, bi.EnglishTelephone));
             }
 
             File.WriteAllText("analyze.txt", sb.ToString());
         }
 
-        private static void ManualUpdatesBeforeParse(List<LocationAndInformation> locInfos)
+        private static void ManualUpdatesBeforeParse(List<SchoolBasicInfo> basicInfos, List<LocationAndInformation> locInfos)
         {
             var updates = File.ReadAllLines(ManualUpdatesFilePath);
             var manualUpdates = updates.Select(u => u.Split(',')).Select(split => new ManualUpdate()
             {
-                OldName = split[0], NewName = split[1]
+                Type = int.Parse(split[0]), OldName = split[1], NewName = split[2]
             }).ToList();
 
-            foreach (var loc in locInfos.Where(x => manualUpdates.Exists(z => x.ChineseName.StartsWith(z.OldName))))
-            {
-                loc.ChineseName = manualUpdates.First(x => loc.ChineseName.StartsWith(x.OldName)).NewName;
-            }
+            var manualLocInfos = manualUpdates.Where(x => x.Type == 1).ToList();
+            var manualBasicInfos = manualUpdates.Where(x => x.Type == 2).ToList();
 
             foreach (var loc in locInfos.Where(x => string.IsNullOrEmpty(x.ChineseLevel)))
             {
@@ -185,9 +184,71 @@ namespace HongKongSchools.DataParser
                 }
                 else if (loc.ChineseName.Contains("(中學部)"))
                 {
+                    loc.ChineseName = loc.ChineseName.Replace("(中學部)", "");
                     loc.ChineseLevel = "中學";
                     loc.EnglishLevel = "SECONDARY";
                 }
+                else
+                {
+                    if (basicInfos.All(x => x.SchoolNameChi != loc.ChineseName)) continue;
+
+                    var bi = basicInfos.First(x => x.SchoolNameChi == loc.ChineseName);
+                    loc.ChineseLevel = bi.SchoolLevelChi;
+                }
+            }
+
+            foreach (var loc in locInfos.Where(x => x.ChineseName.Contains("(小學部)") || x.ChineseName.Contains("(中學部)")))
+            {
+                loc.ChineseName = loc.ChineseName.Replace("(小學部)", "");
+                loc.ChineseName = loc.ChineseName.Replace("(中學部)", "");
+            }
+
+            foreach (var loc in locInfos.Where(x => x.ChineseName.Contains("(上午)") || x.ChineseName.Contains("(下午)")
+                || x.ChineseName.Contains("(全日)") || x.EnglishName.Contains("(A.M.)") || x.EnglishName.Contains("(P.M.)")
+                || x.EnglishName.Contains("(WHOLE DAY)")))
+            {
+                loc.ChineseName = loc.ChineseName.Replace("(上午)", "");
+                loc.ChineseName = loc.ChineseName.Replace("(下午)", "");
+                loc.ChineseName = loc.ChineseName.Replace("(全日)", "");
+                loc.ChineseName = loc.ChineseName.Replace("(A.M.)", "");
+                loc.ChineseName = loc.ChineseName.Replace("(P.M.)", "");
+                loc.ChineseName = loc.ChineseName.Replace("(WHOLE DAY)", "");
+                loc.EnglishName = loc.EnglishName.Replace("(A.M.)", "");
+                loc.EnglishName = loc.EnglishName.Replace("(P.M.)", "");
+                loc.EnglishName = loc.EnglishName.Replace("(WHOLE DAY)", "");
+            }
+
+            foreach (var loc in locInfos.Where(x => manualLocInfos.Exists(z => x.ChineseName.StartsWith(z.OldName))))
+            {
+                loc.ChineseName = manualUpdates.First(x => loc.ChineseName.StartsWith(x.OldName)).NewName;
+            }
+
+            foreach (var bi in basicInfos.Where(x => manualBasicInfos.Exists(z => x.SchoolNameChi.StartsWith(z.OldName))))
+            {
+                bi.SchoolNameChi = manualUpdates.First(x => bi.SchoolNameChi.StartsWith(x.OldName)).NewName;
+            }
+
+            foreach (var loc in locInfos.Where(x => x.ChineseName.Contains('啟')))
+            {
+                loc.ChineseName = loc.ChineseName.Replace('啟', '啓');
+            }
+
+            foreach (var bi in basicInfos.Where(x => string.IsNullOrEmpty(x.SchoolNameChi)))
+            {
+                bi.SchoolNameChi = bi.SchoolNameEng;
+            }
+
+            foreach (var bi in basicInfos.Where(x => x.SchoolNameChi.Contains("(小學部)") || x.SchoolNameChi.Contains("(中學部)")))
+            {
+                bi.SchoolNameChi = bi.SchoolNameChi.Replace("(小學部)", "");
+                bi.SchoolNameChi = bi.SchoolNameChi.Replace("(中學部)", "");
+                bi.SchoolNameEng = bi.SchoolNameEng.Replace("(PRIMARY SECTION)", "");
+                bi.SchoolNameEng = bi.SchoolNameEng.Replace("(SECONDARY SECTION)", "");
+            }
+
+            foreach (var bi in basicInfos.Where(x => x.SchoolNameChi.Contains('啟')))
+            {
+                bi.SchoolNameChi = bi.SchoolNameChi.Replace('啟', '啓');
             }
         }
 

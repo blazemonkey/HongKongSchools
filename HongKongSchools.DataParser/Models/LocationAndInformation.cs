@@ -6,7 +6,7 @@ namespace HongKongSchools.DataParser.Models
     {
         public string EnglishCategory { get; private set; }
         public string ChineseCategory { get; private set; }
-        public string EnglishName { get; private set; }
+        public string EnglishName { get; set; }
         public string ChineseName { get; set; }
         public string EnglishAddress { get; private set; }
         public string ChineseAddress { get; private set; }

@@ -8,6 +8,7 @@ namespace HongKongSchools.DataParser.Models
 {
     public class ManualUpdate
     {
+        public int Type { get; set; }
         public string OldName { get; set; }
         public string NewName { get; set; }
     }
