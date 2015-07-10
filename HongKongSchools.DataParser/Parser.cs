@@ -17,6 +17,7 @@ namespace HongKongSchools.DataParser
         private const string BasicInfoFilePath = "Data\\SchoolBasicInfo.xml";
         private const string LocInfoFilePath = "Data\\SCH_LOC_EDB.xlsx";
         private const string ManualUpdatesFilePath = "Data\\ManualUpdates.txt";
+        private const string ManualAdditionsFilePath = "Data\\ManualAdditions.txt";
 
         private readonly IXMLReaderService _xml;
         private readonly IExcelReaderService _excel;
@@ -43,7 +44,8 @@ namespace HongKongSchools.DataParser
             {
                 var basicInfos = _xml.Read<SchoolBasicInfo>(BasicInfoFilePath)
                     .Where(x => x.SchoolLevelEng != "OTHERS" && x.SchoolLevelEng != "POST-SECONDARY")
-                    .Where(x => x.RegistrationDate != DateTime.MinValue).ToList();
+                    .Where(x => x.RegistrationDate != DateTime.MinValue)
+                    .OrderBy(x => x.DistrictEng).ThenBy(x => x.SchoolNameEng).ToList();
                 var locInfos = _excel.Read<LocationAndInformation>(LocInfoFilePath).ToList();
 
                 ManualUpdatesBeforeParse(basicInfos, locInfos);
@@ -249,6 +251,33 @@ namespace HongKongSchools.DataParser
             foreach (var bi in basicInfos.Where(x => x.SchoolNameChi.Contains('啟')))
             {
                 bi.SchoolNameChi = bi.SchoolNameChi.Replace('啟', '啓');
+            }
+
+            var manualAdditions = File.ReadAllLines(ManualAdditionsFilePath);
+            foreach (var loc in locInfos.Where(x => manualAdditions.Any(z => z == x.ChineseName)))
+            {
+                var bi = new SchoolBasicInfo()
+                {
+                    DistrictChi = loc.ChineseDistrict,
+                    DistrictEng = loc.EnglishDistrict,
+                    FaxNumber = loc.EnglishFaxNumber,
+                    FinanceTypeChi = loc.ChineseFinanceType,
+                    FinanceTypeEng = loc.EnglishFinanceType,
+                    StudentGenderChi = loc.ChineseGender,
+                    StudentGenderEng = loc.EnglishGender,
+                    SchoolLevelChi = loc.ChineseLevel,
+                    SchoolLevelEng = loc.EnglishLevel,
+                    SchoolSessionChi = loc.ChineseSession,
+                    SchoolSessionEng = loc.EnglishSession,
+                    SchoolAddressChi = loc.ChineseAddress,
+                    SchoolAddressEng = loc.EnglishAddress,
+                    SchoolNameChi = loc.ChineseName,
+                    SchoolNameEng = loc.EnglishName.Replace(" PRI ", " PRIMARY ").Replace( " SEC ", " SECONDARY ").Replace( " SCH ", " SCHOOL "),
+                    SchoolWebSite = loc.EnglishWebsite,
+                    TelephoneNumber = loc.EnglishTelephone,
+                };
+
+                basicInfos.Add(bi);
             }
         }
 
