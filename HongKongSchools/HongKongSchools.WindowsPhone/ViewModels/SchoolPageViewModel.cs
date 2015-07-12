@@ -63,8 +63,17 @@ namespace HongKongSchools.ViewModels
             if (string.IsNullOrEmpty(school.Telephone))
                 return;
 
-            var original = school.Telephone;
-            Windows.ApplicationModel.Calls.PhoneCallManager.ShowPhoneCallUI(original, school.SchoolName.SchoolName);
+            var telephone = "";
+            if (school.Telephone.Split(',').Count() > 1)
+            {
+                telephone = school.Telephone.Split(',').First();
+            }
+            else
+            {
+                telephone = school.Telephone;
+            }
+
+            Windows.ApplicationModel.Calls.PhoneCallManager.ShowPhoneCallUI(telephone, school.SchoolName.SchoolName);
         }
 
         private async void ExecuteOpenWebsiteCommand(School school)

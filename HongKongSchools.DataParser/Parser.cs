@@ -85,10 +85,11 @@ namespace HongKongSchools.DataParser
 
                     var district = Districts.First(x => x.GroupId == school.DistrictId && x.LanguageId == 2).Name;
                     var level = Levels.First(x => x.GroupId == school.LevelId && x.LanguageId == 2).Name;
+                    var financeType = FinanceTypes.First(x => x.GroupId == school.FinanceTypeId && x.LanguageId == 2).Name;
                     
                     var locInfo = locInfos.FirstOrDefault(x => (x.ChineseName.StartsWith(chiName)
                         || x.EnglishName.StartsWith(engName)) && x.ChineseDistrict == district
-                        && x.ChineseLevel == level);
+                        && x.ChineseLevel == level && x.ChineseFinanceType == financeType);
 
                     if (locInfo == null)
                     {
@@ -163,19 +164,43 @@ namespace HongKongSchools.DataParser
                 sb.AppendLine(string.Format("{0}, {1}, {2}", bi.ChineseName, bi.EnglishName, bi.EnglishTelephone));
             }
 
+            sb.AppendLine("");
+            sb.AppendLine("================================================================================");
+            sb.AppendLine("");
+
+            var schoolsWithNoWebsites = basicInfos.Where(x => string.IsNullOrEmpty(x.SchoolWebSite))
+                .Select(x => new { x.SchoolNameChi, x.SchoolNameEng } ).Distinct();
+            sb.AppendLine(string.Format("List of Schools that have no website in Location Infos ({0})", schoolsWithNoWebsites.Count()));
+            foreach (var bi in schoolsWithNoWebsites)
+            {
+                sb.AppendLine(string.Format("{0}, {1}", bi.SchoolNameChi, bi.SchoolNameEng));
+            }
+
+            sb.AppendLine("");
+            sb.AppendLine("================================================================================");
+            sb.AppendLine("");
+
+            var schoolsWithNoChineseAddress = basicInfos.Where(x => string.IsNullOrEmpty(x.SchoolAddressChi))
+                .Select(x => new { x.SchoolNameChi, x.SchoolNameEng }).Distinct();
+            sb.AppendLine(string.Format("List of Schools that have no Chinese Addresses ({0})", schoolsWithNoChineseAddress.Count()));
+            foreach (var bi in schoolsWithNoChineseAddress)
+            {
+                sb.AppendLine(string.Format("{0}, {1}", bi.SchoolNameChi, bi.SchoolNameEng));
+            }
+
             File.WriteAllText("analyze.txt", sb.ToString());
         }
 
         private static void ManualUpdatesBeforeParse(List<SchoolBasicInfo> basicInfos, List<LocationAndInformation> locInfos)
         {
             var updates = File.ReadAllLines(ManualUpdatesFilePath);
-            var manualUpdates = updates.Select(u => u.Split(',')).Select(split => new ManualUpdate()
+            var manualUpdates = updates.Select(u => u.Split(';')).Select(split => new ManualUpdate()
             {
-                Type = int.Parse(split[0]), OldName = split[1], NewName = split[2]
+                PropertyName = split[0], Type = int.Parse(split[1]), OldName = split[2], NewName = split[3]
             }).ToList();
 
-            var manualLocInfos = manualUpdates.Where(x => x.Type == 1).ToList();
-            var manualBasicInfos = manualUpdates.Where(x => x.Type == 2).ToList();
+            var manualLocInfos = manualUpdates.Where(x => x.PropertyName == "Name" && x.Type == 1).ToList();
+            var manualBasicInfos = manualUpdates.Where(x => x.PropertyName == "Name" && x.Type == 2).ToList();
 
             foreach (var loc in locInfos.Where(x => string.IsNullOrEmpty(x.ChineseLevel)))
             {
@@ -278,6 +303,12 @@ namespace HongKongSchools.DataParser
                 };
 
                 basicInfos.Add(bi);
+            }
+
+            var manualLocInfosAddresses = manualUpdates.Where(x => x.PropertyName == "Address" && x.Type == 2).ToList();
+            foreach (var bi in basicInfos.Where(x => manualLocInfosAddresses.Exists(z => z.OldName == x.SchoolAddressEng)))
+            {
+                bi.SchoolAddressChi = manualLocInfosAddresses.First(x => x.OldName == bi.SchoolAddressEng).NewName;
             }
         }
 
