@@ -1,6 +1,7 @@
 ﻿using HongKongSchools.Interfaces;
 using HongKongSchools.Models;
 using HongKongSchools.Services.AppDataService;
+using HongKongSchools.Services.JSONService;
 using HongKongSchools.Services.MessengerService;
 using HongKongSchools.Services.NavigationService;
 using HongKongSchools.Services.SqlLiteService;
@@ -27,7 +28,9 @@ namespace HongKongSchools.ViewModels
         private INavigationService _nav;
         private IMessengerService _msg;
         private IAppDataService _appData;
+        private IJSONService _json;
 
+        private string _searchText;
         private ObservableCollection<School> _schools;
 
         private ObservableCollection<District> _districts;
@@ -48,6 +51,16 @@ namespace HongKongSchools.ViewModels
 
         private IDisposable _statusChanged;
         private IDisposable _positionChanged;
+
+        public string SearchText
+        {
+            get { return _searchText; }
+            set
+            {
+                _searchText = value;
+                OnPropertyChanged("SearchText");
+            }
+        }
 
         public ObservableCollection<School> Schools
         {
@@ -215,12 +228,13 @@ namespace HongKongSchools.ViewModels
         public DelegateCommand TapNearbyCommand { get; set; }
         public DelegateCommand TapCenterMapCommand { get; set; }
 
-        public MainPageViewModel(ISqlLiteService db, INavigationService nav, IMessengerService msg, IAppDataService appData)
+        public MainPageViewModel(ISqlLiteService db, INavigationService nav, IMessengerService msg, IAppDataService appData, IJSONService json)
         {
             _db = db;
             _nav = nav;
             _msg = msg;
             _appData = appData;
+            _json = json;
 
             Schools = new ObservableCollection<School>();
             Districts = new ObservableCollection<District>();
@@ -332,11 +346,23 @@ namespace HongKongSchools.ViewModels
 
         public void ExecuteTapSearchSchoolsCommand()
         {
-            var results = Schools.Where(x => x.DistrictId == SelectedDistrict.DistrictId)
-                                 .Where(x => x.LevelId == SelectedLevel.LevelId)
-                                 .Where(x => x.FinanceTypeId == SelectedFinanceType.FinanceTypeId).ToList();
-            
-            _nav.Navigate(Experiences.Results, results);
+            var results = new List<int>();
+
+            if (string.IsNullOrEmpty(SearchText))
+            {
+                results = Schools.Where(x => x.DistrictId == SelectedDistrict.DistrictId)
+                                     .Where(x => x.LevelId == SelectedLevel.LevelId)
+                                     .Where(x => x.FinanceTypeId == SelectedFinanceType.FinanceTypeId)
+                                     .Select(x => x.Id).ToList();
+            }
+            else
+            {
+                results = Schools.Where(x => x.SchoolName.SchoolName.Contains(SearchText)).Select(x => x.Id).ToList();
+            }
+
+            var resultsJson = _json.Serialize(results);
+            _appData.UpdateKeyValue<string>("ResultsPageSchools", resultsJson);
+            _nav.Navigate(Experiences.Results);
         }
 
         public void ExecuteTapSettingsCommand()
@@ -344,15 +370,17 @@ namespace HongKongSchools.ViewModels
             _nav.Navigate(Experiences.Settings, null);
         }
 
-        public async void ExecuteTapSchoolCommand(School school)
+        public void ExecuteTapSchoolCommand(School school)
         {
-            var fullSchool = await _db.GetSchoolById(school.Id);
-            _nav.Navigate(Experiences.School, fullSchool);
+            _appData.UpdateKeyValue<int>("SchoolsPageSchool", school.Id);
+            _nav.Navigate(Experiences.School);
         }
 
         public void ExecuteTapNearbyCommand()
         {
-            _nav.Navigate(Experiences.NearbyList, NearbySchools);
+            var nearbyJson = _json.Serialize(NearbySchools.Select(x => x.Id));
+            _appData.UpdateKeyValue<string>("NearbyPageSchools", nearbyJson);
+            _nav.Navigate(Experiences.NearbyList);
         }
 
         public void ExecuteTapCenterMapCommand()

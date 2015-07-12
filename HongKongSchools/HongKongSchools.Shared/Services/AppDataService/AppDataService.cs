@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HongKongSchools.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Storage;
@@ -18,6 +19,9 @@ namespace HongKongSchools.Services.AppDataService
         {
             InsertIntoAppDataContainer("LastPositionLongitude", 0);
             InsertIntoAppDataContainer("LastPositionLatitude", 0);
+            InsertIntoAppDataContainer("ResultsPageSchools", "");
+            InsertIntoAppDataContainer("NearbyPageSchools", "");
+            InsertIntoAppDataContainer("SchoolsPageSchool", 0);
         }
 
         private void InsertIntoAppDataContainer(string key, object value)

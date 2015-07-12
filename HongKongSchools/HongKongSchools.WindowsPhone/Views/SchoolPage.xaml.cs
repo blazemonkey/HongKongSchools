@@ -1,6 +1,8 @@
 ﻿using HongKongSchools.Controls;
 using HongKongSchools.Models;
+using HongKongSchools.Services.AppDataService;
 using HongKongSchools.Services.MessengerService;
+using HongKongSchools.Services.SqlLiteService;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,12 +31,16 @@ namespace HongKongSchools.Views
     public sealed partial class SchoolPage : PageBase
     {
         private IMessengerService _msg;
+        private ISqlLiteService _db;
+        private IAppDataService _appData;
 
         public SchoolPage()
         {
             this.InitializeComponent();
 
             _msg = App.Container.GetInstance<MessengerService>();
+            _db = App.Container.GetInstance<SqlLiteService>();
+            _appData = App.Container.GetInstance<AppDataService>();
             _msg.Register<School>(this, "ResetZoomLevel", x => ResetZoomLevel(x));
         }
 
@@ -51,20 +57,23 @@ namespace HongKongSchools.Views
                 case 0:
                     AppBarCall.Visibility = Visibility.Visible;
                     AppBarWebsite.Visibility = Visibility.Visible;
+                    AppBarShare.Visibility = Visibility.Visible;
                     AppBarCenterMap.Visibility = Visibility.Collapsed;
                     break;
                 case 1:
                     AppBarCall.Visibility = Visibility.Collapsed;
                     AppBarWebsite.Visibility = Visibility.Collapsed;
+                    AppBarShare.Visibility = Visibility.Collapsed;
                     AppBarCenterMap.Visibility = Visibility.Visible;
                     break;
             }
 
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            var selectedSchool = e.Parameter as School;
+            var schoolId = _appData.GetKeyValue<int>("SchoolsPageSchool");
+            var selectedSchool = await _db.GetSchoolById(schoolId);
 
             if (selectedSchool.Geopoint == null)
                 return;

@@ -233,15 +233,22 @@
             <AppBarButton x:Name="AppBarCall"
                           x:Uid="appbar_call"
                           Icon="Phone" 
-                          Command="{Binding CallCommand}" />
+                          Command="{Binding CallCommand}" 
+                          CommandParameter="{Binding SelectedSchool}"/>
             <AppBarButton x:Name="AppBarWebsite"
                           x:Uid="appbar_website"
                           Icon="World" 
-                          Command="{Binding OpenWebsiteCommand}" />
+                          Command="{Binding OpenWebsiteCommand}" 
+                          CommandParameter="{Binding SelectedSchool}"/>
+            <AppBarButton x:Name="AppBarShare"
+                          x:Uid="appbar_share"
+                          Icon="ReShare" 
+                          Command="{Binding ShareCommand}"/>
             <AppBarButton x:Name="AppBarCenterMap"
                           x:Uid="appbar_center_map"    
                           Icon="Target"
-                          Command="{Binding TapCenterMapCommand}"/>
+                          Command="{Binding TapCenterMapCommand}"
+                          CommandParameter="{Binding SelectedSchool}"/>
         </CommandBar>
     </controls:PageBase.BottomAppBar>
 </controls:PageBase>

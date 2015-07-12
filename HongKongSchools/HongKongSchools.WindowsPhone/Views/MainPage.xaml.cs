@@ -1,6 +1,7 @@
 ﻿using HongKongSchools.Controls;
 using HongKongSchools.Helpers;
 using HongKongSchools.Models;
+using HongKongSchools.Services.AppDataService;
 using HongKongSchools.Services.MessengerService;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,8 @@ namespace HongKongSchools.Views
     public sealed partial class MainPage : PageBase
     {
         private IMessengerService _msg;
+        private IAppDataService _appData;
+
         private SolidColorBrush _gpsStatusColor;
 
         public MainPage()
@@ -40,6 +43,8 @@ namespace HongKongSchools.Views
             LoadingStoryboard.Begin();
 
             _msg = App.Container.GetInstance<MessengerService>();
+            _appData = App.Container.GetInstance<AppDataService>();
+
             _msg.Register<Geopoint>(this, "PositionChanged", x => DrawPositionChanged(x));
             _msg.Register<PositionStatus>(this, "StatusChanged", x => DrawStatusChanged(x));
             _msg.Register<IEnumerable<School>>(this, "NearbySchoolsChanged", x => DrawNearbySchoolsChanged(x));
@@ -180,6 +185,8 @@ namespace HongKongSchools.Views
         {
             var grid = (Grid)sender;
             var school = (School)grid.Tag;
+
+            _appData.UpdateKeyValue<int>("SchoolsPageSchool", school.Id);
             _msg.Send<School>(school, "TapSchool");
         }
 

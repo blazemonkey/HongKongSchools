@@ -74,7 +74,8 @@
                     </Grid.RowDefinitions>
                     <TextBox Grid.Row="0" 
                              Grid.ColumnSpan="2" 
-                             x:Uid="tb_search"/>
+                             x:Uid="tb_search"
+                             Text="{Binding SearchText, Mode=TwoWay}"/>
                     <TextBlock x:Uid="tb_info_district"
                                        Grid.Row="1"
                                        Grid.Column="0"

@@ -129,6 +129,9 @@
   <data name="appbar_setting.Label" xml:space="preserve">
     <value>设定</value>
   </data>
+  <data name="appbar_share.Label" xml:space="preserve">
+    <value>分享</value>
+  </data>
   <data name="appbar_website.Label" xml:space="preserve">
     <value>网页</value>
   </data>
@@ -209,5 +212,8 @@
   </data>
   <data name="tb_search.PlaceholderText" xml:space="preserve">
     <value>输入名称</value>
+  </data>
+  <data name="tb_searching.Text" xml:space="preserve">
+    <value>搜寻中</value>
   </data>
 </root>

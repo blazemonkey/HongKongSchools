@@ -1,5 +1,6 @@
 ﻿using HongKongSchools.Interfaces;
 using HongKongSchools.Models;
+using HongKongSchools.Services.AppDataService;
 using HongKongSchools.Services.NavigationService;
 using HongKongSchools.Services.SqlLiteService;
 using Microsoft.Practices.Prism.Commands;
@@ -19,23 +20,25 @@ namespace HongKongSchools.ViewModels
     {
         private ISqlLiteService _db;
         private INavigationService _nav;
+        private IAppDataService _appData;
 
         public DelegateCommand<School> TapSchoolCommand { get; set; }
         public DelegateCommand<School> CallCommand { get; set; }
 
-        public NearbyListPageViewModel(ISqlLiteService db, INavigationService nav)
+        public NearbyListPageViewModel(ISqlLiteService db, INavigationService nav, IAppDataService appData)
         {
             _db = db;
             _nav = nav;
+            _appData = appData;
 
             TapSchoolCommand = new DelegateCommand<School>(ExecuteTapSchoolCommand);
             CallCommand = new DelegateCommand<School>(ExecuteCallCommand);
         }
 
-        public async void ExecuteTapSchoolCommand(School school)
+        public void ExecuteTapSchoolCommand(School school)
         {
-            var fullSchool = await _db.GetSchoolById(school.Id);
-            _nav.Navigate(Experiences.School, fullSchool);
+            _appData.UpdateKeyValue<int>("SchoolsPageSchool", school.Id);
+            _nav.Navigate(Experiences.School);
         }
 
         private void ExecuteCallCommand(School school)

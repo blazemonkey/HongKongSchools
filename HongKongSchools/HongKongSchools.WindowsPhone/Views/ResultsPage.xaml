@@ -17,7 +17,15 @@
     Foreground="{StaticResource AppForegroundColor}">
 
     <controls:PageBase.Resources>
-        <CollectionViewSource x:Name="schoolsCvs" IsSourceGrouped="True"/>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <CollectionViewSource x:Name="schoolsCvs" />
+        <Storyboard x:Name="SearchingStoryboard">
+            <DoubleAnimation
+            Storyboard.TargetName="Searching"
+            Storyboard.TargetProperty="Opacity"
+            From="0" To="1.0" Duration="0:0:3"
+            RepeatBehavior="Forever"/>
+        </Storyboard>
     </controls:PageBase.Resources>
 
     <Pivot x:Name="MainPivot"
@@ -37,14 +45,18 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBlock x:Uid="tb_results"
-                   Grid.Row="0"
-                   FontSize="16"
-                   FontWeight="Bold"
-                   Margin="10"/>
+                <StackPanel x:Name="SearchingStackPanel"
+                            Grid.Row="1"
+                            Orientation="Vertical" 
+                            VerticalAlignment="Center">
+                    <ProgressBar IsIndeterminate="True" />
+                    <TextBlock x:Uid="tb_searching"
+                               Margin="0,5,0,0"
+                               HorizontalAlignment="Center"
+                               FontSize="{StaticResource LoadingTextSize}"/>
+                </StackPanel>
                 <TextBlock x:Name="SchoolsListTextBlock"
                     x:Uid="tb_results_empty"
                     Grid.Row="1"
@@ -114,55 +126,6 @@
                             <VirtualizingStackPanel></VirtualizingStackPanel>
                         </ItemsPanelTemplate>
                     </ListView.ItemsPanel>
-                    <ListView.GroupStyle>
-                        <GroupStyle HidesIfEmpty="True">
-                            <GroupStyle.ContainerStyle>
-                                <Style TargetType="GroupItem">
-                                    <Setter Property="IsTabStop" Value="False"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="GroupItem">
-                                                <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
-                                                    <Grid>
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="*"/>
-                                                        </Grid.RowDefinitions>
-                                                        <ContentControl x:Name="HeaderContent" ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                                HorizontalContentAlignment="Stretch"
-                                                                ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" 
-                                                                Content="{TemplateBinding Content}" IsTabStop="False" Margin="{TemplateBinding Padding}" TabIndex="0"/>
-                                                        <ItemsControl x:Name="ItemsControl" IsTabStop="False" ItemsSource="{Binding GroupItems}" Grid.Row="1" TabIndex="1" TabNavigation="Once">
-                                                            <ItemsControl.ItemContainerTransitions>
-                                                                <TransitionCollection>
-                                                                    <AddDeleteThemeTransition/>
-                                                                    <ContentThemeTransition/>
-                                                                    <ReorderThemeTransition/>
-                                                                    <EntranceThemeTransition IsStaggeringEnabled="False"/>
-                                                                </TransitionCollection>
-                                                            </ItemsControl.ItemContainerTransitions>
-                                                        </ItemsControl>
-                                                    </Grid>
-                                                </Border>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </GroupStyle.ContainerStyle>
-                            <GroupStyle.HeaderTemplate>
-                                <DataTemplate>
-                                    <Grid Background="{StaticResource ListViewHeaderBackgroundColor}" Margin="0">
-                                        <TextBlock Text='{Binding Key}' 
-                                               Foreground="White" 
-                                               FontSize="16"
-                                               FontWeight="Bold"
-                                               Margin="5"
-                                               Padding="5"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </GroupStyle.HeaderTemplate>
-                        </GroupStyle>
-                    </ListView.GroupStyle>
                 </ListView>
             </Grid>
         </PivotItem>
@@ -173,8 +136,7 @@
             <Maps:MapControl x:Name="MapControl"
                                      Grid.Row="2"
                                      Grid.ColumnSpan="2"
-                                     Margin="5"
-                                     ZoomLevel="13">
+                                     Margin="5">
             </Maps:MapControl>
         </PivotItem>
     </Pivot>

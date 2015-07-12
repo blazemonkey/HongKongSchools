@@ -1,5 +1,8 @@
 ﻿using HongKongSchools.Controls;
 using HongKongSchools.Models;
+using HongKongSchools.Services.AppDataService;
+using HongKongSchools.Services.JSONService;
+using HongKongSchools.Services.SqlLiteService;
 using HongKongSchools.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -26,9 +29,18 @@ namespace HongKongSchools.Views
     /// </summary>
     public sealed partial class NearbyListPage : PageBase
     {
+        private IJSONService _json;
+        private ISqlLiteService _db;
+        private IAppDataService _appData;
+
         public NearbyListPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = Windows.UI.Xaml.Navigation.NavigationCacheMode.Enabled;
+
+            _appData = App.Container.GetInstance<AppDataService>();
+            _json = App.Container.GetInstance<JSONService>();
+            _db = App.Container.GetInstance<SqlLiteService>();
         }
 
         /// <summary>
@@ -36,18 +48,28 @@ namespace HongKongSchools.Views
         /// </summary>
         /// <param name="e">Event data that describes how this page was reached.
         /// This parameter is typically used to configure the page.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            var schools = e.Parameter as IEnumerable<School>;
+            if (e.NavigationMode == NavigationMode.Back)
+                return;
+
+            schoolsCvs.Source = null;
+
+            SearchingStackPanel.Visibility = Visibility.Visible;
+            SchoolsListTextBlock.Visibility = Visibility.Collapsed;
+            SchoolsListView.Visibility = Visibility.Collapsed;
+
+            var schoolsJson = _appData.GetKeyValue<string>("NearbyPageSchools");
+            var schoolsId = _json.Deserialize<IEnumerable<int>>(schoolsJson).ToList();
+            var schools = await _db.GetSchoolsByIds(schoolsId);
+
             if (schools == null || !schools.Any())
             {
+                SearchingStackPanel.Visibility = Visibility.Collapsed;
                 SchoolsListTextBlock.Visibility = Visibility.Visible;
                 SchoolsListView.Visibility = Visibility.Collapsed;
                 return;
             }
-
-            SchoolsListTextBlock.Visibility = Visibility.Collapsed;
-            SchoolsListView.Visibility = Visibility.Visible;
 
             var index = 1;
             foreach (var school in schools)
@@ -58,8 +80,12 @@ namespace HongKongSchools.Views
             var grouped = schools.GroupBy(x => x.Level.Name)
                             .OrderBy(x => x.Key);
 
-            schoolsCvs.Source = grouped;     
-            base.OnNavigatedTo(e);
+            schoolsCvs.Source = grouped;
+            SchoolsListView.ScrollIntoView(schools.FirstOrDefault());
+
+            SearchingStackPanel.Visibility = Visibility.Collapsed;
+            SchoolsListTextBlock.Visibility = Visibility.Collapsed;
+            SchoolsListView.Visibility = Visibility.Visible;
         }
 
     }

@@ -129,6 +129,9 @@
   <data name="appbar_setting.Label" xml:space="preserve">
     <value>settings</value>
   </data>
+  <data name="appbar_share.Label" xml:space="preserve">
+    <value>share</value>
+  </data>
   <data name="appbar_website.Label" xml:space="preserve">
     <value>website</value>
   </data>
@@ -209,5 +212,8 @@
   </data>
   <data name="tb_search.PlaceholderText" xml:space="preserve">
     <value>enter a school name</value>
+  </data>
+  <data name="tb_searching.Text" xml:space="preserve">
+    <value>Searching...</value>
   </data>
 </root>

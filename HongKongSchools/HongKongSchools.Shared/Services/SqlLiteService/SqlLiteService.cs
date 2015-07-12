@@ -192,6 +192,31 @@ namespace HongKongSchools.Services.SqlLiteService
             return schools;
         }
 
+        public async Task<IEnumerable<School>> GetSchoolsByIds(List<int> schoolIds)
+        {
+            var languageId = await GetCurrentLanguageId();
+            var schools = await _conn.Table<School>().Where(x => schoolIds.Contains(x.Id)).ToListAsync();
+            var addresses = await _conn.Table<Address>().ToListAsync();
+            var names = await _conn.Table<Name>().ToListAsync();
+            var levels = await _conn.Table<Level>().ToListAsync();
+
+            foreach (var school in schools)
+            {
+                school.Address = addresses.Find(x => x.AddressId == school.AddressId && x.LanguageId == languageId);
+                school.SchoolName = names.Find(x => x.NameId == school.NameId && x.LanguageId == languageId);
+                school.Level = levels.Find(x => x.LevelId == school.LevelId && x.LanguageId == languageId);
+                school.Geopoint = Helpers.CoordinatesConverter.DMSToDDGeopoint(school.Latitude, school.Longitude);
+
+                if (string.IsNullOrEmpty(school.Address.Name))
+                    school.Address = addresses.Find(x => x.AddressId == school.AddressId && x.LanguageId == 1);
+
+                if (string.IsNullOrEmpty(school.SchoolName.SchoolName))
+                    school.SchoolName = names.Find(x => x.NameId == school.NameId && x.LanguageId == 1);
+            }
+
+            return schools;
+        }
+
         public async Task<School> GetSchoolById(int id)
         {
             try
@@ -242,7 +267,7 @@ namespace HongKongSchools.Services.SqlLiteService
                                                           .Where(x => x.AddressId == id)
                                                           .FirstOrDefaultAsync();
 
-                if (address == null)
+                if (string.IsNullOrEmpty(address.Name))
                 {
                     address = await _conn.Table<Address>().Where(x => x.LanguageId == 1)
                                           .Where(x => x.AddressId == id)
@@ -278,7 +303,7 @@ namespace HongKongSchools.Services.SqlLiteService
                                                     .Where(x => x.NameId == id)
                                                     .FirstOrDefaultAsync();
 
-                if (name == null)
+                if (string.IsNullOrEmpty(name.SchoolName))
                 {
                     name = await _conn.Table<Name>().Where(x => x.LanguageId == 1)
                                                     .Where(x => x.NameId == id)
@@ -508,6 +533,11 @@ namespace HongKongSchools.Services.SqlLiteService
             await _conn.DropTableAsync<School>();
             await _conn.DropTableAsync<Name>();
             await _conn.DropTableAsync<FinanceType>();
+            await _conn.DropTableAsync<District>();
+            await _conn.DropTableAsync<Gender>();
+            await _conn.DropTableAsync<Level>();
+            await _conn.DropTableAsync<SchoolSession>();
+            await _conn.DropTableAsync<Session>();
             await InitDb();
         }
     }
