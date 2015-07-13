@@ -193,11 +193,12 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>                
                 <Maps:MapControl x:Name="MapControl"
-                                     Grid.Row="3"
-                                     Grid.ColumnSpan="2"
-                                     Margin="5"
-                                     ZoomLevel="16"
-                                     Center="{Binding GeopointSelf, UpdateSourceTrigger=PropertyChanged}">
+                                 MapServiceToken="RmqcbKftzxc9dU9H_jyxZw"
+                                 Grid.Row="3"
+                                 Grid.ColumnSpan="2"
+                                 Margin="5"
+                                 ZoomLevel="16"
+                                 Center="{Binding GeopointSelf, UpdateSourceTrigger=PropertyChanged}">
                 </Maps:MapControl>
             </Grid>
         </PivotItem>

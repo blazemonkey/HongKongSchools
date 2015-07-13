@@ -134,9 +134,10 @@
                    Margin="-10,0,-10,0"
                    Padding="10">
             <Maps:MapControl x:Name="MapControl"
-                                     Grid.Row="2"
-                                     Grid.ColumnSpan="2"
-                                     Margin="5">
+                             MapServiceToken="RmqcbKftzxc9dU9H_jyxZw"
+                             Grid.Row="2"
+                             Grid.ColumnSpan="2"
+                             Margin="5">
             </Maps:MapControl>
         </PivotItem>
     </Pivot>

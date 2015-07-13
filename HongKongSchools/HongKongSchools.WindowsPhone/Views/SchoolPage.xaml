@@ -218,6 +218,7 @@
                                        TextWrapping="Wrap"
                                        Foreground="Gray"/>-->
                     <Maps:MapControl x:Name="MapControl"
+                                     MapServiceToken="RmqcbKftzxc9dU9H_jyxZw"
                                      Grid.Row="2"
                                      Grid.ColumnSpan="2"
                                      Margin="5"
