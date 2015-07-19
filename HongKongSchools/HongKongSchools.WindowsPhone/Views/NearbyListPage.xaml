@@ -94,6 +94,7 @@
                                       Icon="Phone"
                                       IsCompact="True"
                                       Margin="10"
+                                      RequestedTheme="Light"
                                       Command="{Binding Tag.CallCommand, ElementName=SchoolsListView}"
                                       CommandParameter="{Binding}"/>
                     </Grid>

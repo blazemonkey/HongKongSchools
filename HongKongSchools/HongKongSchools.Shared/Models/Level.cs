@@ -18,5 +18,18 @@ namespace HongKongSchools.Models
         public string Name { get; set; }
         [DataMember(Name = "languageId")]
         public int LanguageId { get; set; }
+
+        public static Level CreateAnyOption()
+        {
+            var resourceLoader = new Windows.ApplicationModel.Resources.ResourceLoader();
+            var localizedText = resourceLoader.GetString("any_level");
+
+            var level = new Level()
+            {
+                Name = localizedText
+            };
+
+            return level;
+        }
     }
 }

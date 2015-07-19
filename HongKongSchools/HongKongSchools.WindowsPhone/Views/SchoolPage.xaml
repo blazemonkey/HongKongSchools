@@ -34,8 +34,9 @@
                            Foreground="{StaticResource PivotHeaderForegroundColor}" />
                 </DataTemplate>
             </Pivot.HeaderTemplate>
-            <PivotItem x:Uid ="pi_info"               
-                   Background="{StaticResource PivotItemForegroundColor}" 
+            <PivotItem x:Uid ="pi_info"     
+                   Foreground="{StaticResource PivotItemForegroundColor}" 
+                   Background="{StaticResource PivotItemBackgroundColor}" 
                    Margin="-10,0,-10,0"
                    Padding="30">
                 <ScrollViewer>
@@ -179,8 +180,9 @@
                     </Grid>
                 </ScrollViewer>
             </PivotItem>
-            <PivotItem x:Uid ="pi_map"               
-                   Background="{StaticResource PivotItemForegroundColor}" 
+            <PivotItem x:Uid ="pi_map"        
+                   Foreground="{StaticResource PivotItemForegroundColor}" 
+                   Background="{StaticResource PivotItemBackgroundColor}" 
                    Margin="-10,0,-10,0"
                    Padding="10">
                 <Grid>

@@ -157,7 +157,7 @@ namespace HongKongSchools.Services.SqlLiteService
         {
             if (await _conn.Table<Language>().CountAsync() == 0)
             {
-                var english = new Language { LanguageId = 1, Name = "English", Culture = "en" };
+                var english = new Language { LanguageId = 1, Name = "english", Culture = "en" };
                 var cht = new Language { LanguageId = 2, Name = "繁體中文", Culture = "zh-Hant" };
                 var chs = new Language { LanguageId = 3, Name = "简体中文", Culture = "zh-Hans" };
 
@@ -181,12 +181,6 @@ namespace HongKongSchools.Services.SqlLiteService
                 school.SchoolName = names.Find(x => x.NameId == school.NameId && x.LanguageId == languageId);
                 school.Level = levels.Find(x => x.LevelId == school.LevelId && x.LanguageId == languageId);
                 school.Geopoint = Helpers.CoordinatesConverter.DMSToDDGeopoint(school.Latitude, school.Longitude);
-
-                if (string.IsNullOrEmpty(school.Address.Name))
-                    school.Address = addresses.Find(x => x.AddressId == school.AddressId && x.LanguageId == 1);
-
-                if (string.IsNullOrEmpty(school.SchoolName.SchoolName))
-                    school.SchoolName = names.Find(x => x.NameId == school.NameId && x.LanguageId == 1);
             }
 
             return schools;
@@ -206,12 +200,6 @@ namespace HongKongSchools.Services.SqlLiteService
                 school.SchoolName = names.Find(x => x.NameId == school.NameId && x.LanguageId == languageId);
                 school.Level = levels.Find(x => x.LevelId == school.LevelId && x.LanguageId == languageId);
                 school.Geopoint = Helpers.CoordinatesConverter.DMSToDDGeopoint(school.Latitude, school.Longitude);
-
-                if (string.IsNullOrEmpty(school.Address.Name))
-                    school.Address = addresses.Find(x => x.AddressId == school.AddressId && x.LanguageId == 1);
-
-                if (string.IsNullOrEmpty(school.SchoolName.SchoolName))
-                    school.SchoolName = names.Find(x => x.NameId == school.NameId && x.LanguageId == 1);
             }
 
             return schools;
@@ -528,16 +516,17 @@ namespace HongKongSchools.Services.SqlLiteService
 
         public async Task ClearLocalDb()
         {
-            await _conn.DropTableAsync<Address>();
-            await _conn.DropTableAsync<Religion>();
-            await _conn.DropTableAsync<School>();
-            await _conn.DropTableAsync<Name>();
-            await _conn.DropTableAsync<FinanceType>();
-            await _conn.DropTableAsync<District>();
-            await _conn.DropTableAsync<Gender>();
-            await _conn.DropTableAsync<Level>();
-            await _conn.DropTableAsync<SchoolSession>();
-            await _conn.DropTableAsync<Session>();
+            //await _conn.DropTableAsync<Address>();
+            //await _conn.DropTableAsync<Religion>();
+            //await _conn.DropTableAsync<School>();
+            //await _conn.DropTableAsync<Name>();
+            //await _conn.DropTableAsync<FinanceType>();
+            //await _conn.DropTableAsync<District>();
+            //await _conn.DropTableAsync<Gender>();
+            //await _conn.DropTableAsync<Level>();
+            //await _conn.DropTableAsync<SchoolSession>();
+            //await _conn.DropTableAsync<Session>();
+            //await _conn.DropTableAsync<Language>();
             await InitDb();
         }
     }

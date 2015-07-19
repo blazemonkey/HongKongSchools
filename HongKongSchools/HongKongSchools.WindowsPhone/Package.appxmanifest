@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="4a67548d-405c-4023-a3ae-cf90a5b6b9c1" Publisher="CN=Gary" Version="1.0.0.0" />
-  <mp:PhoneIdentity PhoneProductId="4a67548d-405c-4023-a3ae-cf90a5b6b9c1" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="39032MosuApps.HKSchoolsNetwork" Publisher="CN=EBB1F7FA-DD0A-4736-915B-A2D0AE8D0BA4" Version="1.1.0.5" />
+  <mp:PhoneIdentity PhoneProductId="5bbbdde0-0591-4ba5-b658-da935cfd6346" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>HongKongSchools.WindowsPhone</DisplayName>
-    <PublisherDisplayName>Gary</PublisherDisplayName>
+    <DisplayName>香港校網 HK Schools Network</DisplayName>
+    <PublisherDisplayName>Mosu Apps</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Prerequisites>
@@ -16,8 +16,12 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="HongKongSchools.WindowsPhone.App">
-      <m3:VisualElements DisplayName="HongKongSchools.WindowsPhone" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="HongKongSchools.WindowsPhone" ForegroundText="light" BackgroundColor="transparent">
-        <m3:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png">
+      <m3:VisualElements DisplayName="香港校網 HK Schools Network" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="HongKongSchools.WindowsPhone" ForegroundText="light" BackgroundColor="transparent">
+        <m3:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square71x71Logo="Assets\Square71x71Logo.png">
+          <m3:ShowNameOnTiles>
+            <m3:ShowOn Tile="square150x150Logo" />
+            <m3:ShowOn Tile="wide310x150Logo" />
+          </m3:ShowNameOnTiles>
         </m3:DefaultTile>
         <m3:SplashScreen Image="Assets\SplashScreen.png" />
       </m3:VisualElements>

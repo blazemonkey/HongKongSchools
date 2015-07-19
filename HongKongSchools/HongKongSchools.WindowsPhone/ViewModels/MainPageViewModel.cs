@@ -2,6 +2,7 @@
 using HongKongSchools.Models;
 using HongKongSchools.Services.AppDataService;
 using HongKongSchools.Services.JSONService;
+using HongKongSchools.Services.MessageDialogService;
 using HongKongSchools.Services.MessengerService;
 using HongKongSchools.Services.NavigationService;
 using HongKongSchools.Services.SqlLiteService;
@@ -29,6 +30,7 @@ namespace HongKongSchools.ViewModels
         private IMessengerService _msg;
         private IAppDataService _appData;
         private IJSONService _json;
+        private IMessageDialogService _dialog;
 
         private string _searchText;
         private ObservableCollection<School> _schools;
@@ -79,6 +81,10 @@ namespace HongKongSchools.ViewModels
             {
                 _districts = value;
                 OnPropertyChanged("Districts");
+                if (!Districts.Any())
+                {
+                    Districts.Add(District.CreateAnyOption());
+                }
             }
         }
 
@@ -99,6 +105,10 @@ namespace HongKongSchools.ViewModels
             {
                 _levels = value;
                 OnPropertyChanged("Levels");
+                if (!Levels.Any())
+                {
+                    Levels.Add(Level.CreateAnyOption());
+                }
             }
         }
 
@@ -119,6 +129,10 @@ namespace HongKongSchools.ViewModels
             {
                 _financeTypes = value;
                 OnPropertyChanged("FinanceTypes");
+                if (!FinanceTypes.Any())
+                {
+                    FinanceTypes.Add(FinanceType.CreateAnyOption());
+                }
             }
         }
 
@@ -228,13 +242,15 @@ namespace HongKongSchools.ViewModels
         public DelegateCommand TapNearbyCommand { get; set; }
         public DelegateCommand TapCenterMapCommand { get; set; }
 
-        public MainPageViewModel(ISqlLiteService db, INavigationService nav, IMessengerService msg, IAppDataService appData, IJSONService json)
+        public MainPageViewModel(ISqlLiteService db, INavigationService nav, IMessengerService msg, 
+            IAppDataService appData, IJSONService json, IMessageDialogService dialog)
         {
             _db = db;
             _nav = nav;
             _msg = msg;
             _appData = appData;
             _json = json;
+            _dialog = dialog;
 
             Schools = new ObservableCollection<School>();
             Districts = new ObservableCollection<District>();
@@ -310,8 +326,8 @@ namespace HongKongSchools.ViewModels
                 return;
             }
             
-            LongitudeSelf = _appData.GetKeyValue<double>("LastPositionLongitude");
-            LatitudeSelf = _appData.GetKeyValue<double>("LastPositionLatitude");
+            LongitudeSelf = _appData.GetSettingsKeyValue<double>("LastPositionLongitude");
+            LatitudeSelf = _appData.GetSettingsKeyValue<double>("LastPositionLatitude");
             
             var basicGeoposition = new BasicGeoposition();
             basicGeoposition.Latitude = LatitudeSelf;
@@ -337,31 +353,49 @@ namespace HongKongSchools.ViewModels
                 System.Diagnostics.Debug.WriteLine(school.SchoolName.SchoolName);
             }
 
-            _appData.UpdateKeyValue<double>("LastPositionLongitude", LongitudeSelf);
-            _appData.UpdateKeyValue<double>("LastPositionLatitude", LatitudeSelf);
+            _appData.UpdateSettingsKeyValue<double>("LastPositionLongitude", LongitudeSelf);
+            _appData.UpdateSettingsKeyValue<double>("LastPositionLatitude", LatitudeSelf);
 
             _msg.Send<Geopoint>(GeopointSelf, "PositionChanged");
             _msg.Send<IEnumerable<School>>(NearbySchools, "NearbySchoolsChanged");
         }
 
-        public void ExecuteTapSearchSchoolsCommand()
+        public async void ExecuteTapSearchSchoolsCommand()
         {
+            if (string.IsNullOrEmpty(SearchText) && SelectedDistrict.DistrictId == 0 && SelectedFinanceType.FinanceTypeId == 0
+                && SelectedLevel.LevelId == 0)
+            {
+                var resourceLoader = new Windows.ApplicationModel.Resources.ResourceLoader();
+                var localizedText = resourceLoader.GetString("search_error_message");
+
+                await _dialog.Show(localizedText);
+                return;
+            }
+
             var results = new List<int>();
+            var query = Schools.AsQueryable();
 
-            if (string.IsNullOrEmpty(SearchText))
+            if (SelectedDistrict.DistrictId > 0)
             {
-                results = Schools.Where(x => x.DistrictId == SelectedDistrict.DistrictId)
-                                     .Where(x => x.LevelId == SelectedLevel.LevelId)
-                                     .Where(x => x.FinanceTypeId == SelectedFinanceType.FinanceTypeId)
-                                     .Select(x => x.Id).ToList();
-            }
-            else
-            {
-                results = Schools.Where(x => x.SchoolName.SchoolName.Contains(SearchText)).Select(x => x.Id).ToList();
+                query = query.Where(x => x.DistrictId == SelectedDistrict.DistrictId);
             }
 
-            var resultsJson = _json.Serialize(results);
-            _appData.UpdateKeyValue<string>("ResultsPageSchools", resultsJson);
+            if (SelectedFinanceType.FinanceTypeId > 0)
+            {
+                query = query.Where(x => x.FinanceTypeId == SelectedFinanceType.FinanceTypeId);
+            }
+
+            if (SelectedLevel.LevelId > 0)
+            {
+                query = query.Where(x => x.LevelId == SelectedLevel.LevelId);
+            }
+
+            if (!string.IsNullOrEmpty(SearchText))
+            {
+                query = query.Where(x => x.SchoolName.SchoolName.Contains(SearchText.ToUpper()));
+            }
+
+            NavigationSettings.ResultsPage = query;
             _nav.Navigate(Experiences.Results);
         }
 
@@ -372,14 +406,14 @@ namespace HongKongSchools.ViewModels
 
         public void ExecuteTapSchoolCommand(School school)
         {
-            _appData.UpdateKeyValue<int>("SchoolsPageSchool", school.Id);
+            _appData.UpdateSettingsKeyValue<int>("SchoolsPageSchool", school.Id);
             _nav.Navigate(Experiences.School);
         }
 
         public void ExecuteTapNearbyCommand()
         {
             var nearbyJson = _json.Serialize(NearbySchools.Select(x => x.Id));
-            _appData.UpdateKeyValue<string>("NearbyPageSchools", nearbyJson);
+            _appData.UpdateSettingsKeyValue<string>("NearbyPageSchools", nearbyJson);
             _nav.Navigate(Experiences.NearbyList);
         }
 

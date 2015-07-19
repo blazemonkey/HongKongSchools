@@ -72,7 +72,7 @@ namespace HongKongSchools.Views
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            var schoolId = _appData.GetKeyValue<int>("SchoolsPageSchool");
+            var schoolId = _appData.GetSettingsKeyValue<int>("SchoolsPageSchool");
             var selectedSchool = await _db.GetSchoolById(schoolId);
 
             if (selectedSchool.Geopoint == null)

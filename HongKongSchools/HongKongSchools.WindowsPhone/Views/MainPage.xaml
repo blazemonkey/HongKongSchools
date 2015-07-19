@@ -46,7 +46,8 @@
         </Pivot.HeaderTemplate>
         <PivotItem x:Name="PivotItemSearch"
                    x:Uid ="search"               
-                   Background="{StaticResource PivotItemForegroundColor}" 
+                   Foreground="{StaticResource PivotItemForegroundColor}" 
+                   Background="{StaticResource PivotItemBackgroundColor}" 
                    Margin="-10,0,-10,0"
                    Padding="30">   
             <Grid>          
@@ -57,7 +58,7 @@
                     <TextBlock x:Name="Loading"
                                x:Uid="tb_loading"
                                Margin="0,5,0,0"
-                               HorizontalAlignment="Center"
+                               HorizontalAlignment="Center"                               
                                FontSize="{StaticResource LoadingTextSize}"/>
                 </StackPanel>
                 <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Inverse}">
@@ -75,7 +76,9 @@
                     <TextBox Grid.Row="0" 
                              Grid.ColumnSpan="2" 
                              x:Uid="tb_search"
-                             Text="{Binding SearchText, Mode=TwoWay}"/>
+                             BorderThickness="1"
+                             Text="{Binding SearchText, Mode=TwoWay}" 
+                             Style="{StaticResource AccentTextBoxStyle}"/>
                     <TextBlock x:Uid="tb_info_district"
                                        Grid.Row="1"
                                        Grid.Column="0"
@@ -86,8 +89,7 @@
                               Grid.Column="1"
                               ItemsSource="{Binding Districts}"
                               SelectedValue="{Binding SelectedDistrict, Mode=TwoWay}"
-                              DisplayMemberPath="Name" 
-                              FontSize="18"
+                              DisplayMemberPath="Name"
                               VerticalAlignment="Center">
                     </ComboBox>
                     <TextBlock x:Uid="tb_info_level"
@@ -101,9 +103,7 @@
                               ItemsSource="{Binding Levels}"
                               SelectedValue="{Binding SelectedLevel, Mode=TwoWay}"
                               DisplayMemberPath="Name" 
-                              FontSize="18"
-                              VerticalAlignment="Center"
-                               >
+                              VerticalAlignment="Center">
                     </ComboBox>
                     <TextBlock x:Uid="tb_info_financeType"
                                        Grid.Row="3"
@@ -116,7 +116,6 @@
                               ItemsSource="{Binding FinanceTypes}"
                               SelectedValue="{Binding SelectedFinanceType, Mode=TwoWay}"
                               DisplayMemberPath="Name" 
-                              FontSize="18"
                               VerticalAlignment="Center">
                     </ComboBox>
                     <Button x:Uid="b_search_schools"
@@ -177,12 +176,13 @@
                             </Style>
                         </Button.Style>
                     </Button>
+                    <CheckBox Content="CheckBox" HorizontalAlignment="Left" Height="9" Margin="144,10,0,0" VerticalAlignment="Top" Width="0"/>
                 </Grid>
             </Grid>
         </PivotItem>
         <PivotItem x:Name="PivotItemNearby"
                    x:Uid ="nearby"
-                   Background="{StaticResource PivotItemForegroundColor}" 
+                   Background="{StaticResource PivotItemBackgroundColor}" 
                    Margin="-10,0,-10,0">
             <Grid>
                 <Grid.ColumnDefinitions>

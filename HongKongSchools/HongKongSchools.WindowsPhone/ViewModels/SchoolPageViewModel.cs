@@ -102,7 +102,7 @@ namespace HongKongSchools.ViewModels
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
-            var schoolId = _appData.GetKeyValue<int>("SchoolsPageSchool");
+            var schoolId = _appData.GetSettingsKeyValue<int>("SchoolsPageSchool");
             var selectedSchool = await _sql.GetSchoolById(schoolId);
 
             SelectedSchool = selectedSchool;

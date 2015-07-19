@@ -69,9 +69,10 @@ namespace HongKongSchools.Views
             SchoolsListView.Visibility = Visibility.Collapsed;
             MainPivot.SelectedIndex = 0;
 
-            var schoolsJson = _appData.GetKeyValue<string>("ResultsPageSchools");
-            var schoolsId = _json.Deserialize<IEnumerable<int>>(schoolsJson).ToList();
-            var schools = await _db.GetSchoolsByIds(schoolsId);
+            var schools = NavigationSettings.ResultsPage.ToList();
+            //var schoolsJson = _appData.GetSettingsKeyValue<string>("ResultsPageSchools");
+            //var schoolsId = _json.Deserialize<IEnumerable<int>>(schoolsJson).ToList();
+           // var schools = await _db.GetSchoolsByIds(schoolsId);
 
             if (schools == null || !schools.Any())
             {
@@ -104,7 +105,7 @@ namespace HongKongSchools.Views
             SchoolsListView.Visibility = Visibility.Visible;
 
             await SetCenterOfPoints(schools.Where(x => x.Geopoint != null).Select(x => x.Geopoint));
-            MapControl.ZoomLevel = 12;
+            MapControl.ZoomLevel = 11;
         }
 
         private void AddNearbySchool(School school, BasicGeoposition location, int index)
@@ -200,7 +201,7 @@ namespace HongKongSchools.Views
             var grid = (Grid)sender;
             var school = (School)grid.Tag;
 
-            _appData.UpdateKeyValue<int>("SchoolsPageSchool", school.Id);
+            _appData.UpdateSettingsKeyValue<int>("SchoolsPageSchool", school.Id);
             _msg.Send<School>(school, "TapSchool");
         }
     }

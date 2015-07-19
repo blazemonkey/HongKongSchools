@@ -59,7 +59,7 @@ namespace HongKongSchools.Views
             SchoolsListTextBlock.Visibility = Visibility.Collapsed;
             SchoolsListView.Visibility = Visibility.Collapsed;
 
-            var schoolsJson = _appData.GetKeyValue<string>("NearbyPageSchools");
+            var schoolsJson = _appData.GetSettingsKeyValue<string>("NearbyPageSchools");
             var schoolsId = _json.Deserialize<IEnumerable<int>>(schoolsJson).ToList();
             var schools = await _db.GetSchoolsByIds(schoolsId);
 

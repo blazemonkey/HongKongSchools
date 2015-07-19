@@ -34,6 +34,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\FullSchoolModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Gender.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ILanguage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ISchoolModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Language.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ModelBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Level.cs" />
@@ -42,12 +43,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\School.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\SchoolSession.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Session.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NavigationSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\AppDataService\AppDataService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\AppDataService\IAppDataService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\FileReaderService\FileReaderService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\FileReaderService\IFileReaderService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\JSONService\IJSONService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\JSONService\JSONService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\MessageDialogService\IMessageDialogService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\MessageDialogService\MessageDialogService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\MessengerService\IMessengerService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\MessengerService\MessengerService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\NavigationService\INavigationService.cs" />

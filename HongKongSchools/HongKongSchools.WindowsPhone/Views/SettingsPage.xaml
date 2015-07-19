@@ -25,18 +25,32 @@
                 </DataTemplate>
             </Pivot.HeaderTemplate>
             <PivotItem x:Uid ="pi_settings"               
-                   Background="{StaticResource PivotItemForegroundColor}" 
-                   Foreground="{StaticResource AppForegroundColor}"
+                   Background="{StaticResource PivotItemBackgroundColor}" 
+                   Foreground="{StaticResource PivotItemForegroundColor}" 
                    Margin="-10,0,-10,0"
-                   Padding="30"
-                   FontSize="{StaticResource PivotItemTextSize}">
+                   Padding="30">
                 <Grid>
-                    <StackPanel>
-                        <TextBlock x:Uid="language"/>
-                        <ComboBox ItemsSource="{Binding Languages}"
-                                  SelectedValue="{Binding SelectedLanguage, Mode=TwoWay}"
-                                  DisplayMemberPath="Name"/>
-                    </StackPanel>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.5*"/>
+                        <ColumnDefinition Width="0.5*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock x:Uid="language"
+                                       Grid.Row="1"
+                                       Grid.Column="0"
+                                       Margin="5"
+                                       FontSize="18"
+                                       VerticalAlignment="Center"/>
+                    <ComboBox Grid.Row="1"
+                              Grid.Column="1"
+                              ItemsSource="{Binding Languages}"
+                              SelectedValue="{Binding SelectedLanguage, Mode=TwoWay}"
+                              DisplayMemberPath="Name"
+                              VerticalAlignment="Center">
+                    </ComboBox>
                 </Grid>                
             </PivotItem>
         </Pivot>

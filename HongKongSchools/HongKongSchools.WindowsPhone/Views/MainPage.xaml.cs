@@ -186,7 +186,7 @@ namespace HongKongSchools.Views
             var grid = (Grid)sender;
             var school = (School)grid.Tag;
 
-            _appData.UpdateKeyValue<int>("SchoolsPageSchool", school.Id);
+            _appData.UpdateSettingsKeyValue<int>("SchoolsPageSchool", school.Id);
             _msg.Send<School>(school, "TapSchool");
         }
 

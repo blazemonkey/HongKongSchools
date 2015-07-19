@@ -37,7 +37,7 @@ namespace HongKongSchools.ViewModels
 
         public void ExecuteTapSchoolCommand(School school)
         {
-            _appData.UpdateKeyValue<int>("SchoolsPageSchool", school.Id);
+            _appData.UpdateSettingsKeyValue<int>("SchoolsPageSchool", school.Id);
             _nav.Navigate(Experiences.School);
         }
 

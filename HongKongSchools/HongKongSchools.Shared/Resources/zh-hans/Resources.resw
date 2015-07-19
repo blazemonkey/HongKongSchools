@@ -117,6 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="any_district" xml:space="preserve">
+    <value>任何分区</value>
+  </data>
+  <data name="any_finance_type" xml:space="preserve">
+    <value>任何资助种类</value>
+  </data>
+  <data name="any_level" xml:space="preserve">
+    <value>任何学校类型</value>
+  </data>
   <data name="appbar_call.Label" xml:space="preserve">
     <value>致电</value>
   </data>
@@ -139,7 +148,7 @@
     <value>搜寻学校</value>
   </data>
   <data name="language.Text" xml:space="preserve">
-    <value>语言: </value>
+    <value>语言</value>
   </data>
   <data name="nearby.Header" xml:space="preserve">
     <value>附近学校</value>
@@ -158,6 +167,9 @@
   </data>
   <data name="search.Header" xml:space="preserve">
     <value>搜寻</value>
+  </data>
+  <data name="search_error_message" xml:space="preserve">
+    <value>请至少选择一个选项</value>
   </data>
   <data name="tb_info_address.Text" xml:space="preserve">
     <value>地址</value>

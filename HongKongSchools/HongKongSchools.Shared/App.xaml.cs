@@ -1,6 +1,7 @@
 ﻿using HongKongSchools.Services.AppDataService;
 using HongKongSchools.Services.FileReaderService;
 using HongKongSchools.Services.JSONService;
+using HongKongSchools.Services.MessageDialogService;
 using HongKongSchools.Services.MessengerService;
 using HongKongSchools.Services.NavigationService;
 using HongKongSchools.Services.SqlLiteService;
@@ -58,6 +59,7 @@ namespace HongKongSchools
             Container.Register<IFileReaderService, FileReaderService>();
             Container.Register<IJSONService, JSONService>();
             Container.Register<ISqlLiteService, SqlLiteService>();
+            Container.Register<IMessageDialogService, MessageDialogService>();
 
             await Container.GetInstance<SqlLiteService>().ClearLocalDb();
             Container.GetInstance<AppDataService>().InitializeAppDataContainer();

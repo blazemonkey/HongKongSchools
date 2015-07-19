@@ -38,8 +38,9 @@
                            Foreground="{StaticResource PivotHeaderForegroundColor}" />
             </DataTemplate>
         </Pivot.HeaderTemplate>
-        <PivotItem x:Uid ="pi_list"               
-                   Background="{StaticResource PivotItemForegroundColor}" 
+        <PivotItem x:Uid ="pi_list"           
+                   Foreground="{StaticResource PivotItemForegroundColor}" 
+                   Background="{StaticResource PivotItemBackgroundColor}" 
                    Margin="-20,0,-20,0"
                    Padding="30">
             <Grid>
@@ -111,6 +112,7 @@
                                       Icon="Phone"
                                       IsCompact="True"
                                       Margin="10"
+                                      RequestedTheme="Light"
                                       Command="{Binding Tag.CallCommand, ElementName=SchoolsListView}"
                                       CommandParameter="{Binding}"/>
                             </Grid>
@@ -130,7 +132,7 @@
             </Grid>
         </PivotItem>
         <PivotItem x:Uid ="pi_map"               
-                   Background="{StaticResource PivotItemForegroundColor}" 
+                   Background="{StaticResource PivotItemBackgroundColor}" 
                    Margin="-10,0,-10,0"
                    Padding="10">
             <Maps:MapControl x:Name="MapControl"
