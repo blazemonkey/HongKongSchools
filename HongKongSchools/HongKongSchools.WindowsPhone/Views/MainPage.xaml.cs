@@ -65,7 +65,16 @@ namespace HongKongSchools.Views
                     AppBarNearby.Visibility = Visibility.Visible;
                     AppBarCenterMap.Visibility = Visibility.Visible;
                     break;
+                case 2:
+                    AppBarSetting.Visibility = Visibility.Visible;
+                    AppBarNearby.Visibility = Visibility.Collapsed;
+                    AppBarCenterMap.Visibility = Visibility.Collapsed;
+                    break;
             }
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
 
         }
 

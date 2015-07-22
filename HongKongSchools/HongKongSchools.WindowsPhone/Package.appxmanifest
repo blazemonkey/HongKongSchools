@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="39032MosuApps.HKSchoolsNetwork" Publisher="CN=EBB1F7FA-DD0A-4736-915B-A2D0AE8D0BA4" Version="1.1.0.5" />
+  <Identity Name="39032MosuApps.HKSchoolsNetwork" Publisher="CN=EBB1F7FA-DD0A-4736-915B-A2D0AE8D0BA4" Version="1.2.0.0" />
   <mp:PhoneIdentity PhoneProductId="5bbbdde0-0591-4ba5-b658-da935cfd6346" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>香港校網 HK Schools Network</DisplayName>
@@ -20,7 +20,6 @@
         <m3:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square71x71Logo="Assets\Square71x71Logo.png">
           <m3:ShowNameOnTiles>
             <m3:ShowOn Tile="square150x150Logo" />
-            <m3:ShowOn Tile="wide310x150Logo" />
           </m3:ShowNameOnTiles>
         </m3:DefaultTile>
         <m3:SplashScreen Image="Assets\SplashScreen.png" />

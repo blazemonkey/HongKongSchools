@@ -147,11 +147,20 @@
   <data name="b_search_schools.Content" xml:space="preserve">
     <value>search schools</value>
   </data>
+  <data name="confirm_unfavourite_message" xml:space="preserve">
+    <value>Are sure you want to remove [{0}] ?</value>
+  </data>
+  <data name="favourites.Header" xml:space="preserve">
+    <value>favourites</value>
+  </data>
   <data name="language.Text" xml:space="preserve">
     <value>language</value>
   </data>
   <data name="nearby.Header" xml:space="preserve">
     <value>nearby</value>
+  </data>
+  <data name="pi_about.Header" xml:space="preserve">
+    <value>about</value>
   </data>
   <data name="pi_info.Header" xml:space="preserve">
     <value>info</value>
@@ -227,5 +236,8 @@
   </data>
   <data name="tb_searching.Text" xml:space="preserve">
     <value>Searching...</value>
+  </data>
+  <data name="tb_version.Text" xml:space="preserve">
+    <value>version</value>
   </data>
 </root>

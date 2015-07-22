@@ -499,6 +499,11 @@ namespace HongKongSchools.Services.SqlLiteService
             }
         }
 
+        public async Task UpdateFavourites(School school)
+        {
+            await _conn.UpdateAsync(school);
+        }
+
         private async Task<int> GetCurrentLanguageId()
         {
             var languages = await GetLanguages();
@@ -527,6 +532,7 @@ namespace HongKongSchools.Services.SqlLiteService
             //await _conn.DropTableAsync<SchoolSession>();
             //await _conn.DropTableAsync<Session>();
             //await _conn.DropTableAsync<Language>();
+            //await _conn.DropTableAsync<Favourite>();
             await InitDb();
         }
     }

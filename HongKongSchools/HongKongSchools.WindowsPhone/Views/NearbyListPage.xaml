@@ -17,6 +17,7 @@
 
     <controls:PageBase.Resources>
         <CollectionViewSource x:Name="schoolsCvs" IsSourceGrouped="True"/>
+        <converters:IsFavouriteConverter x:Key="IsFavouriteConverter"/>
     </controls:PageBase.Resources>
 
     <Grid>
@@ -34,6 +35,7 @@
             x:Uid="tb_nearby_schools_empty"
             Grid.Row="1"
             Margin="10"
+            TextWrapping="Wrap"
             FontSize="{StaticResource PivotItemTextSize}"/>
         <StackPanel x:Name="SearchingStackPanel"
                             Grid.Row="2"
@@ -91,11 +93,12 @@
                         </Grid>
                         <AppBarButton Grid.Column="2"
                                       Width="Auto"                                           
-                                      Icon="Phone"
+                                      Icon="Favorite"
                                       IsCompact="True"
                                       Margin="10"
                                       RequestedTheme="Light"
-                                      Command="{Binding Tag.CallCommand, ElementName=SchoolsListView}"
+                                      Foreground="{Binding IsFavourite, Converter={StaticResource IsFavouriteConverter}}"
+                                      Command="{Binding Tag.FavouritesCommand, ElementName=SchoolsListView}"
                                       CommandParameter="{Binding}"/>
                     </Grid>
                 </DataTemplate>

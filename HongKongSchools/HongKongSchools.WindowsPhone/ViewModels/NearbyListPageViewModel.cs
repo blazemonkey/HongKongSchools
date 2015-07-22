@@ -23,7 +23,7 @@ namespace HongKongSchools.ViewModels
         private IAppDataService _appData;
 
         public DelegateCommand<School> TapSchoolCommand { get; set; }
-        public DelegateCommand<School> CallCommand { get; set; }
+        public DelegateCommand<School> FavouritesCommand { get; set; }
 
         public NearbyListPageViewModel(ISqlLiteService db, INavigationService nav, IAppDataService appData)
         {
@@ -32,7 +32,7 @@ namespace HongKongSchools.ViewModels
             _appData = appData;
 
             TapSchoolCommand = new DelegateCommand<School>(ExecuteTapSchoolCommand);
-            CallCommand = new DelegateCommand<School>(ExecuteCallCommand);
+            FavouritesCommand = new DelegateCommand<School>(ExecuteFavouritesCommand);
         }
 
         public void ExecuteTapSchoolCommand(School school)
@@ -41,13 +41,10 @@ namespace HongKongSchools.ViewModels
             _nav.Navigate(Experiences.School);
         }
 
-        private void ExecuteCallCommand(School school)
+        private async void ExecuteFavouritesCommand(School school)
         {
-            if (string.IsNullOrEmpty(school.Telephone))
-                return;
-
-            var original = school.Telephone;
-            Windows.ApplicationModel.Calls.PhoneCallManager.ShowPhoneCallUI(original, school.SchoolName.SchoolName);
+            school.IsFavourite = !school.IsFavourite;
+            await _db.UpdateFavourites(school);
         }
     }
 

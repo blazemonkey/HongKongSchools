@@ -26,6 +26,7 @@ namespace HongKongSchools.Services.SqlLiteService
         Task<District> GetDistrictById(int id);
         Task<IEnumerable<Session>> GetSessions();
         Task<Session> GetSessionById(int id);
+        Task UpdateFavourites(School school);
         Task<IEnumerable<Language>> GetLanguages();
         Task<Language> GetLanguageById(int id);
     }

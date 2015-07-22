@@ -94,18 +94,13 @@ namespace HongKongSchools.ViewModels
             _msg.Send<School>(school, "ResetZoomLevel");
         }
 
-        public override void OnNavigatedFrom(Dictionary<string, object> viewModelState, bool suspending)
-        {
-            _dataTransferManager.DataRequested -= new TypedEventHandler<DataTransferManager, DataRequestedEventArgs>(ShareTextHandler);
-            base.OnNavigatedFrom(viewModelState, suspending);
-        } 
-
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
             var schoolId = _appData.GetSettingsKeyValue<int>("SchoolsPageSchool");
             var selectedSchool = await _sql.GetSchoolById(schoolId);
 
             SelectedSchool = selectedSchool;
+
             base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
         }
 

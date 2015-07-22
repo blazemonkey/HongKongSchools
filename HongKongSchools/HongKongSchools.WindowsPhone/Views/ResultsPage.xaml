@@ -18,6 +18,7 @@
 
     <controls:PageBase.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:IsFavouriteConverter x:Key="IsFavouriteConverter"/>
         <CollectionViewSource x:Name="schoolsCvs" />
         <Storyboard x:Name="SearchingStoryboard">
             <DoubleAnimation
@@ -62,6 +63,7 @@
                     x:Uid="tb_results_empty"
                     Grid.Row="1"
                     Margin="10"
+                    TextWrapping="Wrap"
                     FontSize="{StaticResource PivotItemTextSize}"/>
                 <ListView x:Name="SchoolsListView"
                   Grid.Row="2" 
@@ -109,11 +111,12 @@
                                 </Grid>
                                 <AppBarButton Grid.Column="2"
                                       Width="Auto"                                           
-                                      Icon="Phone"
+                                      Icon="Favorite"
                                       IsCompact="True"
                                       Margin="10"
-                                      RequestedTheme="Light"
-                                      Command="{Binding Tag.CallCommand, ElementName=SchoolsListView}"
+                                      RequestedTheme="Light"       
+                                      Foreground="{Binding IsFavourite, Converter={StaticResource IsFavouriteConverter}}"
+                                      Command="{Binding Tag.FavouritesCommand, ElementName=SchoolsListView}"
                                       CommandParameter="{Binding}"/>
                             </Grid>
                         </DataTemplate>

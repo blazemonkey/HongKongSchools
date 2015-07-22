@@ -10,6 +10,8 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using Windows.ApplicationModel;
 using Windows.UI.Xaml.Navigation;
 
 namespace HongKongSchools.ViewModels
@@ -23,6 +25,7 @@ namespace HongKongSchools.ViewModels
         private ObservableCollection<Language> _languages;
         private Language _selectedLanguage;
         private int _initialLanguageId;
+        private string _version;
 
         public ObservableCollection<Language> Languages
         {
@@ -45,12 +48,22 @@ namespace HongKongSchools.ViewModels
             }
         }
 
+        public string Version
+        {
+            get { return _version; }
+            set
+            {
+                _version = value;
+                OnPropertyChanged("Version");
+            }
+        }
+
         public SettingsPageViewModel(ISqlLiteService db, INavigationService nav)
         {
             _db = db;
             _nav = nav;
 
-            Languages = new ObservableCollection<Language>();            
+            Languages = new ObservableCollection<Language>();
         }
 
         private async Task PopulateLanguages()
@@ -84,6 +97,12 @@ namespace HongKongSchools.ViewModels
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
             await PopulateLanguages();
+
+            var file = await Package.Current.InstalledLocation.GetFileAsync("AppxManifest.xml");
+            var appVersion = XDocument.Load("AppxManifest.xml").Root.Elements().Where(x => x.Name.LocalName == "Identity")
+                                .First().Attributes().Where(x => x.Name.LocalName == "Version").First().Value;
+            Version = appVersion;
+
             base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
         }
 

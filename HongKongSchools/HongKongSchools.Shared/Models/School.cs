@@ -10,6 +10,9 @@ namespace HongKongSchools.Models
     [DataContract]
     public class School : ModelBase
     {
+        private bool _isFavourite;
+        private int _displayOrder;
+
         [PrimaryKey]
         [DataMember(Name = "id")]
         public int Id { get; set; }
@@ -76,9 +79,27 @@ namespace HongKongSchools.Models
         [Ignore]
         [DataMember(Name = "sessions")]
         public List<Session> Sessions { get; set; }
+        [DataMember(Name = "isFavourite")]
+        public bool IsFavourite
+        {
+            get { return _isFavourite; }
+            set
+            {
+                _isFavourite = value;
+                RaisePropertyChanged("IsFavourite");
+            }
+        }
         [Ignore]
         public Geopoint Geopoint { get; set; }
         [Ignore]
-        public int DisplayOrder { get; set; }
+        public int DisplayOrder
+        {
+            get { return _displayOrder; }
+            set
+            {
+                _displayOrder = value;
+                RaisePropertyChanged("DisplayOrder");
+            }
+        }
     }
 }

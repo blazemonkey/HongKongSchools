@@ -11,6 +11,7 @@ using Microsoft.Practices.Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
@@ -34,6 +35,7 @@ namespace HongKongSchools.ViewModels
 
         private string _searchText;
         private ObservableCollection<School> _schools;
+        private ObservableCollection<School> _favourites;
 
         private ObservableCollection<District> _districts;
         private District _selectedDistrict;
@@ -71,6 +73,16 @@ namespace HongKongSchools.ViewModels
             {
                 _schools = value;
                 OnPropertyChanged("Schools");
+            }
+        }
+
+        public ObservableCollection<School> Favourites
+        {
+            get { return _favourites; }
+            private set
+            {
+                _favourites = value;
+                OnPropertyChanged("Favourites");
             }
         }
 
@@ -241,6 +253,7 @@ namespace HongKongSchools.ViewModels
         public DelegateCommand<School> TapSchoolCommand { get; set; }
         public DelegateCommand TapNearbyCommand { get; set; }
         public DelegateCommand TapCenterMapCommand { get; set; }
+        public DelegateCommand<School> UnfavouritesCommand { get; set; }
 
         public MainPageViewModel(ISqlLiteService db, INavigationService nav, IMessengerService msg, 
             IAppDataService appData, IJSONService json, IMessageDialogService dialog)
@@ -262,6 +275,7 @@ namespace HongKongSchools.ViewModels
             TapSchoolCommand = new DelegateCommand<School>(ExecuteTapSchoolCommand);
             TapNearbyCommand = new DelegateCommand(ExecuteTapNearbyCommand);
             TapCenterMapCommand = new DelegateCommand(ExecuteTapCenterMapCommand);
+            UnfavouritesCommand = new DelegateCommand<School>(ExecuteUnfavouritesCommand);
 
             _msg.Register<School>(this, "TapSchool", TapSchool);
         }
@@ -372,7 +386,6 @@ namespace HongKongSchools.ViewModels
                 return;
             }
 
-            var results = new List<int>();
             var query = Schools.AsQueryable();
 
             if (SelectedDistrict.DistrictId > 0)
@@ -412,8 +425,11 @@ namespace HongKongSchools.ViewModels
 
         public void ExecuteTapNearbyCommand()
         {
-            var nearbyJson = _json.Serialize(NearbySchools.Select(x => x.Id));
-            _appData.UpdateSettingsKeyValue<string>("NearbyPageSchools", nearbyJson);
+            if (NearbySchools == null)
+                NavigationSettings.NearbyPage = null;
+            else
+                NavigationSettings.NearbyPage = NearbySchools.AsQueryable();
+
             _nav.Navigate(Experiences.NearbyList);
         }
 
@@ -423,6 +439,20 @@ namespace HongKongSchools.ViewModels
             {
                 _msg.Send<Geopoint>(GeopointSelf, "ResetZoomLevel");
             }
+        }
+
+        public async void ExecuteUnfavouritesCommand(School school)
+        {
+            var resourceLoader = new Windows.ApplicationModel.Resources.ResourceLoader();
+            var localizedText = resourceLoader.GetString("confirm_unfavourite_message");
+
+            await _dialog.ShowYesNo(string.Format(localizedText, school.SchoolName.SchoolName), () =>
+                {
+                    school.IsFavourite = false;
+                    _db.UpdateFavourites(school);
+                    Favourites.Remove(school);
+                }
+                );
         }
 
         public async void TapSchool(School school)
@@ -453,6 +483,19 @@ namespace HongKongSchools.ViewModels
             return latitude + longitude;
         }
 
+        private void Favourites_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+                return;
+
+            if (!Favourites.Any())
+                return;
+
+            var index = 1;
+            foreach (var f in Favourites)
+                f.DisplayOrder = index++;
+        }
+
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
             if (Geolocator == null)
@@ -467,31 +510,11 @@ namespace HongKongSchools.ViewModels
                 PopulateSchools(schools);
             }
 
-            //if (viewModelState.Any(x => x.Key == "Schools"))
-            //{
-            //    if (SettingsPageViewModel.ReloadRequired)
-            //    {
-            //        var schools = await _db.GetSchools();
-            //        PopulateSchools(schools);
-            //        SettingsPageViewModel.ReloadRequired = false;
-            //    }
-            //    else
-            //    {
-            //        var schools = viewModelState.First(x => x.Key == "Schools").Value as ObservableCollection<School>;
-            //        Schools = schools;
-
-            //        //if (!Schools.Any())
-            //        //{
-            //        //    var reload = await _db.GetSchools();
-            //        //    PopulateSchools(reload);
-            //        //}
-            //    }
-            //}
-            //else
-            //{
-            //    var schools = await _db.GetSchools();
-            //    PopulateSchools(schools);
-            //}
+            Favourites = new ObservableCollection<School>();
+            Favourites.CollectionChanged -= Favourites_CollectionChanged;
+            Favourites.CollectionChanged += Favourites_CollectionChanged;
+            foreach (var s in Schools.Where(x => x.IsFavourite))
+                Favourites.Add(s);
 
             IsLoading = false;
 
@@ -504,16 +527,5 @@ namespace HongKongSchools.ViewModels
             
             base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
         }
-
-        //public override void OnNavigatedFrom(Dictionary<string, object> viewModelState, bool suspending)
-        //{
-        //    //Dispose();
-
-        //    if (viewModelState.Any(x => x.Key == "Schools"))
-        //        viewModelState.Remove("Schools");
-
-        //    viewModelState.Add("Schools", Schools);
-        //    base.OnNavigatedFrom(viewModelState, suspending);
-        //}
     }
 }

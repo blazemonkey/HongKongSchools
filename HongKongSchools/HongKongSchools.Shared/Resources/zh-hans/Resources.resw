@@ -147,11 +147,20 @@
   <data name="b_search_schools.Content" xml:space="preserve">
     <value>搜寻学校</value>
   </data>
+  <data name="confirm_unfavourite_message" xml:space="preserve">
+    <value>确定移除 [{0}] ?</value>
+  </data>
+  <data name="favourites.Header" xml:space="preserve">
+    <value>喜爱学校</value>
+  </data>
   <data name="language.Text" xml:space="preserve">
     <value>语言</value>
   </data>
   <data name="nearby.Header" xml:space="preserve">
     <value>附近学校</value>
+  </data>
+  <data name="pi_about.Header" xml:space="preserve">
+    <value>关于</value>
   </data>
   <data name="pi_info.Header" xml:space="preserve">
     <value>資料</value>
@@ -227,5 +236,8 @@
   </data>
   <data name="tb_searching.Text" xml:space="preserve">
     <value>搜寻中</value>
+  </data>
+  <data name="tb_version.Text" xml:space="preserve">
+    <value>版本</value>
   </data>
 </root>

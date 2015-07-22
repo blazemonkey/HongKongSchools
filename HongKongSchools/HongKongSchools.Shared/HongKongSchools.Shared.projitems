@@ -22,6 +22,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\ImageFullPathConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\InverseBooleanConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\IsFavouriteConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\LatitudeLongitudeConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\SessionsConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\CoordinatesConverter.cs" />

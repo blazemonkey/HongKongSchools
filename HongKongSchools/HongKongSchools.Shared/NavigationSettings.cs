@@ -9,5 +9,6 @@ namespace HongKongSchools
     public static class NavigationSettings
     {
         public static IQueryable<School> ResultsPage;
+        public static IQueryable<School> NearbyPage;
     }
 }

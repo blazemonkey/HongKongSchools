@@ -1,4 +1,5 @@
 ﻿<controls:PageBase xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps" 
+    x:Name="Root"
     x:Class="HongKongSchools.Views.MainPage"
     prism:ViewModelLocator.AutoWireViewModel="True"
     xmlns:controls="using:HongKongSchools.Controls"
@@ -32,7 +33,7 @@
             RepeatBehavior="Forever"/>
         </Storyboard>
     </controls:PageBase.Resources>
-    
+
     <Pivot x:Name="MainPivot"
            Background="{StaticResource PivotHeaderBackgroundColor}"
            SelectionChanged="MainPivot_SelectionChanged">
@@ -49,76 +50,77 @@
                    Foreground="{StaticResource PivotItemForegroundColor}" 
                    Background="{StaticResource PivotItemBackgroundColor}" 
                    Margin="-10,0,-10,0"
-                   Padding="30">   
-            <Grid>          
-                <StackPanel Orientation="Vertical" 
+                   Padding="30">
+            <ScrollViewer>
+                <Grid>
+                    <StackPanel Orientation="Vertical" 
                             VerticalAlignment="Center"
                             Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <ProgressBar IsIndeterminate="True" />
-                    <TextBlock x:Name="Loading"
+                        <ProgressBar IsIndeterminate="True" />
+                        <TextBlock x:Name="Loading"
                                x:Uid="tb_loading"
                                Margin="0,5,0,0"
                                HorizontalAlignment="Center"                               
                                FontSize="{StaticResource LoadingTextSize}"/>
-                </StackPanel>
-                <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Inverse}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.5*"/>
-                        <ColumnDefinition Width="0.5*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBox Grid.Row="0" 
+                    </StackPanel>
+                    <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Inverse}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.5*"/>
+                            <ColumnDefinition Width="0.5*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBox Grid.Row="0" 
                              Grid.ColumnSpan="2" 
                              x:Uid="tb_search"
                              BorderThickness="1"
                              Text="{Binding SearchText, Mode=TwoWay}" 
                              Style="{StaticResource AccentTextBoxStyle}"/>
-                    <TextBlock x:Uid="tb_info_district"
+                        <TextBlock x:Uid="tb_info_district"
                                        Grid.Row="1"
                                        Grid.Column="0"
                                        Margin="5"
                                        FontSize="18"
                                        VerticalAlignment="Center"/>
-                    <ComboBox Grid.Row="1"
+                        <ComboBox Grid.Row="1"
                               Grid.Column="1"
                               ItemsSource="{Binding Districts}"
                               SelectedValue="{Binding SelectedDistrict, Mode=TwoWay}"
                               DisplayMemberPath="Name"
                               VerticalAlignment="Center">
-                    </ComboBox>
-                    <TextBlock x:Uid="tb_info_level"
+                        </ComboBox>
+                        <TextBlock x:Uid="tb_info_level"
                                        Grid.Row="2"
                                        Grid.Column="0"
                                        Margin="5"
                                        FontSize="18"
                                        VerticalAlignment="Center"/>
-                    <ComboBox Grid.Row="2"
+                        <ComboBox Grid.Row="2"
                               Grid.Column="1"
                               ItemsSource="{Binding Levels}"
                               SelectedValue="{Binding SelectedLevel, Mode=TwoWay}"
                               DisplayMemberPath="Name" 
                               VerticalAlignment="Center">
-                    </ComboBox>
-                    <TextBlock x:Uid="tb_info_financeType"
+                        </ComboBox>
+                        <TextBlock x:Uid="tb_info_financeType"
                                        Grid.Row="3"
                                        Grid.Column="0"
                                        Margin="5"
                                        FontSize="18"
                                        VerticalAlignment="Center"/>
-                    <ComboBox Grid.Row="3"
+                        <ComboBox Grid.Row="3"
                               Grid.Column="1"
                               ItemsSource="{Binding FinanceTypes}"
                               SelectedValue="{Binding SelectedFinanceType, Mode=TwoWay}"
                               DisplayMemberPath="Name" 
                               VerticalAlignment="Center">
-                    </ComboBox>
-                    <Button x:Uid="b_search_schools"
+                        </ComboBox>
+                        <Button x:Uid="b_search_schools"
                             Grid.Row="4" 
                             Grid.ColumnSpan="2"
                             BorderBrush="{StaticResource PivotHeaderBackgroundColor}" 
@@ -128,57 +130,58 @@
                             Width="Auto"
                             Margin="0,10,0,0"
                             Command="{Binding TapSearchSchoolsCommand}">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Grid Background="Transparent">
-                                                <VisualStateManager.VisualStateGroups>
-                                                    <VisualStateGroup x:Name="CommonStates">
-                                                        <VisualState x:Name="Normal"/>
-                                                        <VisualState x:Name="MouseOver"/>
-                                                        <VisualState x:Name="Pressed">
-                                                            <Storyboard>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentContainer">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="White"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ButtonBackground">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="#FF515151"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ButtonBackground">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="#FF515151"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                            </Storyboard>
-                                                        </VisualState>
-                                                        <VisualState x:Name="Disabled">
-                                                            <Storyboard>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentContainer">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneDisabledBrush}"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ButtonBackground">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneDisabledBrush}"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ButtonBackground">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="Transparent"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                            </Storyboard>
-                                                        </VisualState>
-                                                    </VisualStateGroup>
-                                                </VisualStateManager.VisualStateGroups>
-                                                <Border x:Name="ButtonBackground" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="0" Margin="{StaticResource PhoneTouchTargetOverhang}">
-                                                    <ContentControl x:Name="ContentContainer" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                                </Border>
-                                            </Grid>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <CheckBox Content="CheckBox" HorizontalAlignment="Left" Height="9" Margin="144,10,0,0" VerticalAlignment="Top" Width="0"/>
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Grid Background="Transparent">
+                                                    <VisualStateManager.VisualStateGroups>
+                                                        <VisualStateGroup x:Name="CommonStates">
+                                                            <VisualState x:Name="Normal"/>
+                                                            <VisualState x:Name="MouseOver"/>
+                                                            <VisualState x:Name="Pressed">
+                                                                <Storyboard>
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentContainer">
+                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="White"/>
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ButtonBackground">
+                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="#FF515151"/>
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ButtonBackground">
+                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="#FF515151"/>
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                </Storyboard>
+                                                            </VisualState>
+                                                            <VisualState x:Name="Disabled">
+                                                                <Storyboard>
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentContainer">
+                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneDisabledBrush}"/>
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ButtonBackground">
+                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneDisabledBrush}"/>
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ButtonBackground">
+                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="Transparent"/>
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                </Storyboard>
+                                                            </VisualState>
+                                                        </VisualStateGroup>
+                                                    </VisualStateManager.VisualStateGroups>
+                                                    <Border x:Name="ButtonBackground" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="0" Margin="{StaticResource PhoneTouchTargetOverhang}">
+                                                        <ContentControl x:Name="ContentContainer" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                                    </Border>
+                                                </Grid>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <CheckBox Content="CheckBox" HorizontalAlignment="Left" Height="9" Margin="144,10,0,0" VerticalAlignment="Top" Width="0"/>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </ScrollViewer>
         </PivotItem>
         <PivotItem x:Name="PivotItemNearby"
                    x:Uid ="nearby"
@@ -191,7 +194,7 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>                
+                </Grid.RowDefinitions>
                 <Maps:MapControl x:Name="MapControl"
                                  MapServiceToken="RmqcbKftzxc9dU9H_jyxZw"
                                  Grid.Row="3"
@@ -201,6 +204,127 @@
                                  Center="{Binding GeopointSelf, UpdateSourceTrigger=PropertyChanged}">
                 </Maps:MapControl>
             </Grid>
+        </PivotItem>
+        <PivotItem x:Name="PivotItemFavourites"
+                   x:Uid ="favourites"
+                   Background="{StaticResource PivotItemBackgroundColor}" 
+                   Margin="-10,0,-10,0"                   
+                   Padding="30">
+            <ListView x:Name="SchoolsListView"
+                  ItemsSource="{Binding Favourites}" 
+                  FontSize="{StaticResource PivotItemTextSize}"
+                  SelectionMode="None"
+                  IsItemClickEnabled="True"                  
+                  helpers:ItemClickCommand.Command="{Binding TapSchoolCommand}"
+                  Tag="{Binding DataContext, ElementName=Root}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0"
+                              Margin="20">
+                                <Image
+                               Source="ms-appx:///Images/SchoolIcon.png"
+                               Width="30"
+                               Height="30"/>
+                                <TextBlock Text="{Binding DisplayOrder}"
+                                       Foreground="White"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"/>
+                            </Grid>
+                            <Grid Grid.Column="1" 
+                                  Margin="10,0"
+                                  VerticalAlignment="Center">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0"
+                                           TextWrapping="Wrap" 
+                                           Text="{Binding SchoolName.SchoolName}"       
+                                           FontSize="{StaticResource ListViewTextSize}"
+                                           Foreground="Black"/>
+                                <TextBlock Grid.Row="1"
+                                           TextWrapping="Wrap" 
+                                           Text="{Binding Address.Name}"       
+                                           FontSize="{StaticResource ListViewTextSize}"
+                                           Foreground="Gray"/>
+                            </Grid>
+                            <AppBarButton Grid.Column="2"
+                                      Width="Auto"                                           
+                                      Icon="UnFavorite"
+                                      IsCompact="True"
+                                      Margin="10"
+                                      RequestedTheme="Light"
+                                      Command="{Binding Tag.UnfavouritesCommand, ElementName=SchoolsListView}"
+                                      CommandParameter="{Binding}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel></VirtualizingStackPanel>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.GroupStyle>
+                    <GroupStyle HidesIfEmpty="True">
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="GroupItem">
+                                <Setter Property="IsTabStop" Value="False"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="GroupItem">
+                                            <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="*"/>
+                                                    </Grid.RowDefinitions>
+                                                    <ContentControl x:Name="HeaderContent" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" 
+                                                                Content="{TemplateBinding Content}" IsTabStop="False" Margin="{TemplateBinding Padding}" TabIndex="0"/>
+                                                    <ItemsControl x:Name="ItemsControl" IsTabStop="False" ItemsSource="{Binding GroupItems}" Grid.Row="1" TabIndex="1" TabNavigation="Once">
+                                                        <ItemsControl.ItemContainerTransitions>
+                                                            <TransitionCollection>
+                                                                <AddDeleteThemeTransition/>
+                                                                <ContentThemeTransition/>
+                                                                <ReorderThemeTransition/>
+                                                                <EntranceThemeTransition IsStaggeringEnabled="False"/>
+                                                            </TransitionCollection>
+                                                        </ItemsControl.ItemContainerTransitions>
+                                                    </ItemsControl>
+                                                </Grid>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                        <GroupStyle.HeaderTemplate>
+                            <DataTemplate>
+                                <Grid Background="{StaticResource ListViewHeaderBackgroundColor}" Margin="0">
+                                    <TextBlock Text='{Binding Key}' 
+                                               Foreground="White" 
+                                               FontSize="16"
+                                               FontWeight="Bold"
+                                               Margin="5"
+                                               Padding="5"/>
+                                </Grid>
+                            </DataTemplate>
+                        </GroupStyle.HeaderTemplate>
+                    </GroupStyle>
+                </ListView.GroupStyle>
+            </ListView>
         </PivotItem>
     </Pivot>
     <controls:PageBase.BottomAppBar>

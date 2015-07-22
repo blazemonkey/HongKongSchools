@@ -53,6 +53,41 @@
                     </ComboBox>
                 </Grid>                
             </PivotItem>
+            <PivotItem x:Uid ="pi_about"               
+                   Background="{StaticResource PivotItemBackgroundColor}" 
+                   Foreground="{StaticResource PivotItemForegroundColor}" 
+                   Margin="-10,0,-10,0"
+                   Padding="30">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.5*"/>
+                        <ColumnDefinition Width="0.5*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock x:Uid="tb_version"
+                               Grid.Row="0"
+                               Grid.Column="0"
+                               Margin="5"
+                               FontSize="18"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding Version}"
+                               Grid.Row="0"
+                               Grid.Column="1"
+                               Margin="5"
+                               FontSize="18"
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource PivotItemSecondaryForegroundColor}"/>
+                    <TextBlock Grid.Row="1"
+                               Grid.ColumnSpan="2"
+                               Margin="5"
+                               FontSize="18"
+                               VerticalAlignment="Center"
+                               Text="2015 © Mosu Apps"/>
+                </Grid>
+            </PivotItem>
         </Pivot>
     </Grid>
 </controls:PageBase>

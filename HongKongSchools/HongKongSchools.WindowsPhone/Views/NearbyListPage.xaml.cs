@@ -48,7 +48,7 @@ namespace HongKongSchools.Views
         /// </summary>
         /// <param name="e">Event data that describes how this page was reached.
         /// This parameter is typically used to configure the page.</param>
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             if (e.NavigationMode == NavigationMode.Back)
                 return;
@@ -59,11 +59,12 @@ namespace HongKongSchools.Views
             SchoolsListTextBlock.Visibility = Visibility.Collapsed;
             SchoolsListView.Visibility = Visibility.Collapsed;
 
-            var schoolsJson = _appData.GetSettingsKeyValue<string>("NearbyPageSchools");
-            var schoolsId = _json.Deserialize<IEnumerable<int>>(schoolsJson).ToList();
-            var schools = await _db.GetSchoolsByIds(schoolsId);
+            if (NavigationSettings.NearbyPage == null)
+                return;
 
-            if (schools == null || !schools.Any())
+            var schools = NavigationSettings.NearbyPage.ToList();
+
+            if (!schools.Any())
             {
                 SearchingStackPanel.Visibility = Visibility.Collapsed;
                 SchoolsListTextBlock.Visibility = Visibility.Visible;
