@@ -83,8 +83,11 @@
     <Compile Include="Services\ExcelReaderService\IExcelReaderService.cs" />
     <Compile Include="Services\JSONService\IJSONService.cs" />
     <Compile Include="Services\JSONService\JSONService.cs" />
+    <Compile Include="Services\WebClientService\IWebClientService.cs" />
+    <Compile Include="Services\WebClientService\WebClientService.cs" />
     <Compile Include="Services\XMLReaderService\IXMLReaderService.cs" />
     <Compile Include="Services\XMLReaderService\XMLReaderService.cs" />
+    <Compile Include="Updater.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -106,7 +109,10 @@
     </Content>
     <Content Include="Data\SchoolPremises.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Data\Results\" />
+    <Folder Include="Data\Updates\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

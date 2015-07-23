@@ -80,8 +80,6 @@ namespace HongKongSchools.DataParser
                 {
                     var chiName = SchoolNames.First(x => x.GroupId == school.NameId && x.LanguageId == 2).Name;
                     var engName = SchoolNames.First(x => x.GroupId == school.NameId && x.LanguageId == 1).Name;
-                    if (string.IsNullOrEmpty(chiName))
-                        chiName = engName;
 
                     var district = Districts.First(x => x.GroupId == school.DistrictId && x.LanguageId == 2).Name;
                     var level = Levels.First(x => x.GroupId == school.LevelId && x.LanguageId == 2).Name;
@@ -106,7 +104,7 @@ namespace HongKongSchools.DataParser
                 }
 
                 var json = _json.Serialize(schools);
-                File.WriteAllText("schools.json", json, Encoding.Unicode);
+                File.WriteAllText("..\\..\\Data\\Results\\schools.json", json, Encoding.Unicode);
 
                 var sessions = (
                     from c in groupedInfos
@@ -117,7 +115,7 @@ namespace HongKongSchools.DataParser
                     }).ToList();
 
                 var ssJson = _json.Serialize(sessions);
-                File.WriteAllText("school_sessions.json", ssJson, Encoding.Unicode);
+                File.WriteAllText("..\\..\\Data\\Results\\school_sessions.json", ssJson, Encoding.Unicode);
             }
             catch (FileNotFoundException fnfe)
             {
@@ -169,7 +167,7 @@ namespace HongKongSchools.DataParser
             sb.AppendLine("");
 
             var schoolsWithNoWebsites = basicInfos.Where(x => string.IsNullOrEmpty(x.SchoolWebSite))
-                .Select(x => new { x.SchoolNameChi, x.SchoolNameEng } ).Distinct();
+                .Select(x => new { x.SchoolNameChi, x.SchoolNameEng } ).Distinct().ToList();
             sb.AppendLine(string.Format("List of Schools that have no website in Location Infos ({0})", schoolsWithNoWebsites.Count()));
             foreach (var bi in schoolsWithNoWebsites)
             {
@@ -181,9 +179,21 @@ namespace HongKongSchools.DataParser
             sb.AppendLine("");
 
             var schoolsWithNoChineseAddress = basicInfos.Where(x => string.IsNullOrEmpty(x.SchoolAddressChi))
-                .Select(x => new { x.SchoolNameChi, x.SchoolNameEng }).Distinct();
+                .Select(x => new { x.SchoolNameChi, x.SchoolNameEng }).Distinct().ToList();
             sb.AppendLine(string.Format("List of Schools that have no Chinese Addresses ({0})", schoolsWithNoChineseAddress.Count()));
             foreach (var bi in schoolsWithNoChineseAddress)
+            {
+                sb.AppendLine(string.Format("{0}, {1}", bi.SchoolNameChi, bi.SchoolNameEng));
+            }
+
+            sb.AppendLine("");
+            sb.AppendLine("================================================================================");
+            sb.AppendLine("");
+
+            var schoolsWithNoTelephoneNos = basicInfos.Where(x => string.IsNullOrEmpty(x.TelephoneNumber))
+                .Select(x => new {x.SchoolNameChi, x.SchoolNameEng}).Distinct().ToList();
+            sb.AppendLine(string.Format("List of Schools that have no Telephone Numbers ({0})", schoolsWithNoTelephoneNos.Count()));
+            foreach (var bi in schoolsWithNoTelephoneNos)
             {
                 sb.AppendLine(string.Format("{0}, {1}", bi.SchoolNameChi, bi.SchoolNameEng));
             }
@@ -191,7 +201,7 @@ namespace HongKongSchools.DataParser
             File.WriteAllText("analyze.txt", sb.ToString());
         }
 
-        private static void ManualUpdatesBeforeParse(List<SchoolBasicInfo> basicInfos, List<LocationAndInformation> locInfos)
+        public static void ManualUpdatesBeforeParse(List<SchoolBasicInfo> basicInfos, List<LocationAndInformation> locInfos)
         {
             var updates = File.ReadAllLines(ManualUpdatesFilePath);
             var manualUpdates = updates.Select(u => u.Split(';')).Select(split => new ManualUpdate()
@@ -305,10 +315,16 @@ namespace HongKongSchools.DataParser
                 basicInfos.Add(bi);
             }
 
-            var manualLocInfosAddresses = manualUpdates.Where(x => x.PropertyName == "Address" && x.Type == 2).ToList();
-            foreach (var bi in basicInfos.Where(x => manualLocInfosAddresses.Exists(z => z.OldName == x.SchoolAddressEng)))
+            var manualbasicInfosAddresses = manualUpdates.Where(x => x.PropertyName == "Address" && x.Type == 2).ToList();
+            foreach (var bi in basicInfos.Where(x => manualbasicInfosAddresses.Exists(z => z.OldName == x.SchoolAddressEng)))
             {
-                bi.SchoolAddressChi = manualLocInfosAddresses.First(x => x.OldName == bi.SchoolAddressEng).NewName;
+                bi.SchoolAddressChi = manualbasicInfosAddresses.First(x => x.OldName == bi.SchoolAddressEng).NewName;
+            }
+
+            var manualbasicInfosWebsites = manualUpdates.Where(x => x.PropertyName == "Website" && x.Type == 2).ToList();
+            foreach (var bi in basicInfos.Where(x => manualbasicInfosWebsites.Exists(z => z.OldName == x.SchoolNameChi)))
+            {
+                bi.SchoolWebSite = manualbasicInfosWebsites.First(x => x.OldName == bi.SchoolNameChi).NewName;
             }
         }
 
@@ -325,6 +341,7 @@ namespace HongKongSchools.DataParser
 
         private List<T> OutputJson<T>(IEnumerable<SchoolBasicInfo> basicInfos, Func<SchoolBasicInfo, Tuple<string, string>> property, string fileName) where T : IBase, new()
         {
+            fileName = "..\\..\\Data\\Results\\" + fileName;
             var bases = basicInfos.GroupBy(property).Select(x => x.Key);
             var list = new List<T>();
 

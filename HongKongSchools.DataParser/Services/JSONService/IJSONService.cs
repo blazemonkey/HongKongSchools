@@ -9,6 +9,6 @@ namespace HongKongSchools.DataParser.Services.JSONService
     public interface IJSONService
     {
         string Serialize(object value);
-        object Deserialize(string value);
+        T Deserialize<T>(string value);
     }
 }

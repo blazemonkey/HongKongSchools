@@ -14,9 +14,9 @@ namespace HongKongSchools.DataParser.Services.JSONService
             return JsonConvert.SerializeObject(value);
         }
 
-        public object Deserialize(string value)
+        public T Deserialize<T>(string value)
         {
-            return JsonConvert.DeserializeObject(value);
+            return JsonConvert.DeserializeObject<T>(value);
         }
     }
 }
