@@ -25,6 +25,8 @@ namespace HongKongSchools.WebServiceApi.DAL
         public DbSet<SchoolSession> SchoolSessions { get; set; }
         public DbSet<Session> Sessions { get; set; }
 
+        public DbSet<Change> Changes { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();

@@ -35,5 +35,15 @@ namespace HongKongSchools.WebServiceApi.Controllers
             var result = await _db.UpdateLevel(level);
             return result;
         }
+
+        [HttpPost]
+        public async Task<bool> Add(Level level)
+        {
+            if (level == null)
+                throw new ArgumentNullException("level");
+
+            var result = await _db.AddLevel(level);
+            return result;
+        }
     }
 }

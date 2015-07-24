@@ -153,6 +153,7 @@
     <Compile Include="App_Start\UnityResolver.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AddressesController.cs" />
+    <Compile Include="Controllers\ChangesController.cs" />
     <Compile Include="Controllers\DistrictsController.cs" />
     <Compile Include="Controllers\FinanceTypesController.cs" />
     <Compile Include="Controllers\GendersController.cs" />
@@ -162,13 +163,16 @@
     <Compile Include="Controllers\SchoolsController.cs" />
     <Compile Include="Controllers\SchoolSessionsController.cs" />
     <Compile Include="Controllers\SessionsController.cs" />
+    <Compile Include="Controllers\UpdatesController.cs" />
     <Compile Include="DAL\SchoolContext.cs" />
     <Compile Include="DAL\SchoolInitializer.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Address.cs" />
+    <Compile Include="Models\Change.cs" />
     <Compile Include="Models\District.cs" />
+    <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\FinanceType.cs" />
     <Compile Include="Models\Gender.cs" />
     <Compile Include="Models\Level.cs" />

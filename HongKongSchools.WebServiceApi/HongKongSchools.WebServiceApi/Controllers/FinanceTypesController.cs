@@ -1,4 +1,5 @@
-﻿using HongKongSchools.WebServiceApi.Models;
+﻿using System;
+using HongKongSchools.WebServiceApi.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -23,6 +24,26 @@ namespace HongKongSchools.WebServiceApi.Controllers
         public async Task<FinanceType> Get(int id)
         {
             return await _db.GetFinanceTypeById(id);
+        }
+
+        [HttpPut]
+        public async Task<bool> Update(FinanceType financeType)
+        {
+            if (financeType == null)
+                throw new ArgumentNullException("financeType");
+
+            var result = await _db.UpdateFinanceType(financeType);
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<bool> Add(FinanceType financeType)
+        {
+            if (financeType == null)
+                throw new ArgumentNullException("financeType");
+
+            var result = await _db.AddFinanceType(financeType);
+            return result;
         }
     }
 }

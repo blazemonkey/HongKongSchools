@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 using HongKongSchools.WebServiceApi.Models;
@@ -23,6 +24,26 @@ namespace HongKongSchools.WebServiceApi.Controllers
         public async Task<Address> Get(int id)
         {
             return await _db.GetAddressById(id);
+        }
+
+        [HttpPut]
+        public async Task<bool> Update(Address address)
+        {
+            if (address == null)
+                throw new ArgumentNullException("address");
+
+            var result = await _db.UpdateAddress(address);
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<bool> Add(Address address)
+        {
+            if (address == null)
+                throw new ArgumentNullException("address");
+
+            var result = await _db.AddAddress(address);
+            return result;
         }
     }
 }
