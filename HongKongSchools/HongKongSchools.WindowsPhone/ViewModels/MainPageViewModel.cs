@@ -36,6 +36,7 @@ namespace HongKongSchools.ViewModels
         private string _searchText;
         private ObservableCollection<School> _schools;
         private ObservableCollection<School> _favourites;
+        private bool _hasFavourites;
 
         private ObservableCollection<District> _districts;
         private District _selectedDistrict;
@@ -84,6 +85,11 @@ namespace HongKongSchools.ViewModels
                 _favourites = value;
                 OnPropertyChanged("Favourites");
             }
+        }
+
+        public bool HasFavourites
+        {
+            get { return !Favourites.Any();  }
         }
 
         public ObservableCollection<District> Districts
@@ -485,6 +491,7 @@ namespace HongKongSchools.ViewModels
 
         private void Favourites_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            OnPropertyChanged("HasFavourites");
             if (e.Action == NotifyCollectionChangedAction.Reset)
                 return;
 

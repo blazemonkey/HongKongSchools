@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HongKongSchools", "HongKongSchools", "{76812128-F278-40D1-99B0-C503D1BBD117}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "HongKongSchools.Shared", "HongKongSchools\HongKongSchools.Shared\HongKongSchools.Shared.shproj", "{656D6779-18F3-4DC4-92AA-B63C28A3323B}"
@@ -14,6 +16,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HongKongSchools.WebServiceApi", "HongKongSchools.WebServiceApi\HongKongSchools.WebServiceApi\HongKongSchools.WebServiceApi.csproj", "{693A0DD9-C6CD-4809-BD63-F06ACD1BD54E}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		HongKongSchools\HongKongSchools.Shared\HongKongSchools.Shared.projitems*{adf18246-1d7c-45c3-905d-3c4575d48c06}*SharedItemsImports = 4
+		HongKongSchools\HongKongSchools.Shared\HongKongSchools.Shared.projitems*{656d6779-18f3-4dc4-92aa-b63c28a3323b}*SharedItemsImports = 13
+		HongKongSchools\HongKongSchools.Shared\HongKongSchools.Shared.projitems*{8b2a3157-3b63-42fd-ae95-e2ea92eeb7c7}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|ARM = Debug|ARM
@@ -49,9 +56,9 @@ Global
 		{8B2A3157-3B63-42FD-AE95-E2EA92EEB7C7}.Release|x86.ActiveCfg = Release|x86
 		{8B2A3157-3B63-42FD-AE95-E2EA92EEB7C7}.Release|x86.Build.0 = Release|x86
 		{8B2A3157-3B63-42FD-AE95-E2EA92EEB7C7}.Release|x86.Deploy.0 = Release|x86
-		{ADF18246-1D7C-45C3-905D-3C4575D48C06}.Debug|Any CPU.ActiveCfg = Debug|ARM
-		{ADF18246-1D7C-45C3-905D-3C4575D48C06}.Debug|Any CPU.Build.0 = Debug|ARM
-		{ADF18246-1D7C-45C3-905D-3C4575D48C06}.Debug|Any CPU.Deploy.0 = Debug|ARM
+		{ADF18246-1D7C-45C3-905D-3C4575D48C06}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{ADF18246-1D7C-45C3-905D-3C4575D48C06}.Debug|Any CPU.Build.0 = Debug|x86
+		{ADF18246-1D7C-45C3-905D-3C4575D48C06}.Debug|Any CPU.Deploy.0 = Debug|x86
 		{ADF18246-1D7C-45C3-905D-3C4575D48C06}.Debug|ARM.ActiveCfg = Debug|ARM
 		{ADF18246-1D7C-45C3-905D-3C4575D48C06}.Debug|ARM.Build.0 = Debug|ARM
 		{ADF18246-1D7C-45C3-905D-3C4575D48C06}.Debug|ARM.Deploy.0 = Debug|ARM
@@ -97,10 +104,5 @@ Global
 		{656D6779-18F3-4DC4-92AA-B63C28A3323B} = {76812128-F278-40D1-99B0-C503D1BBD117}
 		{8B2A3157-3B63-42FD-AE95-E2EA92EEB7C7} = {76812128-F278-40D1-99B0-C503D1BBD117}
 		{ADF18246-1D7C-45C3-905D-3C4575D48C06} = {76812128-F278-40D1-99B0-C503D1BBD117}
-	EndGlobalSection
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		HongKongSchools\HongKongSchools.Shared\HongKongSchools.Shared.projitems*{adf18246-1d7c-45c3-905d-3c4575d48c06}*SharedItemsImports = 4
-		HongKongSchools\HongKongSchools.Shared\HongKongSchools.Shared.projitems*{656d6779-18f3-4dc4-92aa-b63c28a3323b}*SharedItemsImports = 13
-		HongKongSchools\HongKongSchools.Shared\HongKongSchools.Shared.projitems*{8b2a3157-3b63-42fd-ae95-e2ea92eeb7c7}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal

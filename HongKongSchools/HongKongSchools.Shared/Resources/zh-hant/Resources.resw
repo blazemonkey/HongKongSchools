@@ -180,6 +180,9 @@
   <data name="search_error_message" xml:space="preserve">
     <value>請至少選擇一個選項</value>
   </data>
+  <data name="tb_favourites_empty.Text" xml:space="preserve">
+    <value>未有學校加到喜愛名單。請按 ★ 加入喜愛學校。</value>
+  </data>
   <data name="tb_info_address.Text" xml:space="preserve">
     <value>地址</value>
   </data>

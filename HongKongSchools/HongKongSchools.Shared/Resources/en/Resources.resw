@@ -180,6 +180,9 @@
   <data name="search_error_message" xml:space="preserve">
     <value>Please fill in at least one of the options</value>
   </data>
+  <data name="tb_favourites_empty.Text" xml:space="preserve">
+    <value>No schools have been added to the Favourites list yet. Press the ★ next to any school to add one.</value>
+  </data>
   <data name="tb_info_address.Text" xml:space="preserve">
     <value>address</value>
   </data>
