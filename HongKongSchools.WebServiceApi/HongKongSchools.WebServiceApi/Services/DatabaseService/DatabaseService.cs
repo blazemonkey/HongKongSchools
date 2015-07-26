@@ -35,6 +35,7 @@ namespace HongKongSchools.WebServiceApi.Services.DatabaseService
                 return false;
 
             find.Name = address.Name;
+            AddChanges(Tables.Address, Types.Update, address.Id);
             await _db.SaveChangesAsync();
 
             return true;
@@ -69,6 +70,7 @@ namespace HongKongSchools.WebServiceApi.Services.DatabaseService
                 return false;
 
             find.Name = district.Name;
+            AddChanges(Tables.District, Types.Update, district.Id);
             await _db.SaveChangesAsync();
 
             return true;
@@ -103,6 +105,7 @@ namespace HongKongSchools.WebServiceApi.Services.DatabaseService
                 return false;
 
             find.Name = financeType.Name;
+            AddChanges(Tables.FinanceType, Types.Update, financeType.Id);
             await _db.SaveChangesAsync();
 
             return true;
@@ -206,6 +209,7 @@ namespace HongKongSchools.WebServiceApi.Services.DatabaseService
                 return false;
 
             find.Name = name.Name;
+            AddChanges(Tables.Name, Types.Update, name.Id);
             await _db.SaveChangesAsync();
 
             return true;
@@ -259,6 +263,7 @@ namespace HongKongSchools.WebServiceApi.Services.DatabaseService
             find.Telephone = school.Telephone;
             find.Website = school.Website;
 
+            AddChanges(Tables.School, Types.Update, school.Id);
             await _db.SaveChangesAsync();
 
             return true;
@@ -303,6 +308,7 @@ namespace HongKongSchools.WebServiceApi.Services.DatabaseService
                 return false;
 
             find.Name = session.Name;
+            AddChanges(Tables.Session, Types.Update, session.Id);
             await _db.SaveChangesAsync();
 
             return true;
